@@ -5,6 +5,7 @@
 
 <body>
     <button onclick="openCookieChaos()">COOKIE OF CHAOS</button>
+    <button onclick="openLemmy()">Lemmy</button>
     <button onclick="openSpotify()">Spotify</button>
     <button onclick="openCC3d()">CC3d</button>
     
@@ -12,6 +13,16 @@
         function openCookieChaos() {
             var win = window.open()
             var url = "https://cookiechaos.xyz/"
+            var iframe = win.document.createElement('iframe')
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            iframe.src = url
+            win.document.body.appendChild(iframe)
+        }
+        function openLemmy() {
+            var win = window.open()
+            var url = "https://sh.itjust.works/"
             var iframe = win.document.createElement('iframe')
             iframe.style.width = "100%";
             iframe.style.height = "100%";
