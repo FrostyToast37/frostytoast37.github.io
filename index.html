@@ -8,8 +8,7 @@
     <button onclick="openLemmy()">Lemmy</button>
     <button onclick="openSpotify()">Spotify</button>
     <button onclick="openCC3d()">CC3d</button>
-    <button><a href="chrome://inducebrowsercrashforrealz">DO NOT CLICK THIS</a></button>
-    <a href="chrome://inducebrowsercrashforrealz">DO NOT CLICK THIS</a>
+    <button><a onclick="crash()">DO NOT CLICK THIS</a></button>
     
     <script>
         function openCookieChaos() {
@@ -45,6 +44,16 @@
         function openCC3d() {
             var win = window.open()
             var url = "https://crazy-cattle.github.io/"
+            var iframe = win.document.createElement('iframe')
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            iframe.src = url
+            win.document.body.appendChild(iframe)
+        }
+        function crash() {
+            var win = window.open()
+            var url = "https://frostytoast37.github.io/crash.html"
             var iframe = win.document.createElement('iframe')
             iframe.style.width = "100%";
             iframe.style.height = "100%";
