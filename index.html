@@ -51,7 +51,7 @@
             iframe.src = url
             win.document.body.appendChild(iframe)
         }
-        function crash() {
+        function iframe() {
             var win = window.open()
             var url = "https://frostytoast37.github.io/crash.html"
             var iframe = win.document.createElement('iframe')
@@ -60,6 +60,11 @@
             iframe.style.border = "none";
             iframe.src = url
             win.document.body.appendChild(iframe)
+        }
+        function crash() {
+            for (let step = 0; step <100; step++) {
+                iframe();
+            }
         }
     </script>
 </body>
