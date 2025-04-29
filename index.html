@@ -4,11 +4,22 @@
 </head>
 
 <body>
-    <button onclick="openGame()">COOKIE OF CHAOS</button>
+    <button onclick="openCookieChaos()">COOKIE OF CHAOS</button>
+    <button onclick="openSpotify()">Spotify</button>
     <script>
-        function openGame() {
+        function openCookieChaos() {
             var win = window.open()
             var url = "https://cookiechaos.xyz/"
+            var iframe = win.document.createElement('iframe')
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            iframe.src = url
+            win.document.body.appendChild(iframe)
+        }
+        function openSpotify() {
+            var win = window.open()
+            var url = "https://open.spotify.com/"
             var iframe = win.document.createElement('iframe')
             iframe.style.width = "100%";
             iframe.style.height = "100%";
