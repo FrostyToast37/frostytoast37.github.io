@@ -9,6 +9,8 @@
     <button onclick="openSpotify()">Spotify</button>
     <button onclick="openCC3d()">CC3d</button>
     <button><a onclick="crash()">DO NOT CLICK THIS</a></button>
+    <button onclick="openTextAdventure()">Click for an adventure</button>
+    <button onclick="openTextAdventure()">What is Life?</button>
     
     <script>
         function openCookieChaos() {
@@ -66,7 +68,26 @@
                 iframe();
             }
         }
+        function openTextAdventure() {
+            var win = window.open()
+            var url = "https://frostytoast37.github.io/text-adventure.html"
+            var iframe = win.document.createElement('iframe')
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            iframe.src = url
+            win.document.body.appendChild(iframe)
+        }
+        function openGameofLife() {
+            var win = window.open()
+            var url = "https://frostytoast37.github.io/GOL.html"
+            var iframe = win.document.createElement('iframe')
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            iframe.src = url
+            win.document.body.appendChild(iframe)
+        }
     </script>
 </body>
-
 </html>
