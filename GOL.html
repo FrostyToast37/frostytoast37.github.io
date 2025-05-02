@@ -6,15 +6,33 @@
     </p>
     <p id="gameboard"></p>
     <script>
-      let gameboard = [], row = 20, col = 20, fillValue = " . "
+      let gameboard = [], row = 10, col = 20, fillValue = " . "
       for (let i = 0; i < row; i++){
         let temp = []
         gameboard.push("\r")
+        
         for (let j = 0; j < col; j++){
          temp[j] = fillValue
-          }
-          gameboard.push(temp)
         }
+        
+          gameboard.push(temp)
+      }
+
+      
+      function createTableWithInnerHTML() {
+        let tableHTML = '<table><tr>';
+        tableHTML += '</tr>';
+        gameboard.forEach(item => {
+          tableHTML += '<tr>';
+          gameboard..forEach(value => {
+            tableHTML += `<td>${value}</td>`;
+            });
+          tableHTML += '</tr>';
+          });
+        tableHTML += '</table>';
+        document.body.innerHTML += tableHTML;
+        }
+
       document.getElementById("gameboard").innerHTML = gameboard;
     </script>
   </body>
