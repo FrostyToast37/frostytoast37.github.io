@@ -2,7 +2,7 @@
 <html>
   <body>
     <p>
-      updated2
+      updated3
     </p>
     <p id="gameboard"></p>
     <script>
@@ -22,18 +22,20 @@
       function createTableWithInnerHTML() {
         let tableHTML = '<table><tr>';
         tableHTML += '</tr>';
-        gameboard.forEach(item => {
+        for (let i = 0; i < row; i++){
           tableHTML += '<tr>';
-          gameboard..forEach(value => {
-            tableHTML += `<td>${value}</td>`;
-            });
+          for (let j = 0; j < col; j++){
+            tableHTML += '<td>gameboard[i][j]</td>';
+            };
           tableHTML += '</tr>';
-          });
+          };
         tableHTML += '</table>';
         document.body.innerHTML += tableHTML;
         }
 
       document.getElementById("gameboard").innerHTML = gameboard;
+
+      createTableWithInnerHTML();
     </script>
   </body>
 </html>
