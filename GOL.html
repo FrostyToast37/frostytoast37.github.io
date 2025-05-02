@@ -6,7 +6,7 @@
     </p>
     <p id="gameboard"></p>
     <script>
-      let gameboard = [], row = 10, col = 20, fillValue = " . "
+      let gameboard = [], row = 10, col = 10, fillValue = " . "
       for (let i = 0; i < row; i++){
         let temp = []
         gameboard.push("\r")
@@ -25,7 +25,8 @@
         for (let i = 0; i < row; i++){
           tableHTML += '<tr>';
           for (let j = 0; j < col; j++){
-            tableHTML += '<td>gameboard[i][j]</td>';
+            tableHTML += '<td id="gameboardSpace"></td>';
+            document.getElementById(gameboardSpace).innerHTML = gameboard[i][j];
             };
           tableHTML += '</tr>';
           };
