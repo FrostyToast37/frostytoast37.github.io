@@ -1,8 +1,9 @@
 <!DOCTYPE>
 <html>
   <body>
+    <p id="gameboard"></p>
     <p>
-      updated8
+      updated9
     </p>
     <script>
       let gameboard = [], row = 20, col = 20, data = ".", fillValue = "&nbsp&nbsp&nbsp"+data+"&nbsp&nbsp&nbsp"
@@ -30,8 +31,6 @@
         tableHTML += '</table>';
         document.body.innerHTML += tableHTML;
         }
-
-      document.getElementById("gameboard").innerHTML = gameboard;
 
       createTableWithInnerHTML();
     </script>
