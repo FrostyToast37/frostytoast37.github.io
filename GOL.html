@@ -4,30 +4,35 @@
     <form>
       <label for="checked">Boxes checked, format as </label><br>
       <div id="form">
-      <button onclick="addFormRow()"><h>+</h></button>
+      <button onclick="submitForm()"><h>+</h></button>
     </form>
     <p id="gameboard"></p>
     <p>
       updated11
     </p>
     <script>
+      let check_list = [];
+      let checked_Split = [];
       var formRows = 1;
       let checked = document.getElementById("checked").value;
       let gameboard = [], row = 20, col = 20, data = ".", fillValue = "&nbsp&nbsp&nbsp"+data+"&nbsp&nbsp&nbsp"
+
+      function submitForm() {
+        checked = document.getElementById("checked").value;
+        checked_split = checked.split(",")
+        checked_list.push(checked_split)
+        checked_split = []
+      }
       for (let i = 0; i < row; i++){
         let temp = []
         
         for (let j = 0; j < col; j++){
-          if (i = checked_i && j = checked_j_ {}
+          for (let k = 0; k < 
+            if (i == checked_i && j == checked_j_ {}
           temp[j] = fillValue
         }
         
           gameboard.push(temp)
-      }
-
-      function addFormRow() {
-        formRows += 1
-        document.getElementByID("form").innerHTML += '<input type="text" id="row'+formRows+'" name="row'+formRows+'"><br>'
       }
       
       function createTableWithInnerHTML() {
