@@ -1,0 +1,12 @@
+#gameboard {
+  border: 1px solid;
+}
+
+td {
+  padding: 10px;
+  text-align: center;
+}
+
+td:hover {
+  background-color: coral;
+}
