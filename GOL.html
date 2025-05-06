@@ -1,38 +1,16 @@
-<!DOCTYPE>
+<!DOCTYPE html>
 <html>
   <body>
-    <form>
-      <label for="checked">Boxes checked, format as </label><br>
-      <input type="text" id="form" name="form">
-      <button onclick="submitForm()"><h>submit</h></button>
-    </form>
     <p id="gameboard"></p>
     <p>
-      updated13
+      updated14
     </p>
     <script>
-      let check_list = [];
-      let checked_Split = [];
-      var formRows = 1;
-      let checked = document.getElementById("form").value;
       let gameboard = [], row = 20, col = 20, data = ".", fillValue = "&nbsp&nbsp&nbsp"+data+"&nbsp&nbsp&nbsp"
-
-      function submitForm() {
-        checked = document.getElementById("form").value;
-        checked_split = checked.split(",")
-        checked_list.push(checked_split)
-        checked_split = []
-      }
+ 
       for (let i = 0; i < row; i++){
         let temp = []
-        checkCol:
         for (let j = 0; j < col; j++){
-          for (let k = 0; k < checked_list.length/2; k++){
-            if (i == checked_list[k][1] && j == checked_list[k][2] {
-              temp[j] = "#"
-              break checkCol;
-            }
-          }
           temp[j] = fillValue
         }  
           gameboard.push(temp)
