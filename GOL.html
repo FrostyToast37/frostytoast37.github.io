@@ -8,7 +8,7 @@
     </form>
     <p id="gameboard"></p>
     <p>
-      updated10
+      updated11
     </p>
     <script>
       var formRows = 1;
@@ -27,7 +27,7 @@
 
       function addFormRow() {
         formRows += 1
-        document.getElementByID("form").innerHTML += '<input type="text" id="row'+formRows+'"><br>
+        document.getElementByID("form").innerHTML += '<input type="text" id="row'+formRows+'" name="row'+formRows+'"><br>'
       }
       
       function createTableWithInnerHTML() {
