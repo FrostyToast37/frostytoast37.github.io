@@ -3,7 +3,7 @@
   <body>
     <p id="gameboard"></p>
     <p>
-      updated14
+      updated15
     </p>
     <script>
       let gameboard = [], row = 20, col = 20, off = ".", on = "#", fillValue = "&nbsp&nbsp&nbsp"+off+"&nbsp&nbsp&nbsp"
@@ -22,7 +22,7 @@
         for (let i = 0; i < row; i++){
           tableHTML += '<tr>';
           for (let j = 0; j < col; j++){
-            tableHTML += '<td onclick="change('+i,j+)" id='+gameboard[i][j]+'>'+gameboard[i][j]+'</td>';
+            tableHTML += '<td onclick="change('+i,j+')" id='+gameboard[i][j]+'>'+gameboard[i][j]+'</td>';
             };
           tableHTML += '</tr>';
           };
