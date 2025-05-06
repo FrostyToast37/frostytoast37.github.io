@@ -8,7 +8,7 @@
     </form>
     <p id="gameboard"></p>
     <p>
-      updated11
+      updated12
     </p>
     <script>
       let check_list = [];
@@ -25,13 +25,16 @@
       }
       for (let i = 0; i < row; i++){
         let temp = []
-        
+        checkCol:
         for (let j = 0; j < col; j++){
-          for (let k = 0; k < 
-            if (i == checked_i && j == checked_j_ {}
+          for (let k = 0; k < checked_list.length/2; k++){
+            if (i == checked_list[k][1] && j == checked_list[k][2] {
+              temp[j] = "#"
+              break checkCol;
+            }
+          }
           temp[j] = fillValue
-        }
-        
+        }  
           gameboard.push(temp)
       }
       
