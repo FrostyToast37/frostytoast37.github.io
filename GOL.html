@@ -2,7 +2,7 @@
 <html>
   <body>
     <p id="gameboard"></p>
-    <p>updated17</p>
+    <p>updated18</p>
 
     <script>
       let gameboard = [], row = 20, col = 20, off = ".", on = "#";
@@ -38,11 +38,12 @@
       // Function to change the value of the clicked cell
       function change(i, j) {
         // Get the correct cell by ID and change its content to "on" value
-        if (document.getElementById('cell-'+i+','+j+'') == off) {
-          document.getElementById('cell-'+i+','+j+'').innerHTML = on;
+        let cell = document.getElementById('cell-'+i+','+j+'');
+        if (cell.innerHTML == off) {
+          cell.innerHTML = on;
         }
-        if (document.getElementById('cell-'+i+','+j+'') == on) {
-          document.getElementById('cell-'+i+','+j+'').innerHTML = off;
+        if (cell.innerHTML == on) {
+          cell.innerHTML = off;
         }
       }
 
