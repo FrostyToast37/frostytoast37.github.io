@@ -24,7 +24,7 @@
         for (let i = 0; i < row; i++) {
           tableHTML += '<tr>';
           for (let j = 0; j < col; j++) {
-            // Use unique IDs for each cell using hyphens
+            // Use unique IDs for each cell using concatonation
             tableHTML += '<td onclick="change('+i+','+j+')" id="cell-'+i+','+j+'">' + gameboard[i][j] + '</td>';
           }
           tableHTML += '</tr>';
@@ -38,7 +38,12 @@
       // Function to change the value of the clicked cell
       function change(i, j) {
         // Get the correct cell by ID and change its content to "on" value
-        document.getElementById('cell-'+i+','+j+'').innerHTML = on;
+        if (document.getElementById('cell-'+i+','+j+'') == off) {
+          document.getElementById('cell-'+i+','+j+'').innerHTML = on;
+        }
+        if (document.getElementById('cell-'+i+','+j+'') == on) {
+          document.getElementById('cell-'+i+','+j+'').innerHTML = off;
+        }
       }
 
       // Call the function to generate the table
