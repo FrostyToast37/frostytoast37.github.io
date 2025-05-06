@@ -3,22 +3,22 @@
   <body>
     <form>
       <label for="checked">Boxes checked, format as </label><br>
-      <div id="form">
-      <button onclick="submitForm()"><h>+</h></button>
+      <input type="text" id="form" name="form">
+      <button onclick="submitForm()"><h>submit</h></button>
     </form>
     <p id="gameboard"></p>
     <p>
-      updated12
+      updated13
     </p>
     <script>
       let check_list = [];
       let checked_Split = [];
       var formRows = 1;
-      let checked = document.getElementById("checked").value;
+      let checked = document.getElementById("form").value;
       let gameboard = [], row = 20, col = 20, data = ".", fillValue = "&nbsp&nbsp&nbsp"+data+"&nbsp&nbsp&nbsp"
 
       function submitForm() {
-        checked = document.getElementById("checked").value;
+        checked = document.getElementById("form").value;
         checked_split = checked.split(",")
         checked_list.push(checked_split)
         checked_split = []
