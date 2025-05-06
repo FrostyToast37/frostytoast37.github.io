@@ -6,7 +6,7 @@
       updated14
     </p>
     <script>
-      let gameboard = [], row = 20, col = 20, data = ".", fillValue = "&nbsp&nbsp&nbsp"+data+"&nbsp&nbsp&nbsp"
+      let gameboard = [], row = 20, col = 20, off = ".", on = "#", fillValue = "&nbsp&nbsp&nbsp"+off+"&nbsp&nbsp&nbsp"
  
       for (let i = 0; i < row; i++){
         let temp = []
@@ -22,14 +22,16 @@
         for (let i = 0; i < row; i++){
           tableHTML += '<tr>';
           for (let j = 0; j < col; j++){
-            tableHTML += '<td id='+gameboard[i][j]+'>'+gameboard[i][j]+'</td>';
+            tableHTML += '<td onclick="change('+i,j+)" id='+gameboard[i][j]+'>'+gameboard[i][j]+'</td>';
             };
           tableHTML += '</tr>';
           };
         tableHTML += '</table>';
         document.body.innerHTML += tableHTML;
         }
-
+      function change(x,y) {
+        document.getElementByID(gameboard[i][j]).innerHTML = "&nbsp&nbsp&nbsp"+on+"&nbsp&nbsp&nbsp"
+      }
       createTableWithInnerHTML();
     </script>
   </body>
