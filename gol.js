@@ -18,7 +18,7 @@ function createTableWithInnerHTML() {
     tableHTML += '<tr>';
     for (let j = 0; j < col; j++) {
       // Use unique IDs for each cell using concatonation
-      tableHTML += '<td onclick="change('+i+','+j+')" id="cell-'+i+','+j+'">' + gameboard[i][j] + '</td>';
+      tableHTML += '<td onclick="change('+i+','+j+')" id="cell-'+i+','+j+'" class="off">' + gameboard[i][j] + '</td>';
     }
     tableHTML += '</tr>';
   }
@@ -32,11 +32,13 @@ function createTableWithInnerHTML() {
 function change(i, j) {
   // Get the correct cell by ID and change its content to "on" value
   let cell = document.getElementById('cell-'+i+','+j+'');
-  if (cell.innerHTML == off) {
+  if (cell.className == "off") {
     cell.innerHTML = on;
+    cell.className = "on";
   }
-  else if (cell.innerHTML == on) {
+  else if (cell.className == "on") {
     cell.innerHTML = off;
+    cell.className = "off";
   }
 }
 
