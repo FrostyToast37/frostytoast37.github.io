@@ -15,3 +15,7 @@ td:hover {
 body {
   font-family: "Lucida Console", "Courier New", monospace;  
 }
+
+.class {
+  background-color: red;
+}
