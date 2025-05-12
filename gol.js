@@ -1,5 +1,7 @@
 let gameboard = [], row = 20, col = 20, off = ".", on = "#";
-
+let goAround = [[-1,1],[0,1],[1,1],
+                [-1,0],[0,0],[1,0],
+               [-1,-1],[0,-1],[1,-1]
 // Initialize gameboard with "off" values
 for (let i = 0; i < row; i++) {
   let temp = [];
@@ -41,6 +43,14 @@ function change(i, j) {
     cell.className = "off";
   }
 }
+function updateBoard() {
+  for (i = 0; i < row; j++) {
+    for (j = 0; j < col; j++) {
+      for (k = 0; k < 8; k++) {
+        
+      }
+    }
+  }
 
 // Call the function to generate the table
 createTableWithInnerHTML();
