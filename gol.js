@@ -1,9 +1,9 @@
 let gameboard = [], row = 20, col = 20, off = ".", on = "#";
 let neighbors = [[-1, 1],[0, 1],[ 1, 1],
                  [-1, 0],       [ 1, 0],
-                 [-1,-1],[0,-1],[ 1,-1];
+                 [-1,-1],[0,-1],[ 1,-1]];
 let newX, newY, aliveNeighbors;
-let running;
+let intervalId;
 
 // Initialize gameboard with "off" values
 for (let x = 0; x < row; x++) {
@@ -35,33 +35,33 @@ function createTableWithInnerHTML() {
 
 // Function to change the value of the clicked cell
 
-/*
+
 function changeOn(x, y) {
   // Get the correct cell by ID and change its content to "on" value
   let cell = document.getElementById('cell-'+x+','+y+'');
   cell.innerHTML = on;
   cell.className = "on";
-
-}
+  gameboard[x][y] = on;
 }
 
 function changeOff(x, y) {
   let cell = document.getElementById('cell-'+x+','+y+'');
   cell.innerHTML = off;
   cell.className = "off";
+  gameboard[x][y] = off;
 }
-*/
-/*
+
+
 function tick() {
   //checks every cell
-  for (x = 0; x < row; y++) {
+  for (x = 0; x < row; x++) {
     for (y = 0; y < col; y++) {
       aliveNeighbors = 0;
       //checks every neighbor of the cell
       for (i = 0; i < 8; i++) {
-        newX = x + neighbors[i,0];
-        newY = y + neighbors[i,1];
-        neighbor = gameboard[newX,newY];
+        newX = x + neighbors[i][0];
+        newY = y + neighbors[i][1];
+        neighbor = gameboard[newX][newY];
         //counts the amount of neighbors that are "on" or alive
         if (neighbor == on) {
           aliveNeighbors += 1;
@@ -87,16 +87,19 @@ function tick() {
   }
 }
 function stop() {
-  running = false;
+  clearInterval(intervalId);
+  // release our intervalId from the variable
+  intervalId = null;
 }
 
 function start() {
-  running = true;
-  while(running == true) {
-    tick();
+  // check if an interval has already been set up
+  if (!intervalId) {
+    intervalId = setInterval(tick, 1000);
   }
 }
-*/
+
+
 
 // Call the function to generate the table
 createTableWithInnerHTML();
