@@ -34,13 +34,15 @@ function createTableWithInnerHTML() {
 }
 
 // Function to change the value of the clicked cell
+
+/*
 function changeOn(x, y) {
   // Get the correct cell by ID and change its content to "on" value
   let cell = document.getElementById('cell-'+x+','+y+'');
   cell.innerHTML = on;
   cell.className = "on";
 
-  }
+}
 }
 
 function changeOff(x, y) {
@@ -48,7 +50,8 @@ function changeOff(x, y) {
   cell.innerHTML = off;
   cell.className = "off";
 }
-
+*/
+/*
 function tick() {
   //checks every cell
   for (x = 0; x < row; y++) {
@@ -69,11 +72,14 @@ function tick() {
       if (aliveNeighbors < 2) {
         changeOff(x,y);
       }
+      //stay alive
       if (aliveNeighbors == 2) {
       }
+      //reproduce
       if (aliveNeighbors == 3) {
         changeOn(x,y);
       }
+      //overpopulation
       if (aliveNeighbors > 3) {
         changeOff(x,y);
       }
@@ -90,6 +96,7 @@ function start() {
     tick();
   }
 }
+*/
 
 // Call the function to generate the table
 createTableWithInnerHTML();
