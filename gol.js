@@ -34,7 +34,17 @@ function createTableWithInnerHTML() {
 }
 
 // Function to change the value of the clicked cell
-
+function change(x,y) {
+  let cell = document.getElementById('cell-'+i+','+j+'');
+  if (cell.className == "off") {
+    cell.innerHTML = on;
+    cell.className = "on";
+  }
+  else if (cell.className == "on") {
+    cell.innerHTML = off;
+    cell.className = "off";
+  }
+}
 
 function changeOn(x, y) {
   // Get the correct cell by ID and change its content to "on" value
