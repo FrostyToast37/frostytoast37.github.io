@@ -23,7 +23,7 @@ function createTableWithInnerHTML() {
     tableHTML += '<tr>';
     for (let y = 0; y < col; y++) {
       // Use unique IDs for each cell using concatenation
-      tableHTML += '<td onclick="change('+x+','+y+')" id="cell-'+x+','+y+'" class="off">' + gameboard[x][y] + '</td>';
+      tableHTML += '<td onclick="change('+x+','+y+')" id="cell-'+x+','+y+'" class="off"><div class="content">' + gameboard[x][y] + '</div></td>';
     }
     tableHTML += '</tr>';
   }
