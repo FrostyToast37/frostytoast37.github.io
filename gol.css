@@ -5,6 +5,10 @@
 td {
   padding: 8px;
   text-align: center;
+  aspect-ratio: 1 / 1 ;
+}
+td .content {
+  aspect-ratio: 1 / 1 ;
 }
 
 td:hover {
