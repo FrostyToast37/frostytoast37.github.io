@@ -22,7 +22,7 @@ function createTableWithInnerHTML() {
   for (let x = 0; x < row; x++) {
     tableHTML += '<tr>';
     for (let y = 0; y < col; y++) {
-      // Use unique IDs for each cell using concatonation
+      // Use unique IDs for each cell using concatenation
       tableHTML += '<td onclick="change('+x+','+y+')" id="cell-'+x+','+y+'" class="off">' + gameboard[x][y] + '</td>';
     }
     tableHTML += '</tr>';
@@ -34,14 +34,13 @@ function createTableWithInnerHTML() {
 }
 
 // Function to change the value of the clicked cell
-function change(x,y) {
+function change(x, y) {
   let cell = document.getElementById('cell-'+x+','+y+'');
-  if (cell.className == "off") {
+  if (cell.className === "off") {
     cell.innerHTML = on;
     cell.className = "on";
     gameboard[x][y] = on;
-  }
-  else if (cell.className == "on") {
+  } else if (cell.className === "on") {
     cell.innerHTML = off;
     cell.className = "off";
     gameboard[x][y] = off;
@@ -63,59 +62,58 @@ function die(x, y) {
   newGameboard[x][y] = off;
 }
 
-
 function tick() {
-  //checks every cell
-  newGameboard = gameboard;
-  for (x = 0; x < row; x++) {
-    for (y = 0; y < col; y++) {
+  // Create a deep copy of the current gameboard to track the next state
+  newGameboard = JSON.parse(JSON.stringify(gameboard));
+
+  // Iterate over each cell to apply the rules
+  for (let x = 0; x < row; x++) {
+    for (let y = 0; y < col; y++) {
       aliveNeighbors = 0;
-      //checks every neighbor of the cell
-      for (i = 0; i < 8; i++) {
+
+      // Check each neighbor
+      for (let i = 0; i < 8; i++) {
         newX = x + neighbors[i][0];
         newY = y + neighbors[i][1];
-        neighbor = gameboard?.[newX]?.[newY];
-        //counts the amount of neighbors that are "on" or alive
-        if (neighbor == on) {
-          aliveNeighbors += 1;
+
+        // Ensure newX and newY are within bounds
+        if (newX >= 0 && newX < row && newY >= 0 && newY < col) {
+          let neighbor = gameboard[newX][newY];  // Safe to access now
+          if (neighbor === on) {
+            aliveNeighbors++;
+          }
         }
       }
-      //Rules get defined
-      //Underpopulation
-      if (aliveNeighbors < 2) {
-        die(x,y);
-      }
-      //stay alive
-      if (aliveNeighbors == 2) {
-      }
-      //reproduce
-      if (aliveNeighbors == 3) {
-        live(x,y);
-      }
-      //overpopulation
-      if (aliveNeighbors > 3) {
-        die(x,y);
+
+      // Apply the Game of Life rules
+      if (gameboard[x][y] === on) {
+        if (aliveNeighbors < 2 || aliveNeighbors > 3) {
+          die(x, y);  // Cell dies due to underpopulation or overpopulation
+        }
+      } else {
+        if (aliveNeighbors === 3) {
+          live(x, y);  // Cell comes to life due to reproduction
+        }
       }
     }
   }
-  gameboard = newGameboard
+
+  //Update gameboard to new values
+  gameboard = newGameboard;
 }
+
 function stop() {
   clearInterval(intervalId);
-  // release our intervalId from the variable
+  // Release our intervalId from the variable
   intervalId = null;
 }
 
 function start() {
-  // check if an interval has already been set up
+  // Check if an interval has already been set up
   if (!intervalId) {
     intervalId = setInterval(tick, 1000);
   }
 }
 
-
-
 // Call the function to generate the table
 createTableWithInnerHTML();
-
-
