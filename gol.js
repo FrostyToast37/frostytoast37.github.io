@@ -2,7 +2,7 @@ let gameboard = [], row = 20, col = 20, off = ".", on = "#";
 let neighbors = [[-1, 1],[0, 1],[ 1, 1],
                  [-1, 0],       [ 1, 0],
                  [-1,-1],[0,-1],[ 1,-1]];
-let newX, newY, aliveNeighbors;
+let newGameboard, newX, newY, aliveNeighbors;
 let intervalId;
 
 // Initialize gameboard with "off" values
@@ -35,35 +35,38 @@ function createTableWithInnerHTML() {
 
 // Function to change the value of the clicked cell
 function change(x,y) {
-  let cell = document.getElementById('cell-'+i+','+j+'');
+  let cell = document.getElementById('cell-'+x+','+y+'');
   if (cell.className == "off") {
     cell.innerHTML = on;
     cell.className = "on";
+    gameboard[x][y] = on;
   }
   else if (cell.className == "on") {
     cell.innerHTML = off;
     cell.className = "off";
+    gameboard[x][y] = off;
   }
 }
 
-function changeOn(x, y) {
+function live(x, y) {
   // Get the correct cell by ID and change its content to "on" value
   let cell = document.getElementById('cell-'+x+','+y+'');
   cell.innerHTML = on;
   cell.className = "on";
-  gameboard[x][y] = on;
+  newGameboard[x][y] = on;
 }
 
-function changeOff(x, y) {
+function die(x, y) {
   let cell = document.getElementById('cell-'+x+','+y+'');
   cell.innerHTML = off;
   cell.className = "off";
-  gameboard[x][y] = off;
+  newGameboard[x][y] = off;
 }
 
 
 function tick() {
   //checks every cell
+  newGameboard = gameboard;
   for (x = 0; x < row; x++) {
     for (y = 0; y < col; y++) {
       aliveNeighbors = 0;
@@ -71,7 +74,7 @@ function tick() {
       for (i = 0; i < 8; i++) {
         newX = x + neighbors[i][0];
         newY = y + neighbors[i][1];
-        neighbor = gameboard[newX][newY];
+        neighbor = gameboard?.[newX]?.[newY];
         //counts the amount of neighbors that are "on" or alive
         if (neighbor == on) {
           aliveNeighbors += 1;
@@ -80,21 +83,22 @@ function tick() {
       //Rules get defined
       //Underpopulation
       if (aliveNeighbors < 2) {
-        changeOff(x,y);
+        die(x,y);
       }
       //stay alive
       if (aliveNeighbors == 2) {
       }
       //reproduce
       if (aliveNeighbors == 3) {
-        changeOn(x,y);
+        live(x,y);
       }
       //overpopulation
       if (aliveNeighbors > 3) {
-        changeOff(x,y);
+        die(x,y);
       }
     }
   }
+  gameboard = newGameboard
 }
 function stop() {
   clearInterval(intervalId);
