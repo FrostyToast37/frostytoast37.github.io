@@ -1,27 +1,19 @@
-html, body {
-  margin: 0;
-  height: 100%;
-  font-family: "Lucida Console", "Courier New", monospace;
-}
-
 #gameboard {
-  display: grid;
-  width: 100vw;
-  height: 100vh;
+  border: 1px solid;
+  width: 50%;
 }
 
 td {
-  padding: 4px;
-  background-color: #f0f0f0;
-  aspect-ratio: 1 / 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.3s;
+  padding: 8px;
+  text-align: center;
 }
 
 td:hover {
   background-color: coral;
+}
+
+body {
+  font-family: "Lucida Console", "Courier New", monospace;  
 }
 
 .on {
