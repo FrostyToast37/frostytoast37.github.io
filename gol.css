@@ -6,8 +6,8 @@ html, body {
 
 #gameboard {
   display: grid;
-  width: 500vw;
-  height: 500vh;
+  width: 100vw;
+  height: 100vh;
 }
 
 td {
