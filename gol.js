@@ -1,4 +1,4 @@
-let gameboard = [], row = 40, col = 40, off = ".", on = "#";
+let gameboard = [], row = 40, col = 80, off = ".", on = "#";
 let neighbors = [[-1, 1],[0, 1],[ 1, 1],
                  [-1, 0],       [ 1, 0],
                  [-1,-1],[0,-1],[ 1,-1]];
@@ -111,7 +111,7 @@ function stop() {
 function start() {
   // Check if an interval has already been set up
   if (!intervalId) {
-    intervalId = setInterval(tick, 250);
+    intervalId = setInterval(tick, 100);
   }
 }
 
