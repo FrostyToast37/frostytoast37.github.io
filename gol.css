@@ -4,6 +4,8 @@
 }
 
 td {
+  background-color: white;
+  transition: background-color 0.5s
   padding: 8px;
   text-align: center;
 }
