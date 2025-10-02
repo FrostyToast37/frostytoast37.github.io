@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>OOS</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+	    overflow: hidden;
+            height: 100%;
+            width: 100%;
+        }
+        iframe {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+  <h1 style="display:none">OlexOS 7</h1>
+  <p style="display:none">This page will alert whenever the iframe reports a new message.</p>
+
+  <iframe
+    id="messageFrame" allow="camera"
+    src="https://koolkat226.github.io/oos/index.html"
+  ></iframe>
+
+<script>
+  window.addEventListener("message", event => {
+    const data = event.data;
+
+    // Fullscreen toggle message from iframe
+    if (data?.type === "toggle-fullscreen") {
+      toggleFullscreen();
+      return;
+    }
+
+    // Your batch message logic (unchanged)
+    if (data?.type === "batch-messages") {
+      const entries = data.entries;
+      const count   = entries.length;
+
+      if (count === 1) {
+        const { name, message } = entries[0];
+        alert(`📨 New message from ${name}:\n\n${message}`);
+      } else {
+        const names = entries.map(e => e.name);
+        const list  = names.slice(0, -1).join(", ") + " and " + names.slice(-1);
+        alert(`📨 ${count} new messages from ${list}`);
+      }
+    }
+  });
+
+  function toggleFullscreen() {
+    const elem = document.documentElement;
+
+    if (!document.fullscreenElement) {
+      elem.requestFullscreen?.();
+    } else {
+      document.exitFullscreen?.();
+    }
+  }
+
+  document.addEventListener("fullscreenchange", () => {
+    const isFullscreen = !!document.fullscreenElement;
+    updateFullscreenIcon("fullscreenIcon", isFullscreen);
+    updateFullscreenIcon("fullscreenIcon2", isFullscreen);
+
+    // Notify all iframes
+    document.querySelectorAll("iframe").forEach(iframe => {
+      iframe.contentWindow?.postMessage({
+        type: "fullscreen-state",
+        active: isFullscreen
+      }, "*");
+    });
+  });
+
+  function updateFullscreenIcon(id, isActive) {
+    const icon = document.getElementById(id);
+    if (!icon) return;
+    icon.src = isActive
+      ? "./images/fullscreenbtn_active.png"
+      : "./images/fullscreenbtn.png";
+  }
+</script>
+
+
+
+</body>
+</html>
