@@ -2,7 +2,20 @@
 <html>
   <body>
     <div id="gameboard"></div>
-    <p>updated20</p>
+    <h1>Conway's Game of Life</h1>
+    <h3>Instructions</h3>
+    <p>
+      -Click the cells to make them alive<br>
+      -Once you have the cells that you want alive, press the start button to begin the simulation<br>
+      -When you want to change something click the stop button, and then you can start again once you've made the changes<br>
+    </p>
+    <h3>Rules</h3>
+    <p>
+      <strong>-Underpopulation:</strong> A live cell with fewer than two living neighbors dies in the next generation. <br>
+      <strong>-Survival:</strong> A live cell with two or three living neighbors survives to the next generation. <br>
+      <strong>-Overpopulation:</strong> A live cell with more than three living neighbors dies in the next generation. <br> 
+      <strong>-Reproduction:</strong> A dead cell with exactly three living neighbors becomes alive in the next generation. <br> 
+    </p>
     <button onclick="start()">Start</button>
     <button onclick="stop()">Stop</button>
     <script src="gol.js"></script>
