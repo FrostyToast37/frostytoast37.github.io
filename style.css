@@ -21,3 +21,7 @@ button {
   display: flex;
   flex-wrap: wrap;
 }
+
+body {
+  font-family: "Lucida Console", "Courier New", monospace;  
+}
