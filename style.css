@@ -5,9 +5,15 @@ button:hover {
 }
 
 button {
-  background-color: gray;
+  padding: 10px 24px;
+  background-color: LightGray;
   color: black;
   border: none;
   border-radius: 12px;
   transition-duration: 1s;
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
 }
