@@ -14,10 +14,6 @@ td:hover {
   background-color: coral;
 }
 
-body {
-  font-family: "Lucida Console", "Courier New", monospace;  
-}
-
 .on {
   background-color: red;
 }
