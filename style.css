@@ -1,0 +1,13 @@
+.button:hover {
+  box-shadow:0 8px 16px 0 rgba(0,0,0,0.6)
+  background-color: black;
+  color:white;
+}
+
+.button {
+  background-color: gray;
+  color: black;
+  border: none;
+  border-radius: 12px;
+  transition-duration: 1s;
+}
