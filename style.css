@@ -10,7 +10,9 @@ button {
   color: black;
   border: none;
   border-radius: 12px;
-  transition-duration: 1s;
+  transition-duration: 0.4s;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .button-group {
