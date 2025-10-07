@@ -5,6 +5,7 @@ button:hover {
 }
 
 button {
+  font-family: inherit;
   padding: 10px 24px;
   background-color: LightGray;
   color: black;
