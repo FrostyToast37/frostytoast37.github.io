@@ -10,25 +10,14 @@
     <button onclick="openCC3d()">CC3d?</button>
     <button onclick="openSR3d()">SNOW RIDER 3d?</button>
     <button onclick="openCN()">Craft Nite?</button>
-    <button><a onclick="crash()">DO NOT CLICK THIS</a></button>
+    <button onclick="crash()">DO NOT CLICK THIS</button>
     <button onclick="openTextAdventure()">Click for an adventure?</button>
     <button onclick="openGOL()">What is Life?</button>
-    <button onclick="fun()">Fun?</button>
-    <button<a onclick="OOS()">OOS?</a></button>
+    <button onclick="openMC()">Fun?</button>
+    <button onclick="openOOS()">OOS?</button>
 
     
     <script>
-        function OOS() {
-            var win = window.open()
-            var url = "https://frostytoast37.github.io/OOS.html"
-            var iframe = win.document.createElement('iframe')
-            iframe.style.width = "100%";
-            iframe.style.height = "100%";
-            iframe.style.border = "none";
-            iframe.src = url
-            win.document.body.appendChild(iframe)
-
-        }
         function openCookieChaos() {
             var win = window.open()
             var url = "https://cookiechaos.xyz"
@@ -126,9 +115,19 @@
             iframe.src = url
             win.document.body.appendChild(iframe)
         }
-        function fun() {
+        function openMC() {
             var win = window.open()
             var url = "https://frostytoast37.github.io/fun.html"
+            var iframe = win.document.createElement('iframe')
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            iframe.src = url
+            win.document.body.appendChild(iframe)
+        }
+        function openOOS() {
+            var win = window.open()
+            var url = "https://frostytoast37.github.io/OOS.html"
             var iframe = win.document.createElement('iframe')
             iframe.style.width = "100%";
             iframe.style.height = "100%";
