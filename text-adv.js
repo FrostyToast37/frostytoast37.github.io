@@ -7,8 +7,8 @@ document.getElementById("input_field").addEventListener("keypress", function(eve
     document.forms["input"]["input_field"].value = "";
     
     //output
-    output = input
-    output_log = output + "<br>" + output_log
+    output = input;
+    output_log = "<p>" + output + "<br>" + output_log + "</p>";
     document.getElementById("output").innerHTML = output_log;
   }
 }, true);
