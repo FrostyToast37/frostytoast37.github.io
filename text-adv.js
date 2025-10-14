@@ -1,10 +1,10 @@
-let input;
-let output_log;
-document.getElementById("input_field").addEventListener("keypress", function(event) {
+let output_log = "";
+
+document.getElementById("input").addEventListener("keypress", function(event) {
   if (event.key === "Enter") {
     event.preventDefault();
-    input = document.forms["input"]["input_field"].value;
-    document.forms["input"]["input_field"].value = "";
+    const input = document.getElementById("input").value;
+    document.getElementById("input").value = "";
     
     //output
     output = input;
