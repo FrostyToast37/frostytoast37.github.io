@@ -16,8 +16,7 @@ input:focus {
   outline: none;
 }
 
-.prompt label,
-.prompt input {
-  display: inline-block; /* Makes elements display side-by-side */
-  vertical-align: middle; /* Aligns them vertically in the center */
+.prompt {
+  display: flex;
+  flex-direction: row;
 }
