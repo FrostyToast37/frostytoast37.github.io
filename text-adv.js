@@ -1,10 +1,10 @@
 let output_log = "";
 
-document.getElementById("input").addEventListener("keypress", function(event) {
+document.getElementById("prompt_input").addEventListener("keypress", function(event) {
   if (event.key === "Enter") {
     event.preventDefault();
-    const input = document.getElementById("input").value;
-    document.getElementById("input").value = "";
+    const input = document.getElementById("prompt_input").value;
+    document.getElementById("prompt_input").value = "";
     
     //output
     output = input + "(output)";
