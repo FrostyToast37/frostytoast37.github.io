@@ -9,7 +9,7 @@ document.getElementById("input").addEventListener("keypress", function(event) {
     //output
     output = input + "(output)";
     output_log = output_log + "<br>" + output;
-    document.getElementById("output").innerHTML = "<p>" + output_log + "</p>;
+    document.getElementById("output").innerHTML = "<p>" + output_log + "</p>";
   }
 }, true);
 
