@@ -41,3 +41,6 @@ input:focus {
   font-size: 16px;
 }
 
+#title {
+  margin-bottom: 16px;
+}
