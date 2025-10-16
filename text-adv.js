@@ -1,4 +1,4 @@
-let output_log = "&nbsp;";
+let output_log = "";
 
 document.getElementById("prompt_input").addEventListener("keypress", function(event) {
   if (event.key === "Enter") {
