@@ -43,3 +43,7 @@ input:focus {
 
 #title {
 }
+
+pre {
+  display: inline;
+}
