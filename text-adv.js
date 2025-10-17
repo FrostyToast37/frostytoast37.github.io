@@ -9,7 +9,7 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     //output
     output = input + "(output)";
     output_log = output_log + "<br>" + output;
-    document.getElementById("output").innerHTML = "<pre>" + output_log + "</pre>";
+    document.getElementById("output").innerHTML = "<p>" + output_log + "</p>";
   }
 }, true);
 
