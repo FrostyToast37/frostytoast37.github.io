@@ -47,3 +47,8 @@ input:focus {
 pre {
   display: inline;
 }
+
+#output p {
+  margin-top: none;
+  margin-bottom: none;
+}
