@@ -7,8 +7,8 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     document.getElementById("prompt_input").value = "";
     
     //output
-    output = "<pre>" + input + "</pre>" + "(output)";
-    output_log = output_log + "<br>" + output;
-    document.getElementById("output").innerHTML = "<p>" + output_log + "</p>";
+    output = input + "(output)";
+    output_log = "<p>" + output_log "</p>" + "<p>" + output + "</p>";
+    document.getElementById("output").innertext =  output_log;
   }
 }, true);
