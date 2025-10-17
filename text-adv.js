@@ -7,7 +7,7 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     document.getElementById("prompt_input").value = "";
     
     //output
-    output = "<code>" + input + "</code>" + "(output)";
+    output = "<pre>" + input + "</pre>" + "(output)";
     output_log = output_log + "<br>" + output;
     document.getElementById("output").innerHTML = "<p>" + output_log + "</p>";
   }
