@@ -54,5 +54,5 @@ pre {
 }
 
 #instructions span {
-  display: inline;
+  display: inline-block;
 }
