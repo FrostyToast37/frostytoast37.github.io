@@ -59,6 +59,8 @@ pre {
   width: 100%;
   position: sticky;
   top: 0;
+  background-color: black;
+  padding: 10px;
 }
 
 #instructions span {
