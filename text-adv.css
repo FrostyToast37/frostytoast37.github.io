@@ -52,3 +52,7 @@ pre {
   margin-top: none;
   margin-bottom: none;
 }
+
+instruction span {
+  display: inline;
+}
