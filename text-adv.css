@@ -56,8 +56,11 @@ pre {
 #instructions {
   display: flex;
   align-items: flex-start;
+  width: 100%;
+  position: sticky;
 }
 
 #instructions span {
   display: inline-block;
+  width: 25%;
 }
