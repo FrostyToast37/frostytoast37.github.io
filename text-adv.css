@@ -53,6 +53,11 @@ pre {
   margin-bottom: none;
 }
 
+#instructions {
+  display: flex;
+  align-items: flex-start;
+}
+
 #instructions span {
   display: inline-block;
 }
