@@ -53,6 +53,6 @@ pre {
   margin-bottom: none;
 }
 
-instruction span {
+#instructions span {
   display: inline;
 }
