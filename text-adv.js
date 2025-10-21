@@ -5,11 +5,14 @@ class Room {
   constructor(x, y, dialogue, items) {
     this.x = x; // property
     this.y = y; // property
-    this.dialogue = dialogue;
+    this.dialogue = dialogue; //property
   }
 
-  // method
-  method() {
+  // methods
+  search() {
+    
+  }
+  loot() {
   }
 }
 
