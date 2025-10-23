@@ -1,9 +1,6 @@
 //Room definition
 class room {
   constructor(x, y, floor, exits, dialogue, items) {
-    this.x = x; // property
-    this.y = y; // property
-    this.floor = floor;
     this.exits = exits;
     this.dialogue = dialogue; //property
     this.items = items;
@@ -17,12 +14,17 @@ class room {
   }
 }
 
-class hall {
-  constructor(x, y, floor, exits) {
-    this.x = x;
-    this.y = y;
-    this.floor = floor;
-    this.exits = exits;
+let map = [];
+let length = 9;
+let width = 7;
+let floors = 2;
+for (let x = 0; x < length; x++) {
+  map[x] = [];
+  for (let y = 0; y < width; y++) {
+    map[x][y] = []
+    for (let z = 0; z < floors; z++) {
+      map[x][y][z] = null;
+    }
   }
 }
 
@@ -35,38 +37,21 @@ const r_mainStairsZ1 =   new room(0, 1, 1, [S]);
 const r_frontDesk =      new room(-1, 0, 1, [N,E,W]);
 const r_deskCloset =     new room(-2, 0, 1, [E,W]);
 const r_secretRoom =     new room(-3, 0, 1, [E]);
-const r_h_X1Y0 =         new hall(1, 0, 1, [E,W]);
-const r_h_X2Y0 =         new hall(2, 0, 1, [N,E,W]);
+const r_h_X1Y0 =         new room(1, 0, 1, [E,W]);
+const r_h_X2Y0 =         new room(2, 0, 1, [N,E,W]);
 const r_diningRoom =     new room(3, 0, 1, [E,W]);
 const r_kitchen =        new room(4, 0, 1, [N,W]);
 const r_pantry =         new room(4, 1, 1, [S]);
-const r_h_X2Y1 =         new hall(2, 1, 1, [N,S]);
+const r_h_X2Y1 =         new room(2, 1, 1, [N,S]);
 const r_lounge =         new room(3, 1, 1, [E,S]);
 const r_poolRoom =       new room(3, 2, 1, [W]);
-const r_h_Xn1Y1 =        new hall(-1, 1, 1, [S,W]);
-const r_h_Xn2Y1 =        new hall(-2, 1, 1, [E,W]);
-const r_h_Xn3Y1 =        new hall(-3, 1, 1, [E,W]);
-const r_greenhouse =     new hall(-4, 1, 1, [E,W]);
-
+const r_h_Xn1Y1 =        new room(-1, 1, 1, [S,W]);
+const r_h_Xn2Y1 =        new room(-2, 1, 1, [E,W]);
+const r_h_Xn3Y1 =        new room(-3, 1, 1, [E,W]);
+const r_greenhouse =     new room(-4, 1, 1, [E,W]);
 //upper floor
 const r_mainStairsZ2 =   new room(0, 1, 2, [N]);
-const r_h_X2Y1Z2 =       new hall(0, 2, 2, [N,S]);
-
-let map = [];
-let width = 9;
-let width = 7;
-let floors = 2;
-
-for (let x = 0; x < length; x++) {
-  map[x] = [];
-  for (let y = 0; y < width; y++) {
-    map[x][y] = []
-    for (let z = 0; z < floors; z++) {
-      map[x][y][z] = null;
-    }
-  }
-}
-
+const r_h_X2Y1Z2 =       new room(0, 2, 2, [N,S]);
 
 let output_log = "";
 document.getElementById("prompt_input").addEventListener("keypress", function(event) {
