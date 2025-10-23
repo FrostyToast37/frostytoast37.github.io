@@ -52,10 +52,21 @@ const r_greenhouse =     new hall(-4, 1, 1, [E,W]);
 const r_mainStairsZ2 =   new room(0, 1, 2, [N]);
 const r_h_X2Y1Z2 =       new hall(0, 2, 2, [N,S]);
 
-let map = 
-x = 9
-y = 7
-z = 2
+let map = [];
+let width = 9;
+let width = 7;
+let floors = 2;
+
+for (let x = 0; x < length; x++) {
+  map[x] = [];
+  for (let y = 0; y < width; y++) {
+    map[x][y] = []
+    for (let z = 0; z < floors; z++) {
+      map[x][y][z] = null;
+    }
+  }
+}
+
 
 let output_log = "";
 document.getElementById("prompt_input").addEventListener("keypress", function(event) {
