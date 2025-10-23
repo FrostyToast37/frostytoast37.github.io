@@ -1,6 +1,6 @@
 //Room definition
 class room {
-  constructor(x, y, floor, exits [], dialogue = "", items = []) {
+  constructor(x, y, floor, exits = [], dialogue = "", items = []) {
     this.x = x;
     this.y = y;
     this.z = floor - 1;
