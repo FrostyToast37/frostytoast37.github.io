@@ -25,6 +25,7 @@ class hall {
     this.exits = exits;
   }
 }
+
 //ground floor
 const r_gate =           new room(0,-3, 1, [N]);
 const r_path =           new room(0,-2, 1, [N,S]);
@@ -51,6 +52,13 @@ const r_greenhouse =     new hall(-4, 1, 1, [E,W]);
 const r_mainStairsZ2 =   new room(0, 1, 2, [N]);
 const r_h_X2Y1Z2 =       new hall(0, 2, 2, [N,S]);
 
+map = 
+  //ground floor
+  [[ , , , , , , , , ],
+   [ , , , , , , , , ],
+  ]
+  //upper floor
+  []
 
 let output_log = "";
 document.getElementById("prompt_input").addEventListener("keypress", function(event) {
