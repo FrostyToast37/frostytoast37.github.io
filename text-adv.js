@@ -29,9 +29,9 @@ for (let x = 0; x < length; x++) {
 //Room Object creations
 //ground floor (z = 1)
 const r_gate =           new Room(4, 0, 1, ["N"], "You see a big open gate, a path continues North through the gate");
-const r_path =           new Room(4, 1, 1, ["N","S"], "On the path you spy the door to a giant Mansion through the fog");
-const r_door =           new Room(4, 2, 1, ["N","S"]);
-const r_mainRoom =       new Room(4, 3, 1, ["N","E","S","W"]);
+const r_path =           new Room(4, 1, 1, ["N","S"], "On the path you spy the door to a giant Mansion to the north through the fog");
+const r_door =           new Room(4, 2, 1, ["N","S"], "You encounter a massive set of Oak doors. Above them is a sign saying 'The Hydrangea Hotel', but spraypainted all around are warnings not to go in. Do you proceed north through the doors?");
+const r_mainRoom =       new Room(4, 3, 1, ["N","E","S","W"], "A gargantuan main lobby welcomes you in. There is a welcome desk to the west, a stairway to the north, and a hallway to the east.");
 const r_mainStairsZ1 =   new Room(4, 4, 1, ["S"]);
 const r_frontDesk =      new Room(3, 3, 1, ["N","E","W"]);
 const r_deskCloset =     new Room(2, 3, 1, ["E","W"]);
