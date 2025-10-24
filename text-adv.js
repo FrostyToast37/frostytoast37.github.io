@@ -69,26 +69,30 @@ for (const RoomObj of Rooms) {
 
 //starting room
 let currentRoom = r_gate;
+document.getElementById("output").innerHTML = "<p>" + currentRoom.dialogue + "</p>";
 
 //Commands
-let rawoutput;
+let rawOutput;
 //move
-let changes = [];
 function move(inputRoom, direction) {
-  for (let i = 0; i < inputRoom.exits.length; i++) {
-    if (inputRoom.exits[i] == direction) {
-      if (direction == "N"){changes = [0,1,0]}
-      if (direction == "E"){changes = [1,0,0]}
-      if (direction == "S"){changes = [0,-1,0]}
-      if (direction == "W"){changes = [-1,0,0]}
-      let newroom = map[inputRoom.x + changes[0]][inputRoom.y + changes[1]][inputRoom.z + changes[2]];
-      currentRoom = newroom;
-    }
-    else {
-      rawOutput = "you can't go this way";
-    }
+  if (!inputRoom.exits.includes(direction)) {
+    rawOutput = "You can't go that way."; return;
+  }
+  let changes = [0, 0, 0];
+  if (direction === "N") changes = [0, 1, 0];
+  if (direction === "E") changes = [1, 0, 0];
+  if (direction === "S") changes = [0, -1, 0];
+  if (direction === "W") changes = [-1, 0, 0];
+
+  const newRoom = map[inputRoom.x + changes[0]][inputRoom.y + changes[1]][inputRoom.z + changes[2]];
+  if (newRoom) {
+    currentRoom = newRoom;
+    rawOutput = currentRoom.dialogue || "You see nothing special.";
+  } else {
+    rawOutput = "You can't go that way.";
   }
 }
+
 
 
 //TERMINAL SCRIPTING
@@ -98,14 +102,16 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
   if (event.key === "Enter") {
     //input
     event.preventDefault();
-    const input = document.getElementById("prompt_input").value;
+    const input = document.getElementById("prompt_input").value.trim().toUpperCase();
     document.getElementById("prompt_input").value = "";
 
     //turn
-    if (input == "N"||"E"||"S"||"W") {
+    if (input == "N" || input == "E" || input == "S" || input == "W") {
       move(currentRoom, input);
+    } else {
+      rawOutput = "Unknown command.";
     }
-    rawOutput = currentRoom.dialogue;
+
     
     //output
     output = rawOutput;
