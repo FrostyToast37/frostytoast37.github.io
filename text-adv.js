@@ -67,9 +67,11 @@ for (const RoomObj of Rooms) {
   map[RoomObj.x][RoomObj.y][RoomObj.z] = RoomObj;
 }
 
-//starting room
+//Initializing
 let currentRoom = r_gate;
 document.getElementById("output").innerHTML = "<p>" + currentRoom.dialogue + "</p>";
+let outputLog = (currentRoom.dialogue);
+document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
 
 //Commands
 let rawOutput;
@@ -97,7 +99,6 @@ function move(inputRoom, direction) {
 
 //TERMINAL SCRIPTING
 let output;
-let outputLog = "";
 document.getElementById("prompt_input").addEventListener("keypress", function(event) {
   if (event.key === "Enter") {
     //input
