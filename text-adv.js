@@ -1,5 +1,5 @@
 //Room definition
-class room {
+class Room {
   constructor(x, y, floor, exits = [], dialogue = "", items = []) {
     this.x = x;
     this.y = y;
@@ -12,21 +12,8 @@ class room {
   search() {}
   loot() {}
 }
-let changes = [];
-function move(room, direction) {
-  for (let i = 0; i < room.exits.length; i++) {
-    if (room.exits[i] == direction) {
-      if (direction == "N"){changes = [0,1,0]}
-      if (direction == "E"){changes = [1,0,0]}
-      if (direction == "S"){changes = [0,-1,0]}
-      if (direction == "W"){changes = [-1,0,0]}
-      let newroom = map[room.x + changes[0]][room.y + changes[1]][room.z + changes[2]];
-      return newroom;
-    }
-  }
-}
 
-//create 3d array to store rooms
+//create 3d array to store Rooms
 let map = [];
 let length = 9, width = 7, floors = 2;
 for (let x = 0; x < length; x++) {
@@ -41,33 +28,33 @@ for (let x = 0; x < length; x++) {
 
 //Room Object creations
 //ground floor (z = 1)
-const r_gate =           new room(4, 0, 1, ["N"]);
-const r_path =           new room(4, 1, 1, ["N","S"]);
-const r_door =           new room(4, 2, 1, ["N","S"]);
-const r_mainRoom =       new room(4, 3, 1, ["N","E","S","W"]);
-const r_mainStairsZ1 =   new room(4, 4, 1, ["S"]);
-const r_frontDesk =      new room(3, 3, 1, ["N","E","W"]);
-const r_deskCloset =     new room(2, 3, 1, ["E","W"]);
-const r_secretRoom =     new room(1, 3, 1, ["E"]);
-const r_h_X1Y0 =         new room(5, 3, 1, ["E","W"]);
-const r_h_X2Y0 =         new room(6, 3, 1, ["N","E","W"]);
-const r_diningRoom =     new room(7, 3, 1, ["E","W"]);
-const r_kitchen =        new room(8, 3, 1, ["N","W"]);
-const r_pantry =         new room(8, 4, 1, ["S"]);
-const r_h_X2Y1 =         new room(6, 4, 1, ["N","S"]);
-const r_lounge =         new room(7, 4, 1, ["E","S"]);
-const r_poolRoom =       new room(7, 5, 1, ["W"]);
-const r_h_Xn1Y1 =        new room(3, 4, 1, ["S","W"]);
-const r_h_Xn2Y1 =        new room(2, 4, 1, ["E","W"]);
-const r_h_Xn3Y1 =        new room(1, 4, 1, ["E","W"]);
-const r_greenhouse =     new room(0, 4, 1, ["E","W"]);
+const r_gate =           new Room(4, 0, 1, ["N"], "You see a big open gate, a path continues North through the gate");
+const r_path =           new Room(4, 1, 1, ["N","S"], "On the path you spy the door to a giant Mansion through the fog");
+const r_door =           new Room(4, 2, 1, ["N","S"]);
+const r_mainRoom =       new Room(4, 3, 1, ["N","E","S","W"]);
+const r_mainStairsZ1 =   new Room(4, 4, 1, ["S"]);
+const r_frontDesk =      new Room(3, 3, 1, ["N","E","W"]);
+const r_deskCloset =     new Room(2, 3, 1, ["E","W"]);
+const r_secretRoom =     new Room(1, 3, 1, ["E"]);
+const r_h_X1Y0 =         new Room(5, 3, 1, ["E","W"]);
+const r_h_X2Y0 =         new Room(6, 3, 1, ["N","E","W"]);
+const r_diningRoom =     new Room(7, 3, 1, ["E","W"]);
+const r_kitchen =        new Room(8, 3, 1, ["N","W"]);
+const r_pantry =         new Room(8, 4, 1, ["S"]);
+const r_h_X2Y1 =         new Room(6, 4, 1, ["N","S"]);
+const r_lounge =         new Room(7, 4, 1, ["E","S"]);
+const r_poolRoom =       new Room(7, 5, 1, ["W"]);
+const r_h_Xn1Y1 =        new Room(3, 4, 1, ["S","W"]);
+const r_h_Xn2Y1 =        new Room(2, 4, 1, ["E","W"]);
+const r_h_Xn3Y1 =        new Room(1, 4, 1, ["E","W"]);
+const r_greenhouse =     new Room(0, 4, 1, ["E","W"]);
 
 //upper floor (z = 2)
-const r_mainStairsZ2 =   new room(4, 4, 2, ["N"]);
-const r_h_X2Y1Z2 =       new room(4, 5, 2, ["N","S"]);
+const r_mainStairsZ2 =   new Room(4, 4, 2, ["N"]);
+const r_h_X2Y1Z2 =       new Room(4, 5, 2, ["N","S"]);
 
-//list of rooms
-const rooms = [
+//list of Rooms
+const Rooms = [
   r_gate, r_path, r_door, r_mainRoom, r_mainStairsZ1,
   r_frontDesk, r_deskCloset, r_secretRoom,
   r_h_X1Y0, r_h_X2Y0, r_diningRoom, r_kitchen,
@@ -75,21 +62,54 @@ const rooms = [
   r_h_Xn1Y1, r_h_Xn2Y1, r_h_Xn3Y1, r_greenhouse,
   r_mainStairsZ2, r_h_X2Y1Z2
 ];
-//fill map with rooms
-for (const roomObj of rooms) {
-  map[roomObj.x][roomObj.y][roomObj.z] = roomObj;
+//fill map with Rooms
+for (const RoomObj of Rooms) {
+  map[RoomObj.x][RoomObj.y][RoomObj.z] = RoomObj;
 }
-  
+
+//starting room
+let currentRoom = r_gate;
+
+//Commands
+let rawoutput;
+//move
+let changes = [];
+function move(inputRoom, direction) {
+  for (let i = 0; i < inputRoom.exits.length; i++) {
+    if (inputRoom.exits[i] == direction) {
+      if (direction == "N"){changes = [0,1,0]}
+      if (direction == "E"){changes = [1,0,0]}
+      if (direction == "S"){changes = [0,-1,0]}
+      if (direction == "W"){changes = [-1,0,0]}
+      let newroom = map[inputRoom.x + changes[0]][inputRoom.y + changes[1]][inputRoom.z + changes[2]];
+      currentRoom = newroom;
+    }
+    else {
+      rawOutput = "you can't go this way";
+    }
+  }
+}
+
+
 //TERMINAL SCRIPTING
-let output_log = "";
+let output;
+let outputLog = "";
 document.getElementById("prompt_input").addEventListener("keypress", function(event) {
   if (event.key === "Enter") {
+    //input
     event.preventDefault();
     const input = document.getElementById("prompt_input").value;
     document.getElementById("prompt_input").value = "";
+
+    //turn
+    if (input == "N"||"E"||"S"||"W") {
+      move(currentRoom, input);
+    }
+    rawOutput = currentRoom.dialogue;
+    
     //output
-    output = input + "(output)";
-    output_log = output_log + "<br>" + output;
-    document.getElementById("output").innerHTML = "<p>" + output_log + "</p>";
+    output = rawOutput;
+    outputLog = outputLog + "<br>" + output;
+    document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
   }
 }, true);
