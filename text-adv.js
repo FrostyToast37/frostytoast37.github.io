@@ -61,7 +61,7 @@ const Rooms = [
   r_h_X1Y0, r_h_X2Y0, r_diningRoom, r_kitchen,
   r_pantry, r_h_X2Y1, r_lounge, r_poolRoom,
   r_h_Xn1Y1, r_h_Xn2Y1, r_h_Xn3Y1, r_greenhouse,
-  r_mainStairsZ2, r_h_X2Y1Z2
+  r_mainStairsZ2, r_h_X2Y1Z2, r_porch
 ];
 //fill map with Rooms
 for (const RoomObj of Rooms) {
