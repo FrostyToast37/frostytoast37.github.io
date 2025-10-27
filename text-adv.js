@@ -1,6 +1,28 @@
+//global
+let playerHealth = 100;
+
+//Monster definition
+class Monster {
+  constructor(health, pattern, damage) {
+    //properties
+    this.health = health;
+    this.pattern = pattern;
+    this.damage = damage;
+  }
+  //methods
+  takeDamage(playerAttack) {
+    this.health -= playerAttack;
+  }
+  dealDamage() {
+    playerHealth -= this.damage;
+  }
+}
+
+const m_g_chef = new Monster(5, ["Load", "Shoot", "Block", "Block"], 1);
+
 //Room definition
 class Room {
-  constructor(x, y, floor, exits = [], dialogue = "", items = []) {
+  constructor(x, y, floor, exits = [], dialogue = "", items = [], monsters = null) {
     this.x = x;
     this.y = y;
     this.z = floor - 1;
@@ -76,6 +98,7 @@ document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
 
 //Commands
 let rawOutput;
+
 //move
 function move(inputRoom, direction) {
   if (!inputRoom.exits.includes(direction)) {
