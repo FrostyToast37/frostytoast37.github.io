@@ -58,32 +58,32 @@ const r_mainStairsZ1 =   new Room(4, 4, 1, ["S"]);
 const r_frontDesk =      new Room(3, 3, 1, ["N","E","W"], "A large wooden desk slouches in the corner of a dark room with a sign on it saying 'W lco e'. Around it are dingy couches with suitcases littered around. To your north is a hallway, while to the east is the main lobby and west leads into a closet.");
 const r_deskCloset =     new Room(2, 3, 1, ["E","W"]);
 const r_secretRoom =     new Room(1, 3, 1, ["E"]);
-const r_h_X1Y0 =         new Room(5, 3, 1, ["E","W"], "The hallway would be completely dark without the gloomy torches on either side of the wall, providing an eerie green light. The torches look like they have been lit for centuries and never go out. The hallway continues to the east, and to the west is the main lobby.");
-const r_h_X2Y0 =         new Room(6, 3, 1, ["N","E","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the north and west, and the east opens up into a room.");
+const r_h_X5Y3 =         new Room(5, 3, 1, ["E","W"], "The hallway would be completely dark without the gloomy torches on either side of the wall, providing an eerie green light. The torches look like they have been lit for centuries and never go out. The hallway continues to the east, and to the west is the main lobby.");
+const r_h_X6Y3 =         new Room(6, 3, 1, ["N","E","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the north and west, and the east opens up into a room.");
 const r_diningRoom =     new Room(7, 3, 1, ["E","W"], "An abandoned dining room has torches along the walls, chairs and dishes strewn along the room, and a twisted wooden table in the midst of the clutter. There is a hallway to the west and another room to the east.");
 const r_kitchen =        new Room(8, 3, 1, ["N","W", "S"], "You can clearly see this room was once a kitchen, as pots, pans, and dishes are found in sinks around the area. The room is in disarray, with rotting food thrown across the room, creating a horrible smell. There are rooms to your north, south, and west.");
 const r_porch =          new Room(8, 2, 1, ["S","N"], "As you walk in, a clearly recognizable bloody shirt is on the floor, along with dusty footprints that look fresh. This room is clearly a porch, and it has a ripped screen netting around it. Back to your north is the kitchen.");
 const r_pantry =         new Room(8, 4, 1, ["S"], "The first thing that you recognize as you walk in is the smell. A combination of blood, rot, and death provides your nose with a reason to fall off your face. You see blood splattered across the room, along with gashes in the wall and rotting food along the floor. Back to the south is the kitchen.");
-const r_h_X2Y1 =         new Room(6, 4, 1, ["N","S"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the south and there is a room to the north.");
+const r_h_X6Y4 =         new Room(6, 4, 1, ["N","S"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the south and there is a room to the north.");
 const r_lounge =         new Room(6, 5, 1, ["E","S"], "Once, the couch that greeets your eyes might be considered comfy, but with the amount of gashes, dust, and mildew on it, you don't feel comfortable trying it anymore. There are bookshelves around the room, and the room looks mostly untouched over the years. There is a hallway to the south and a room to the east.");
-const r_poolRoom =       new Room(7, 5, 1, ["W"], "An abandoned dry pit in the middle of this room grabs your attention. After careful consideration, you realize this must have been a pool. Around the room, there are towels with mildew and swim trunks. Back to your west is the lounge.");
-const r_h_Xn1Y1 =        new Room(3, 4, 1, ["S","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. To the south is the front desk room and the hallway continues to the west.");
-const r_h_Xn2Y1 =        new Room(2, 4, 1, ["E","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues in both directions: east and west.");
-const r_h_Xn3Y1 =        new Room(1, 4, 1, ["E","W"]);
+const r_poolRoom =       new Room(7, 5, 1, ["W"], "An abandoned dry pit in the middle of this room grabs your attention. After careful consideration, you realize this must have been a pool. Around the room, there are towels with mildew and swim trunks. Back to your west is the lounge.", [oceanicSpear]);
+const r_h_X3Y4 =         new Room(3, 4, 1, ["S","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. To the south is the front desk room and the hallway continues to the west.");
+const r_h_X2Y4 =         new Room(2, 4, 1, ["E","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues in both directions: east and west.");
+const r_h_X1Y4 =         new Room(1, 4, 1, ["E","W","N"]);
 const r_greenhouse =     new Room(0, 4, 1, ["E","W"]);
+const r_h_X1Y5 =         new Room(1, 5, 1, ["S"]);
 
 //upper floor (z = 2)
 const r_mainStairsZ2 =   new Room(4, 4, 2, ["N"]);
-const r_h_X2Y1Z2 =       new Room(4, 5, 2, ["N","S"]);
 
 //list of Rooms
 const Rooms = [
   r_gate, r_path, r_door, r_mainRoom, r_mainStairsZ1,
   r_frontDesk, r_deskCloset, r_secretRoom,
-  r_h_X1Y0, r_h_X2Y0, r_diningRoom, r_kitchen,
-  r_pantry, r_h_X2Y1, r_lounge, r_poolRoom,
-  r_h_Xn1Y1, r_h_Xn2Y1, r_h_Xn3Y1, r_greenhouse,
-  r_mainStairsZ2, r_h_X2Y1Z2, r_porch
+  r_h_X5Y3, r_h_X6Y3, r_diningRoom, r_kitchen,
+  r_pantry, r_h_X6Y4, r_lounge, r_poolRoom,
+  r_h_X3Y4, r_h_X2Y4, r_h_X1Y4, r_greenhouse,
+  r_mainStairsZ2, r_porch, r_h_X1Y5
 ];
 //fill map with Rooms
 for (const RoomObj of Rooms) {
