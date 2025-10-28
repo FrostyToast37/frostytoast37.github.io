@@ -4,7 +4,7 @@ let playerHealth = 10;
 let inventory = [null, null, null, null, null, null, null, null];
 
 class Weapon {
-  constructor(name, damage, loadAmount, loadreq, mag) {
+  constructor(name, damage, loadAmount, loadReq, mag) {
     this.name = name;
     this.damage = damage;
     this.loadAmount = loadAmount;
@@ -168,6 +168,18 @@ function showInventory(){
   rawOutput = tempOut;
 }
 
+function load() {
+  inventory[0].load()
+  rawOutput = "your " + inventory[0].name + " now has " + inventory[0].mag + " uses";
+}
+
+function attack() {
+  let weaponUsed = inventory[0];
+  let monster = currentRoom.monster;
+  if (weaponUsed.loadReq <= weaponUsed.mag) {
+  }
+}
+
 
 //TERMINAL SCRIPTING
 let output;
@@ -179,6 +191,8 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     const input = userInput.trim().toUpperCase();
     document.getElementById("prompt_input").value = "";
 
+    //pre-turn
+    
     //turn
     if (input == "N" || input == "E" || input == "S" || input == "W") {
       move(currentRoom, input);
