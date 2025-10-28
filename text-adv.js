@@ -152,7 +152,8 @@ function move(inputRoom, direction) {
 function showInventory(){
   let tempOut = "";
   for (invObj of inventory) {
-    tempOut += invObj ? invObj.name : "empty";
+    tempOut += invObj ? "["+invObj.name+"]" : "[empty]";
+    tempOut += " ";
   }
   rawOutput = tempOut;
 }
