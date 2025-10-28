@@ -110,6 +110,19 @@ function move(inputRoom, direction) {
     rawOutput = "You can't go that way."; return;
   }
   let changes = [0, 0, 0];
+
+  // *** NEW LOGIC for handling staircase movement ***
+  if (inputRoom === r_mainStairsZ1 && direction === "N") {
+    // If you are on the first floor stairs (Z=0) and go North, you go up to Z=1
+    // The new room is map[4][4][1] (r_mainStairsZ2)
+    changes = [0, 0, 1]; 
+  } else if (inputRoom === r_mainStairsZ2 && direction === "S") {
+    // If you are on the second floor stairs (Z=1) and go South, you go down to Z=0
+    // The new room is map[4][4][0] (r_mainStairsZ1)
+    changes = [0, 0, -1]; 
+  } 
+  // *** END NEW LOGIC ***
+  
   if (direction === "N") changes = [0, 1, 0];
   if (direction === "E") changes = [1, 0, 0];
   if (direction === "S") changes = [0, -1, 0];
