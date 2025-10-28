@@ -102,6 +102,14 @@ const r_h_X1Y4Z2 =       new Room(1, 4, 2, ["N","E","W"]);
 const r_laboratory =     new Room(2, 3, 2, ["N"]);
 const r_mirrorMaze =     new Room(1, 5, 2, ["S"]);
 const r_secretRoom_4 =   new Room(0, 4, 2, ["E"]);
+const r_h_X5Y4Z2 =       new Room(5, 4, 2, ["N","E","W"]);
+const r_h_X6Y4Z2 =       new Room(6, 4, 2, ["S","W"]);
+const r_sh_X7Y3Z2 =      new Room(7, 3, 2, ["E","W"]);
+const r_h_X8Y3Z2 =       new Room(8, 3, 2, ["N","S","W"]);
+const r_breakRoom =      new Room(5, 5, 2, ["S"]);
+const r_masterBed =      new Room(6, 3, 2, ["N","E"]);
+const r_lockedStairs =   new Room(8, 4, 2, ["S"], "LOCKED");
+const r_keyRoom =        new Room(8, 2, 2, ["N"]);
 //list of Rooms
 const Rooms = [
   r_gate, r_path, r_door, r_mainRoom, r_mainStairsZ1,
@@ -112,7 +120,9 @@ const Rooms = [
   r_mainStairsZ2, r_porch, r_h_X1Y5, r_h_X1Y6, 
   r_secretRoom_2, r_mapRoom, r_secretRoom_3,
   r_h_X3Y4Z2, r_h_X2Y4Z2, r_h_X1Y4Z2,
-  r_laboratory, r_mirrorMaze, r_secretRoom_4
+  r_laboratory, r_mirrorMaze, r_secretRoom_4, 
+  r_h_X5Y4Z2, r_h_X6Y4Z2, r_sh_X7Y3Z2, 
+  r_h_X8Y3Z2, r_breakRoom, r_lockedStairs, r_keyRoom
 ];
 //fill map with Rooms
 for (const RoomObj of Rooms) {
