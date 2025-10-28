@@ -94,8 +94,13 @@ const r_mapRoom =        new Room(2, 6, 1, ["E","W"], "The room is filled wall t
 const r_secretRoom_3 =   new Room(3, 6, 1, ["W"], "You slide past the map to the east and enter a secret room. This room contains absolutely nothing except for a small chair with a book on top. A single torch is fitted into the wall on one side.");
 
 //upper floor (z = 2)
-const r_mainStairsZ2 =   new Room(4, 4, 2, ["N"]);
-
+const r_mainStairsZ2 =   new Room(4, 4, 2, ["W"]);
+const r_h_X3Y4Z2 =       new Room(3, 4, 2, ["E","W"]);
+const r_h_X2Y4Z2 =       new Room(2, 4, 2, ["E","S","W"]);
+const r_h_X1Y4Z2 =       new Room(1, 4, 2, ["N","E","W"]);
+const r_laboratory =     new Room(2, 3, 2, ["N"]);
+const r_mirrorMaze =     new Room(1, 5, 2, ["S"]);
+const r_secretRoom_4 =   new Room(0, 4, 2, ["E"]);
 //list of Rooms
 const Rooms = [
   r_gate, r_path, r_door, r_mainRoom, r_mainStairsZ1,
@@ -104,7 +109,9 @@ const Rooms = [
   r_pantry, r_h_X6Y4, r_lounge, r_poolRoom,
   r_h_X3Y4, r_h_X2Y4, r_h_X1Y4, r_greenhouse,
   r_mainStairsZ2, r_porch, r_h_X1Y5, r_h_X1Y6, 
-  r_secretRoom_2, r_mapRoom, r_secretRoom_3
+  r_secretRoom_2, r_mapRoom, r_secretRoom_3,
+  r_h_X3Y4Z2, r_h_X2Y4Z2, r_h_X1Y4Z2,
+  r_laboratory, r_mirrorMaze, r_secretRoom_4
 ];
 //fill map with Rooms
 for (const RoomObj of Rooms) {
