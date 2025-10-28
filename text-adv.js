@@ -1,3 +1,4 @@
+
 //global
 let playerHealth = 100;
 
@@ -54,7 +55,7 @@ const r_gate =           new Room(4, 0, 1, ["N"], "You see an old, twisted, meta
 const r_path =           new Room(4, 1, 1, ["N","S"], "Along the old dirt path you spy the door to a giant mansion to the north through the fog.");
 const r_door =           new Room(4, 2, 1, ["N","S"], "You encounter a massive set of oak doors with a sign above them saying 'The Hydrangea Hotel'. However, spraypainted all around the doors are warnings not to go in. Do you proceed north through the doors?");
 const r_mainRoom =       new Room(4, 3, 1, ["N","E","S","W"], "A gargantuan main lobby welcomes you in. There is a welcome desk to the west, a stairway to the north, and a hallway to the east.");
-const r_mainStairsZ1 =   new Room(4, 4, 1, ["S","N"], "Large wooden stairs creak as you walk up to the next floor, and tinted windows cover the walls.");
+const r_mainStairsZ1 =   new Room(4, 4, 1, ["S"], "Large wooden stairs creak as you walk up to the next floor, and tinted windows cover the walls.");
 const r_frontDesk =      new Room(3, 3, 1, ["N","E","W"], "A large wooden desk slouches in the corner of a dark room with a sign on it saying 'W lco e'. Around it are dingy couches with suitcases littered around. To your north is a hallway, while to the east is the main lobby and west leads into a closet.");
 const r_deskCloset =     new Room(2, 3, 1, ["E","W"], "The closet contains old, rotting coats, the strong smell of mildew, and boots on the floor in neat rows. Cobwebs fill the room and various items are in a state of dissarray. You can hardly see anything, and that is with the door open. Back to the east is the welcome area.");
 const r_secretRoom =     new Room(1, 3, 1, ["E"], "The secret door swings open loudly, the rust falling off as the inside reveals a plain room. The walls are filled with shelves with books, and a single table sits in the middle. There are torches along the walls and on the table sits a plain, metal chest with a rusty lock.");
@@ -62,7 +63,7 @@ const r_h_X5Y3 =         new Room(5, 3, 1, ["E","W"], "The hallway looks the sam
 const r_h_X6Y3 =         new Room(6, 3, 1, ["N","E","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the north and west, and the east opens up into a room.");
 const r_diningRoom =     new Room(7, 3, 1, ["E","W"], "An abandoned dining room has torches along the walls, chairs and dishes strewn along the room, and a twisted wooden table in the midst of the clutter. There is a hallway to the west and another room to the east.");
 const r_kitchen =        new Room(8, 3, 1, ["N","W", "S"], "You can clearly see this room was once a kitchen, as pots, pans, and dishes are found in sinks around the area. The room is in disarray, with rotting food thrown across the room, creating a horrible smell. There are rooms to your north, south, and west.");
-const r_porch =          new Room(8, 2, 1, ["N","S"], "As you walk in, a clearly recognizable bloody shirt is on the floor, along with dusty footprints that look fresh. This room is clearly a porch, and it has a ripped screen netting around it. Back to your north is the kitchen.");
+const r_porch =          new Room(8, 2, 1, ["S","N"], "As you walk in, a clearly recognizable bloody shirt is on the floor, along with dusty footprints that look fresh. This room is clearly a porch, and it has a ripped screen netting around it. Back to your north is the kitchen.");
 const r_pantry =         new Room(8, 4, 1, ["S"], "The first thing that you recognize as you walk in is the smell. A combination of blood, rot, and death provides your nose with a reason to fall off your face. You see blood splattered across the room, along with gashes in the wall and rotting food along the floor. Back to the south is the kitchen.");
 const r_h_X6Y4 =         new Room(6, 4, 1, ["N","S"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the south and there is a room to the north.");
 const r_lounge =         new Room(6, 5, 1, ["E","S"], "Once, the couch that greeets your eyes might be considered comfy, but with the amount of gashes, dust, and mildew on it, you don't feel comfortable trying it anymore. There are bookshelves around the room, and the room looks mostly untouched over the years. There is a hallway to the south and a room to the east.");
@@ -78,7 +79,7 @@ const r_mapRoom =        new Room(2, 6, 1, ["E","W"], "The room is filled wall t
 const r_secretRoom_3 =   new Room(3, 6, 1, ["W"], "You slide past the map to the east and enter a secret room. This room contains absolutely nothing except for a small chair with a book on top. A single torch is fitted into the wall on one side.");
 
 //upper floor (z = 2)
-const r_mainStairsZ2 =   new Room(4, 4, 2, ["N","S"], "Second floor");
+const r_mainStairsZ2 =   new Room(4, 4, 2, ["N"]);
 
 //list of Rooms
 const Rooms = [
@@ -110,19 +111,6 @@ function move(inputRoom, direction) {
     rawOutput = "You can't go that way."; return;
   }
   let changes = [0, 0, 0];
-
-  // *** NEW LOGIC for handling staircase movement ***
-  if (inputRoom === r_mainStairsZ1 && direction === "N") {
-    // If you are on the first floor stairs (Z=0) and go North, you go up to Z=1
-    // The new room is map[4][4][1] (r_mainStairsZ2)
-    changes = [0, 0, 1]; 
-  } else if (inputRoom === r_mainStairsZ2 && direction === "S") {
-    // If you are on the second floor stairs (Z=1) and go South, you go down to Z=0
-    // The new room is map[4][4][0] (r_mainStairsZ1)
-    changes = [0, 0, -1]; 
-  } 
-  // *** END NEW LOGIC ***
-  
   if (direction === "N") changes = [0, 1, 0];
   if (direction === "E") changes = [1, 0, 0];
   if (direction === "S") changes = [0, -1, 0];
