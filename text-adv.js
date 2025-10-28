@@ -180,7 +180,7 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     
     //output
     output = rawOutput;
-    outputLog = outputLog + "<br>" + output;
+    outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + input + "<br>" + output;
     document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
   }
 }, true);
