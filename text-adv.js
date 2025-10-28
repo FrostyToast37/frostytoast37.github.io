@@ -11,7 +11,7 @@ class Weapon {
     this.mag = mag;
   }
   load() {
-    mag += loadamount;
+    this.mag += this.loadamount;
   }
 }
 
@@ -41,10 +41,11 @@ class Room {
   constructor(x, y, floor, exits = [], dialogue = "", items = [], monsters = null) {
     this.x = x;
     this.y = y;
-    this.z = floor - 1;
+    this.z = floor;
     this.exits = exits;
     this.dialogue = dialogue; //property
     this.items = items;
+    this.monsters = monsters;
   }
   // methods
   search() {}
@@ -148,8 +149,12 @@ function move(inputRoom, direction) {
   }
 }
 
-function inventory(){
-  
+function showInventory(){
+  let tempOut = "";
+  for (invObj of inventory) {
+    tempOut += invObj.name ||tempOut += "empty";
+  }
+  rawOutput = tempOut;
 }
 
 
@@ -165,6 +170,8 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     //turn
     if (input == "N" || input == "E" || input == "S" || input == "W") {
       move(currentRoom, input);
+    } if (input == "INVENTORY" || input == "INV") {
+      showInventory();
     } else {
       rawOutput = "Unknown command.";
     }
