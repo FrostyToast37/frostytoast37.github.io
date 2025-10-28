@@ -11,7 +11,7 @@ class Weapon {
     this.mag = mag;
   }
   load() {
-    this.mag += this.loadamount;
+    this.mag += this.loadAmount;
   }
 }
 
@@ -54,7 +54,7 @@ class Room {
 
 //create 3d array to store Rooms
 let map = [];
-let length = 9, width = 7, floors = 2;
+let length = 9, width = 7, floors = 3;
 for (let x = 0; x < length; x++) {
   map[x] = [];
   for (let y = 0; y < width; y++) {
@@ -120,7 +120,7 @@ for (const RoomObj of Rooms) {
 }
 
 //Initializing
-inventory = [w_dagger, null, null, null, null, null, null, null];
+inventory[0] = w_dagger;
 let currentRoom = r_gate;
 document.getElementById("output").innerHTML = "<p>" + currentRoom.dialogue + "</p>";
 let outputLog = (currentRoom.dialogue);
@@ -152,7 +152,7 @@ function move(inputRoom, direction) {
 function showInventory(){
   let tempOut = "";
   for (invObj of inventory) {
-    tempOut += invObj.name ||tempOut += "empty";
+    tempOut += invObj ? invObj.name : "empty";
   }
   rawOutput = tempOut;
 }
@@ -170,7 +170,7 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     //turn
     if (input == "N" || input == "E" || input == "S" || input == "W") {
       move(currentRoom, input);
-    } if (input == "INVENTORY" || input == "INV") {
+    } else if (input == "INVENTORY" || input == "INV") {
       showInventory();
     } else {
       rawOutput = "Unknown command.";
