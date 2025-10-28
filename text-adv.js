@@ -165,7 +165,8 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
   if (event.key === "Enter") {
     //input
     event.preventDefault();
-    const input = document.getElementById("prompt_input").value.trim().toUpperCase();
+    const userInput = document.getElementById("prompt_input").value;
+    const input = userInput.trim().toUpperCase();
     document.getElementById("prompt_input").value = "";
 
     //turn
@@ -180,7 +181,7 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     
     //output
     output = rawOutput;
-    outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + input + "<br>" + output;
+    outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + userInput + "<br>" + output;
     document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
   }
 }, true);
