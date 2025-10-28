@@ -1,6 +1,21 @@
 
 //global
-let playerHealth = 100;
+let playerHealth = 10;
+let inventory = [null, null, null, null, null, null, null, null];
+
+class Weapon {
+  constructor(name, damage, loadAmount, loadreq, mag) {
+    this.name = name;
+    this.damage = damage;
+    this.loadAmount = loadAmount;
+    this.mag = mag;
+  }
+  load() {
+    mag += loadamount;
+  }
+}
+
+const w_dagger = new Weapon("Dagger", 1, 1, 1, 1); 
 
 //Monster definition
 class Monster {
@@ -62,7 +77,7 @@ const r_secretRoom =     new Room(1, 3, 1, ["E"], "The secret door swings open l
 const r_h_X5Y3 =         new Room(5, 3, 1, ["E","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the east, and to the west is the main lobby.");
 const r_h_X6Y3 =         new Room(6, 3, 1, ["N","E","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the north and west, and the east opens up into a room.");
 const r_diningRoom =     new Room(7, 3, 1, ["E","W"], "An abandoned dining room has torches along the walls, chairs and dishes strewn along the room, and a twisted wooden table in the midst of the clutter. There is a hallway to the west and another room to the east.");
-const r_kitchen =        new Room(8, 3, 1, ["N","W", "S"], "You can clearly see this room was once a kitchen, as pots, pans, and dishes are found in sinks around the area. The room is in disarray, with rotting food thrown across the room, creating a horrible smell. There are rooms to your north, south, and west.");
+const r_kitchen =        new Room(8, 3, 1, ["N","W", "S"], "You can clearly see this room was once a kitchen, as pots, pans, and dishes are found in sinks around the area. The room is in disarray, with rotting food thrown across the room, creating a horrible smell. There are rooms to your north, south, and west.", [], m_g_chef);
 const r_porch =          new Room(8, 2, 1, ["S","N"], "As you walk in, a clearly recognizable bloody shirt is on the floor, along with dusty footprints that look fresh. This room is clearly a porch, and it has a ripped screen netting around it. Back to your north is the kitchen.");
 const r_pantry =         new Room(8, 4, 1, ["S"], "The first thing that you recognize as you walk in is the smell. A combination of blood, rot, and death provides your nose with a reason to fall off your face. You see blood splattered across the room, along with gashes in the wall and rotting food along the floor. Back to the south is the kitchen.");
 const r_h_X6Y4 =         new Room(6, 4, 1, ["N","S"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the south and there is a room to the north.");
@@ -97,6 +112,7 @@ for (const RoomObj of Rooms) {
 }
 
 //Initializing
+inventory = [w_dagger, null, null, null, null, null, null, null];
 let currentRoom = r_gate;
 document.getElementById("output").innerHTML = "<p>" + currentRoom.dialogue + "</p>";
 let outputLog = (currentRoom.dialogue);
@@ -125,6 +141,9 @@ function move(inputRoom, direction) {
   }
 }
 
+function inventory(){
+  
+}
 
 
 //TERMINAL SCRIPTING
