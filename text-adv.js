@@ -48,6 +48,7 @@ class Monster {
     } else {
       return false;
     }
+  }
 }
 
 const m_g_chef = new Monster(5, ["Load", "Shoot", "Block", "Block"], 1, "Pierre the Polturgeist");
