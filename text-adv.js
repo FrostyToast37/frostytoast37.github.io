@@ -145,12 +145,12 @@ function move(inputRoom, direction) {
     rawOutput = "You can't go that way."; return;
   }
   let changes = [0, 0, 0];
-  if (direction === "N") {changes = [0, 1, 0]};
-  if (direction === "E") {changes = [1, 0, 0]};
-  if (direction === "S") {changes = [0, -1, 0]};
-  if (direction === "W") {changes = [-1, 0, 0]};
-  if (direction === "U") {changes = [0, 0, 1]};
-  if (direction === "D") {changes = [0, 0, -1]};
+  if (direction === "N") {changes = [0, 1, 0]}
+  if (direction === "E") {changes = [1, 0, 0]}
+  if (direction === "S") {changes = [0, -1, 0]}
+  if (direction === "W") {changes = [-1, 0, 0]}
+  if (direction === "U") {changes = [0, 0, 1]}
+  if (direction === "D") {changes = [0, 0, -1]}
 
   const newRoom = map[inputRoom.x + changes[0]][inputRoom.y + changes[1]][inputRoom.z + changes[2]];
   if (newRoom) {
