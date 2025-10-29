@@ -42,7 +42,7 @@ class Monster {
   }
   deathCheck() {
     if (this.health <= 0) {
-      rawOutput = "You have slain " + currentroom.monster.name;
+      rawOutput = "You have slain " + currentRoom.monster.name;
       currentRoom.monster = null;
       return true;
     } else {
@@ -207,7 +207,7 @@ function attack() {
     if (monster.turn != "Block") {
       monster.takeDamage(weaponUsed.damage);
       weaponUsed.mag -= weaponUsed.loadReq;
-      rawOutput = "You attack the " + monster.name + " with your " + weaponUsed.name +", dealing " + weaponUsed.damage +" damage. It has " + monster.health " + health left.";
+      rawOutput = "You attack the " + monster.name + " with your " + weaponUsed.name +", dealing " + weaponUsed.damage +" damage. It has " + monster.health + " health left.";
     }
    } else {
     rawOutput = "Your " + weaponUsed.name + " isn't loaded enough to attack!";
