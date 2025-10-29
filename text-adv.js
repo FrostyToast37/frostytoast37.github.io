@@ -158,7 +158,6 @@ function move(inputRoom, direction) {
     currentRoom = newRoom;
     rawOutput = currentRoom.dialogue || "You see nothing special.";
   } else {
-    rawOutput += currentRoom.dialogue || "You see nothing special.";
   }
 }
 
