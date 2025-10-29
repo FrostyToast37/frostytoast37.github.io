@@ -139,7 +139,7 @@ const Rooms = [
   r_secretRoom_2, r_mapRoom, r_secretRoom_3,
   r_h_X3Y4Z2, r_h_X2Y4Z2, r_h_X1Y4Z2,
   r_laboratory, r_mirrorMaze, r_secretRoom_4, 
-  r_h_X5Y4Z2, r_h_X6Y4Z2, r_sh_X7Y3Z2, 
+  r_h_X5Y4Z2, r_h_X6Y4Z2, r_sh_X7Y3Z2, r_masterBed, 
   r_h_X8Y3Z2, r_breakRoom, r_lockedStairs, r_keyRoom
 ];
 //fill map with Rooms
