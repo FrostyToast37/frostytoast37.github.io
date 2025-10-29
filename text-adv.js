@@ -155,13 +155,6 @@ function move(inputRoom, direction) {
 
   const newRoom = map[inputRoom.x + changes[0]][inputRoom.y + changes[1]][inputRoom.z + changes[2]];
   if (newRoom) {
-    if (direction === "U") {
-  rawOutput = "You ascend the staircase to the upper floor.<br>";
-} else if (direction === "D") {
-  rawOutput = "You descend the staircase to the lower floor.<br>";
-} else {
-  rawOutput = "";
-}
     currentRoom = newRoom;
     rawOutput = currentRoom.dialogue || "You see nothing special.";
   } else {
