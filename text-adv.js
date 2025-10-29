@@ -20,22 +20,37 @@ const w_dagger = new Weapon("Dagger", 1, 1, 1, 1);
 
 //Monster definition
 class Monster {
-  constructor(health, pattern, damage) {
+  constructor(health, pattern, damage, name, turn) {
     //properties
+    this.turn = turn;
     this.health = health;
     this.pattern = pattern;
     this.damage = damage;
+    this.name = name;
+    this.patternCount = 0;
   }
   //methods
   takeDamage(playerAttack) {
     this.health -= playerAttack;
   }
+  doturn(){
+    this.patternCount += 1;
+    this.turn = this.pattern[this.patternCount];
+  }
   dealDamage() {
     playerHealth -= this.damage;
   }
+  deathCheck() {
+    if (this.health <= 0) {
+      rawOutput = "You have slain " + currentroom.monster.name;
+      currentRoom.monster = null;
+      return true;
+    } else {
+      return false;
+    }
 }
 
-const m_g_chef = new Monster(5, ["Load", "Shoot", "Block", "Block"], 1);
+const m_g_chef = new Monster(5, ["Load", "Shoot", "Block", "Block"], 1, "Pierre the Polturgeist");
 
 //Room definition
 class Room {
@@ -83,7 +98,7 @@ const r_kitchen =        new Room(8, 3, 1, ["N","W", "S"], "You can clearly see 
 const r_porch =          new Room(8, 2, 1, ["S","N"], "As you walk in, a clearly recognizable bloody shirt is on the floor, along with dusty footprints that look fresh. This room is clearly a porch, and it has a ripped screen netting around it. Back to your north is the kitchen.");
 const r_pantry =         new Room(8, 4, 1, ["S"], "The first thing that you recognize as you walk in is the smell. A combination of blood, rot, and death provides your nose with a reason to fall off your face. You see blood splattered across the room, along with gashes in the wall and rotting food along the floor. Back to the south is the kitchen.");
 const r_h_X6Y4 =         new Room(6, 4, 1, ["N","S"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the south and there is a room to the north.");
-const r_lounge =         new Room(6, 5, 1, ["E","S"], "Once, the couch that greeets your eyes might be considered comfy, but with the amount of gashes, dust, and mildew on it, you don't feel comfortable trying it anymore. There are bookshelves around the room, and the room looks mostly untouched over the years. There is a hallway to the south and a room to the east.");
+const r_lounge =         new Room(6, 5, 1, ["E","S"], "Once, the couch that greets your eyes might be considered comfy, but with the amount of gashes, dust, and mildew on it, you don't feel comfortable trying it anymore. There are bookshelves around the room, and the room looks mostly untouched over the years. There is a hallway to the south and a room to the east.");
 const r_poolRoom =       new Room(7, 5, 1, ["W"], "An abandoned dry pit in the middle of this room grabs your attention. After careful consideration, you realize this must have been a pool. Around the room, there are towels with mildew and swim trunks. Back to your west is the lounge.");
 const r_h_X3Y4 =         new Room(3, 4, 1, ["S","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. To the south is the front desk room and the hallway continues to the west.");
 const r_h_X2Y4 =         new Room(2, 4, 1, ["E","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues in both directions: east and west.");
@@ -96,16 +111,16 @@ const r_mapRoom =        new Room(2, 6, 1, ["E","W"], "The room is filled wall t
 const r_secretRoom_3 =   new Room(3, 6, 1, ["W"], "You slide past the map to the east and enter a secret room. This room contains absolutely nothing except for a small chair with a book on top. A single torch is fitted into the wall on one side.");
 
 //upper floor (z = 2)
-const r_mainStairsZ2 =   new Room(4, 4, 2, ["W","D","E"], "The stairway decends into darkness as youi look down. There is a singular window directly across the spiral staircase and you can see the forest sorrounding you out of it. There are hallways leading to your east and west.");
+const r_mainStairsZ2 =   new Room(4, 4, 2, ["W","D","E"], "The stairway decends into darkness as youi look down. There is a singular window directly across the spiral staircase and you can see the forest surrounding you out of it. There are hallways leading to your east and west.");
 const r_h_X3Y4Z2 =       new Room(3, 4, 2, ["E","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the west and the stairwell is to the east.");
 const r_h_X2Y4Z2 =       new Room(2, 4, 2, ["E","S","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the east and west and there is a room to your south.");
 const r_h_X1Y4Z2 =       new Room(1, 4, 2, ["N","E","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches except for . The hallway continues to the east and there are rooms to your north and west. The torch on the west wall looks a little dull...");
-const r_laboratory =     new Room(2, 3, 2, ["N"], "The smell of chlorine and chemicals greets your nose as you enter the laboratory. As you enter, you see active experiments occuring, but before you get a good look, the emergency doors slide shut, blocking your view. Do you go back north?);
-const r_mirrorMaze =     new Room(1, 5, 2, ["S"], "As you walk in, you are immideatly disoriented by the sheer amount of mirrors. They face every direction, throwing weird reflections across the room. You manage to make it to the center and spot a crossbow sitting on a pedestal. The hallway is to the south.");
-const r_secretRoom_4 =   new Room(0, 4, 2, ["E"], "As you pull the fake torch down, the wall splits in half, and you enter the secret room. On the far side of the wall, there is a wierdly shaped banner with a weird pattern on it. The room is comfortbaly furnished and well treated, unlike the other couches you've seen in here. You realize it is the meeting place for someone... Do you exit back east?");
+const r_laboratory =     new Room(2, 3, 2, ["N"], "The smell of chlorine and chemicals greets your nose as you enter the laboratory. As you enter, you see active experiments occuring, but before you get a good look, the emergency doors slide shut, blocking your view. Do you go back north?");
+const r_mirrorMaze =     new Room(1, 5, 2, ["S"], "As you walk in, you are immediately disoriented by the sheer amount of mirrors. They face every direction, throwing weird reflections across the room. You manage to make it to the center and spot a crossbow sitting on a pedestal. The hallway is to the south.");
+const r_secretRoom_4 =   new Room(0, 4, 2, ["E"], "As you pull the fake torch down, the wall splits in half, and you enter the secret room. On the far side of the wall, there is a wierdly shaped banner with a weird pattern on it. The room is comfortably furnished and well treated, unlike the other couches you've seen in here. You realize it is the meeting place for someone... Do you exit back east?");
 const r_h_X5Y4Z2 =       new Room(5, 4, 2, ["N","E","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the east and there are rooms to your north and west.");
-const r_h_X6Y4Z2 =       new Room(6, 4, 2, ["S","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the west and their is a room to your south.");
-const r_sh_X7Y3Z2 =      new Room(7, 3, 2, ["E","W"], "After you twist the lmap, a door opens leading into a hallway. The hallway looks the same as every other: medieval architecture and glowing ethereal torches. It coninues to the east and there is a room to your west.");
+const r_h_X6Y4Z2 =       new Room(6, 4, 2, ["S","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the west and there is a room to your south.");
+const r_sh_X7Y3Z2 =      new Room(7, 3, 2, ["E","W"], "After you twist the lamp, a door opens leading into a hallway. The hallway looks the same as every other: medieval architecture and glowing ethereal torches. It coninues to the east and there is a room to your west.");
 const r_h_X8Y3Z2 =       new Room(8, 3, 2, ["N","S","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the west and there are rooms to your north and south.");
 const r_breakRoom =      new Room(5, 5, 2, ["S"]);
 const r_masterBed =      new Room(6, 3, 2, ["N","E"]);
@@ -164,14 +179,14 @@ function move(inputRoom, direction) {
 
 function showInventory(){
   let tempOut = "";
-  for (invObj of inventory) {
+  for (const invObj of inventory) {
     tempOut += invObj ? "["+invObj.name+"]" : "[empty]";
     tempOut += " ";
   }
   rawOutput = tempOut;
 }
 
-function swtich(slot1,slot2) {
+function swap(slot1,slot2) {
   let tempslot1 = inventory[slot1];
   let tempslot2 = inventory[slot2];
   inventory[slot1] = tempslot2;
@@ -188,6 +203,13 @@ function attack() {
   let weaponUsed = inventory[0];
   let monster = currentRoom.monster;
   if (weaponUsed.loadReq <= weaponUsed.mag) {
+    if (monster.turn != "Block") {
+      monster.takeDamage(weaponUsed.damage);
+      weaponUsed.mag -= weaponUsed.loadReq;
+      rawOutput = "You attack the " + monster.name + " with your " + weaponUsed.name +", dealing " + weaponUsed.damage +" damage. It has " + monster.health " + health left.";
+    }
+   } else {
+    rawOutput = "Your " + weaponUsed.name + " isn't loaded enough to attack!";
   }
 }
 
