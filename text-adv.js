@@ -196,7 +196,7 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     //pre-turn
     
     //turn
-    if (input == "N" || input == "E" || input == "S" || input == "W") {
+    if (input == "N" || input == "E" || input == "S" || input == "W" || input == "D" || input = "U") {
       move(currentRoom, input);
     } else if (input == "INVENTORY" || input == "INV") {
       showInventory();
@@ -209,5 +209,6 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     output = rawOutput;
     outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + userInput + "<br>" + output;
     document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
+    window.scrollTo(0, document.body.scrollHeight);
   }
 }, true);
