@@ -96,7 +96,7 @@ const r_mapRoom =        new Room(2, 6, 1, ["E","W"], "The room is filled wall t
 const r_secretRoom_3 =   new Room(3, 6, 1, ["W"], "You slide past the map to the east and enter a secret room. This room contains absolutely nothing except for a small chair with a book on top. A single torch is fitted into the wall on one side.");
 
 //upper floor (z = 2)
-const r_mainStairsZ2 =   new Room(4, 4, 2, ["W","D"]);
+const r_mainStairsZ2 =   new Room(4, 4, 2, ["W","D","E"]);
 const r_h_X3Y4Z2 =       new Room(3, 4, 2, ["E","W"]);
 const r_h_X2Y4Z2 =       new Room(2, 4, 2, ["E","S","W"]);
 const r_h_X1Y4Z2 =       new Room(1, 4, 2, ["N","E","W"]);
