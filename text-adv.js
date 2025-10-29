@@ -171,6 +171,14 @@ function showInventory(){
   rawOutput = tempOut;
 }
 
+function swtich(slot1,slot2) {
+  let tempslot1 = inventory[slot1];
+  let tempslot2 = inventory[slot2];
+  inventory[slot1] = tempslot2;
+  inventory[slot2] = tempslot1;
+  showInventory();
+}
+
 function load() {
   inventory[0].load()
   rawOutput = "your " + inventory[0].name + " now has " + inventory[0].mag + " uses";
