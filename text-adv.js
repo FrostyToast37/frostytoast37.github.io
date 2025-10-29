@@ -209,6 +209,6 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     output = rawOutput;
     outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + userInput + "<br>" + output;
     document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
-    document.body.scrollTop = document.body.scrollHeight;
+    //document.body.scrollTop = document.body.scrollHeight;
   }
 }, true);
