@@ -8,6 +8,7 @@ class Weapon {
     this.name = name;
     this.damage = damage;
     this.loadAmount = loadAmount;
+    this.loadReq = loadReq;
     this.mag = mag;
   }
   load() {
@@ -38,14 +39,14 @@ const m_g_chef = new Monster(5, ["Load", "Shoot", "Block", "Block"], 1);
 
 //Room definition
 class Room {
-  constructor(x, y, floor, exits = [], dialogue = "", items = [], monsters = null) {
+  constructor(x, y, floor, exits = [], dialogue = "", items = [], monster = null) {
     this.x = x;
     this.y = y;
     this.z = floor;
     this.exits = exits;
     this.dialogue = dialogue; //property
     this.items = items;
-    this.monsters = monsters;
+    this.monster = monster;
   }
   // methods
   search() {}
@@ -196,7 +197,7 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     //pre-turn
     
     //turn
-    if (input == "N" || input == "E" || input == "S" || input == "W" || input == "D" || input = "U") {
+    if (input == "N" || input == "E" || input == "S" || input == "W" || input == "D" || input == "U") {
       move(currentRoom, input);
     } else if (input == "INVENTORY" || input == "INV") {
       showInventory();
