@@ -233,7 +233,11 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
       move(currentRoom, input);
     } else if (input == "INVENTORY" || input == "INV") {
       showInventory();
-    } else {
+    } else if (/^SWAP [0-7] [0-7]$/.test(input)) {
+      const slot1 = parseInt(input[5]);
+      const slot2 = parseInt(input[7]);
+      swap(slot1, slot2);
+      } else {
       rawOutput = "Unknown command.";
     }
 
