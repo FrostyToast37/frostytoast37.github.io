@@ -71,7 +71,7 @@ const r_gate =           new Room(4, 0, 1, ["N"], "You see an old, twisted, meta
 const r_path =           new Room(4, 1, 1, ["N","S"], "Along the old dirt path you spy the door to a giant mansion to the north through the fog.");
 const r_door =           new Room(4, 2, 1, ["N","S"], "You encounter a massive set of oak doors with a sign above them saying 'The Hydrangea Hotel'. However, spraypainted all around the doors are warnings not to go in. Do you proceed north through the doors?");
 const r_mainRoom =       new Room(4, 3, 1, ["N","E","S","W"], "A gargantuan main lobby welcomes you in. There is a welcome desk to the west, a stairway to the north, and a hallway to the east.");
-const r_mainStairsZ1 =   new Room(4, 4, 1, ["S"], "Large wooden stairs creak as you walk up to the next floor, and tinted windows cover the walls.");
+const r_mainStairsZ1 =   new Room(4, 4, 1, ["S","U"], "Large wooden stairs loom, leading up to the next floor, and tinted windows cover the walls.");
 const r_frontDesk =      new Room(3, 3, 1, ["N","E","W"], "A large wooden desk slouches in the corner of a dark room with a sign on it saying 'W lco e'. Around it are dingy couches with suitcases littered around. To your north is a hallway, while to the east is the main lobby and west leads into a closet.");
 const r_deskCloset =     new Room(2, 3, 1, ["E","W"], "The closet contains old, rotting coats, the strong smell of mildew, and boots on the floor in neat rows. Cobwebs fill the room and various items are in a state of dissarray. You can hardly see anything, and that is with the door open. Back to the east is the welcome area.");
 const r_secretRoom =     new Room(1, 3, 1, ["E"], "The secret door swings open loudly, the rust falling off as the inside reveals a plain room. The walls are filled with shelves with books, and a single table sits in the middle. There are torches along the walls and on the table sits a plain, metal chest with a rusty lock.");
@@ -95,7 +95,7 @@ const r_mapRoom =        new Room(2, 6, 1, ["E","W"], "The room is filled wall t
 const r_secretRoom_3 =   new Room(3, 6, 1, ["W"], "You slide past the map to the east and enter a secret room. This room contains absolutely nothing except for a small chair with a book on top. A single torch is fitted into the wall on one side.");
 
 //upper floor (z = 2)
-const r_mainStairsZ2 =   new Room(4, 4, 2, ["W"]);
+const r_mainStairsZ2 =   new Room(4, 4, 2, ["W","D"]);
 const r_h_X3Y4Z2 =       new Room(3, 4, 2, ["E","W"]);
 const r_h_X2Y4Z2 =       new Room(2, 4, 2, ["E","S","W"]);
 const r_h_X1Y4Z2 =       new Room(1, 4, 2, ["N","E","W"]);
@@ -145,10 +145,12 @@ function move(inputRoom, direction) {
     rawOutput = "You can't go that way."; return;
   }
   let changes = [0, 0, 0];
-  if (direction === "N") changes = [0, 1, 0];
-  if (direction === "E") changes = [1, 0, 0];
-  if (direction === "S") changes = [0, -1, 0];
-  if (direction === "W") changes = [-1, 0, 0];
+  if (direction === "N") {changes = [0, 1, 0]};
+  if (direction === "E") {changes = [1, 0, 0]};
+  if (direction === "S") {changes = [0, -1, 0]};
+  if (direction === "W") {changes = [-1, 0, 0]};
+  if (direction === "U") {changes = [0, 0, 1]};
+  if (direction === "D") {changes = [0, 0, -1]};
 
   const newRoom = map[inputRoom.x + changes[0]][inputRoom.y + changes[1]][inputRoom.z + changes[2]];
   if (newRoom) {
