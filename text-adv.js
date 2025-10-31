@@ -16,7 +16,8 @@ class Weapon {
   }
 }
 
-const w_dagger = new Weapon("Dagger", 1, 1, 1, 1); 
+const w_dagger =      new Weapon("Dagger", 1, 1, 1, 1); 
+const w_candlestick = new Weapon("Candlestick", 1, 1, 2, 1); 
 
 //Monster definition
 class Monster {
@@ -90,7 +91,7 @@ const r_path =           new Room(4, 1, 1, ["N","S"], path_d);
 const r_door =           new Room(4, 2, 1, ["N","S"], door_d);
 const r_mainRoom =       new Room(4, 3, 1, ["N","E","S","W"], mainRoom_d);
 const r_mainStairsZ1 =   new Room(4, 4, 1, ["S","U"], mainStairsZ1_d);
-const r_frontDesk =      new Room(3, 3, 1, ["N","E","W"], frontDesk_d);
+const r_frontDesk =      new Room(3, 3, 1, ["N","E","W"], frontDesk_d, [w_candlestick]);
 const r_deskCloset =     new Room(2, 3, 1, ["E","W"], deskCloset_d);
 const r_secretRoom =     new Room(1, 3, 1, ["E"], secretRoom_d);
 const r_h_X5Y3 =         new Room(5, 3, 1, ["E","W"], X5Y3h_d);
