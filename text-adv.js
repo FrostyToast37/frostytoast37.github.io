@@ -1,4 +1,5 @@
-
+//global
+let rawOutput;
 
 class Player {
   constructor() {
@@ -42,15 +43,15 @@ class Monster {
     this.health -= playerAttack;
   }
   setTurn(){
-    this.patternCount += 1;
+    this.patternCount = (this.patternCount + 1) % this.pattern.length;
     this.turn = this.pattern[this.patternCount];
   }
   dealDamage() {
-    player.health -= this.damage;
+    p_player.health -= this.damage;
   }
   doTurn() {
     if (this.turn == "attack") {
-      if(player.turn != "block") {
+      if(p_player.turn != "block") {
         this.dealDamage();
         rawOutput += " The " + this.name + " dealt " + this.damage + "damage to you. You are now at " + p_player.health + " health";
       }
@@ -172,7 +173,6 @@ let outputLog = (currentRoom.dialogue);
 document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
 
 //Commands
-let rawOutput;
 
 //move
 function move(inputRoom, direction) {
@@ -250,7 +250,7 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     //pre-turn
     
     //turn
-    currentRoom.monster.setTurn();
+    if (currentRoom.monster) {currentRoom.monster.setTurn();}
 
       //input handling
     if (input == "N" || input == "E" || input == "S" || input == "W" || input == "D" || input == "U") {
@@ -272,6 +272,16 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     }
 
     //post-turn
+    if (p_player.turn == "load") {
+      load();
+    } else if (p_player.turn == "attack") {
+      attack();
+    } else if (p_player.turn == "block") {
+      block();
+    }
+
+    if(currentRoom.monster) {currentRoom.monster.doTurn()}
+    currentRoom.monster.deathCheck();
     
     
     //output
