@@ -1,7 +1,14 @@
 
-//global
-let playerHealth = 10;
-let inventory = [null, null, null, null, null, null, null, null];
+
+class Player {
+  constructor() {
+    this.health = 10;
+    this.inventory = [null, null, null, null, null, null, null, null];
+    this.turn = "";
+  }
+}
+
+const p_player = new Player();
 
 class Weapon {
   constructor(name, damage, loadAmount, loadReq, mag) {
@@ -28,22 +35,31 @@ class Monster {
     this.pattern = pattern;
     this.damage = damage;
     this.name = name;
-    this.patternCount = 0;
+    this.patternCount = -1;
   }
   //methods
   takeDamage(playerAttack) {
     this.health -= playerAttack;
   }
-  doturn(){
+  setTurn(){
     this.patternCount += 1;
     this.turn = this.pattern[this.patternCount];
   }
   dealDamage() {
-    playerHealth -= this.damage;
+    player.health -= this.damage;
+  }
+  doTurn() {
+    if (this.turn == "attack") {
+      if(player.turn != "block") {
+        this.dealDamage();
+        rawOutput += " The " + this.name + " dealt " + this.damage + "damage to you. You are now at " + p_player.health + " health";
+      }
+      else {rawOutput += " The " + this.name + "'s attack failed because you blocked.";}
+    }
   }
   deathCheck() {
     if (this.health <= 0) {
-      rawOutput = "You have slain " + currentRoom.monster.name;
+      rawOutput += " You have slain " + currentRoom.monster.name;
       currentRoom.monster = null;
       return true;
     } else {
@@ -86,6 +102,7 @@ for (let x = 0; x < length; x++) {
 
 //Room Object creations
 //ground floor (z = 1)
+
 const r_gate =           new Room(4, 0, 1, ["N"], gate_d);
 const r_path =           new Room(4, 1, 1, ["N","S"], path_d);
 const r_door =           new Room(4, 2, 1, ["N","S"], door_d);
@@ -148,7 +165,7 @@ for (const RoomObj of Rooms) {
 }
 
 //Initializing
-inventory[0] = w_dagger;
+p_player.inventory[0] = w_dagger;
 let currentRoom = r_gate;
 document.getElementById("output").innerHTML = "<p>" + currentRoom.dialogue + "</p>";
 let outputLog = (currentRoom.dialogue);
@@ -181,7 +198,7 @@ function move(inputRoom, direction) {
 
 function showInventory(){
   let tempOut = "";
-  for (const invObj of inventory) {
+  for (const invObj of p_player.inventory) {
     tempOut += invObj ? "["+invObj.name+"]" : "[empty]";
     tempOut += " ";
   }
@@ -189,20 +206,20 @@ function showInventory(){
 }
 
 function swap(slot1,slot2) {
-  let tempslot1 = inventory[slot1];
-  let tempslot2 = inventory[slot2];
-  inventory[slot1] = tempslot2;
-  inventory[slot2] = tempslot1;
+  let tempslot1 = p_player.inventory[slot1];
+  let tempslot2 = p_player.inventory[slot2];
+  p_player.inventory[slot1] = tempslot2;
+  p_player.inventory[slot2] = tempslot1;
   showInventory();
 }
 
 function load() {
-  inventory[0].load()
-  rawOutput = "your " + inventory[0].name + " now has " + inventory[0].mag + " uses";
+  p_player.inventory[0].load()
+  rawOutput = "your " + p_player.inventory[0].name + " now has " + p_player.inventory[0].mag + " uses";
 }
 
 function attack() {
-  let weaponUsed = inventory[0];
+  let weaponUsed = p_player.inventory[0];
   let monster = currentRoom.monster;
   if (weaponUsed.loadReq <= weaponUsed.mag) {
     if (monster.turn != "Block") {
@@ -213,6 +230,10 @@ function attack() {
    } else {
     rawOutput = "Your " + weaponUsed.name + " isn't loaded enough to attack!";
   }
+}
+
+function block() {
+  rawOutput  = "You block."
 }
 
 
@@ -229,6 +250,9 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     //pre-turn
     
     //turn
+    currentRoom.monster.setTurn();
+
+      //input handling
     if (input == "N" || input == "E" || input == "S" || input == "W" || input == "D" || input == "U") {
       move(currentRoom, input);
     } else if (input == "INVENTORY" || input == "INV") {
@@ -237,10 +261,18 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
       const slot1 = parseInt(input[5]);
       const slot2 = parseInt(input[7]);
       swap(slot1, slot2);
-      } else {
+    } else if (input == "BLOCK") {
+      p_player.turn = "block";
+    } else if (input == "ATTACK") {
+      p_player.turn = "attack";
+    } else if (input == "LOAD") {
+      p_player.turn = "load";
+    } else {
       rawOutput = "Unknown command.";
     }
 
+    //post-turn
+    
     
     //output
     output = rawOutput;
