@@ -56,6 +56,9 @@ class Monster {
         rawOutput += " The " + this.name + " dealt " + this.damage + "damage to you. You are now at " + p_player.health + " health";
       }
       else {rawOutput += " The " + this.name + "'s attack failed because you blocked.";}
+    } 
+    else if (this.turn == "load") {
+      rawOutput += " The " + this.name + " loaded its weapon."
     }
   }
   deathCheck() {
@@ -280,8 +283,10 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
       block();
     }
 
-    if(currentRoom.monster) {currentRoom.monster.doTurn()}
-    currentRoom.monster.deathCheck();
+    if (currentRoom.monster) {
+      currentRoom.monster.doTurn();
+      currentRoom.monster.deathCheck();
+    }
     
     
     //output
