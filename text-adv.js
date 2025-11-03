@@ -225,7 +225,7 @@ function attack() {
   let weaponUsed = p_player.inventory[0];
   let monster = currentRoom.monster;
   if (weaponUsed.loadReq <= weaponUsed.mag) {
-    if (monster.turn != "Block") {
+    if (monster.turn != "block") {
       monster.takeDamage(weaponUsed.damage);
       weaponUsed.mag -= weaponUsed.loadReq;
       rawOutput = "You attack the " + monster.name + " with your " + weaponUsed.name +", dealing " + weaponUsed.damage +" damage. It has " + monster.health + " health left.";
@@ -253,9 +253,11 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     //pre-turn
     
     //turn
-    if (currentRoom.monster) {currentRoom.monster.setTurn();}
+    if (currentRoom.monster && ["ATTACK", "LOAD", "BLOCK"].includes(input)) {
+      currentRoom.monster.setTurn();
+    }
 
-      //input handling
+    //input handling
     if (input == "N" || input == "E" || input == "S" || input == "W" || input == "D" || input == "U") {
       move(currentRoom, input);
     } else if (input == "INVENTORY" || input == "INV") {
@@ -284,10 +286,12 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     }
 
     if (currentRoom.monster) {
-      currentRoom.monster.doTurn();
       currentRoom.monster.deathCheck();
     }
-    
+    if (currentRoom.monster) {
+      currentRoom.monster.doTurn();
+    }
+    p_player.turn = "";
     
     //output
     output = rawOutput;
