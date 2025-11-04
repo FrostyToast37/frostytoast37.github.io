@@ -222,6 +222,9 @@ function load() {
 }
 
 function attack() {
+  if (!currentRoom.monster) {
+  rawOutput = "There’s nothing here to attack.";
+  return;}
   let weaponUsed = p_player.inventory[0];
   let monster = currentRoom.monster;
   if (weaponUsed.loadReq <= weaponUsed.mag) {
@@ -236,6 +239,9 @@ function attack() {
 }
 
 function block() {
+  if (!currentRoom.monster) {
+  rawOutput = "There’s nothing here to block.";
+  return;}
   rawOutput  = "You block."
 }
 
@@ -251,7 +257,8 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
     document.getElementById("prompt_input").value = "";
 
     //pre-turn
-    
+    rawOutput = "";
+
     //turn
     if (currentRoom.monster && ["ATTACK", "LOAD", "BLOCK"].includes(input)) {
       currentRoom.monster.setTurn();
@@ -266,7 +273,7 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
       const slot1 = parseInt(input[5]);
       const slot2 = parseInt(input[7]);
       swap(slot1, slot2);
-    } else if (input == "BLOCK") {
+    }else if (input == "BLOCK") {
       p_player.turn = "block";
     } else if (input == "ATTACK") {
       p_player.turn = "attack";
