@@ -12,7 +12,7 @@ class Player {
 const p_player = new Player();
 
 class Weapon {
-  constructor(name, damage, loadAmount, loadReq, mag) {
+  constructor(name, damage, loadAmount, loadReq, mag, magCap) {
     this.name = name;
     this.damage = damage;
     this.loadAmount = loadAmount;
@@ -24,8 +24,8 @@ class Weapon {
   }
 }
 
-const w_dagger =      new Weapon("Dagger", 1, 1, 1, 1); 
-const w_candlestick = new Weapon("Candlestick", 1, 1, 2, 1); 
+const w_dagger =      new Weapon("Dagger", 1, 1, 0, 1, 0); 
+const w_candlestick = new Weapon("Candlestick", 1, 1, 1, 1, 5); 
 
 //Monster definition
 class Monster {
@@ -223,15 +223,17 @@ function load() {
 
 function attack() {
   if (!currentRoom.monster) {
-  rawOutput = "There’s nothing here to attack.";
+  rawOutput = "There's nothing here to attack.";
   return;}
   let weaponUsed = p_player.inventory[0];
   let monster = currentRoom.monster;
   if (weaponUsed.loadReq <= weaponUsed.mag) {
+    weaponUsed.mag -= weaponUsed.loadReq;
     if (monster.turn != "block") {
       monster.takeDamage(weaponUsed.damage);
-      weaponUsed.mag -= weaponUsed.loadReq;
-      rawOutput = "You attack the " + monster.name + " with your " + weaponUsed.name +", dealing " + weaponUsed.damage +" damage. It has " + monster.health + " health left.";
+      rawOutput = "You attack " + monster.name + " with your " + weaponUsed.name +", dealing " + weaponUsed.damage +" damage. It has " + monster.health + " health left.";
+    } else {
+      rawOutput = "You attack, but " + monster.name + " blocks, so your attack doesn't go through."
     }
    } else {
     rawOutput = "Your " + weaponUsed.name + " isn't loaded enough to attack!";
