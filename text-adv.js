@@ -218,7 +218,7 @@ function swap(slot1,slot2) {
 
 function load() {
   p_player.inventory[0].load()
-  rawOutput = "your " + p_player.inventory[0].name + " now has " + p_player.inventory[0].mag + " uses";
+  rawOutput = "your " + p_player.inventory[0].name + " now has " + p_player.inventory[0].mag + " uses.";
 }
 
 function attack() {
