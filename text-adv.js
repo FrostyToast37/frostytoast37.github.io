@@ -11,21 +11,32 @@ class Player {
 
 const p_player = new Player();
 
-class Weapon {
-  constructor(name, damage, loadAmount, loadReq, mag, magCap) {
+class Item {
+  constructor(name) {
     this.name = name;
+  }
+}
+
+class Weapon {
+  constructor(name, type, damage, loadAmount, loadReq, mag, magCap, ammoType) {
+    this.name = name;
+    this.type = type;
     this.damage = damage;
     this.loadAmount = loadAmount;
     this.loadReq = loadReq;
     this.mag = mag;
+    this.magCap = magCap;
+    this.ammoType = ammoType;
   }
   load() {
     this.mag += this.loadAmount;
   }
 }
 
-const w_dagger =      new Weapon("Dagger", 1, 1, 0, 1, 0); 
-const w_candlestick = new Weapon("Candlestick", 1, 1, 1, 1, 5); 
+const w_dagger =      new Weapon("Dagger", "melee", 2, 1, 0, 0, 0, null); 
+const w_candlestick = new Weapon("Candlestick", "melee", 1, 1, 0, 0, 0, null);
+const w_DBshotgun =   new Weapon("Starter Pistol", "ranged", 3, 1, 1, 0, 2, "44magnums"); 
+const w_DBshotgun =   new Weapon("Double Barrel Shotgun", "ranged", 5, 2, 1, 0, 2, "shells"); 
 
 //Monster definition
 class Monster {
