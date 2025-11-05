@@ -35,7 +35,7 @@ class Weapon {
 
 const w_dagger =      new Weapon("Dagger", "melee", 2, 1, 0, 0, 0, null); 
 const w_candlestick = new Weapon("Candlestick", "melee", 1, 1, 0, 0, 0, null);
-const w_DBshotgun =   new Weapon("Starter Pistol", "ranged", 3, 1, 1, 0, 2, "44magnums"); 
+const w_StarterPistol =   new Weapon("Starter Pistol", "ranged", 3, 1, 1, 0, 2, "44magnums"); 
 const w_DBshotgun =   new Weapon("Double Barrel Shotgun", "ranged", 5, 2, 1, 0, 2, "shells"); 
 
 //Monster definition
