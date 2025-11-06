@@ -12,10 +12,13 @@ class Player {
 const p_player = new Player();
 
 class Item {
-  constructor(name) {
+  constructor(name, quantity) {
     this.name = name;
+    this.quantity = quantity;
   }
 }
+
+const i_shells = new Item("shells", 10);
 
 class Weapon {
   constructor(name, type, damage, loadAmount, loadReq, mag, magCap, ammoType) {
