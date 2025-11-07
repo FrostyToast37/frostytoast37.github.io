@@ -330,7 +330,7 @@ document.getElementById("prompt_input").addEventListener("keypress",
         } else if (/^D RUN (.+)$/.test(input)) {
           let match = input.match(/^D RUN (.+)$/);
           function inputFunc(code) {eval(code);}
-          inputFunc(match[1]);
+          rawOutput = inputFunc(match[1]);
 
         } else {
           rawOutput = "dev command invalid";
