@@ -3,7 +3,7 @@ let rawOutput;
 let diddyBlud = 3;
 function deadTextAnimation() {
   outputLog = "";
-
+  rawOutput = "You awake back at the gate. You can continue north back to the mansion.";
 }
 
 class Player {
@@ -18,12 +18,11 @@ class Player {
     currentRoom = r_gate;
     this.health = 10;
     this.inventory = [w_dagger, null, null, null, null, null, null, null];
-    rawOutput = "You awake back at the gate. You can continue north back to the mansion.";
   }
   deathCheck() {
     if (this.health <= 0) {
       rawOutput = "<h1>YOU DIED.</h1>";
-      setTimeout(deadTextAnimation, 1500);
+      setTimeout(deadTextAnimation(), 1500);
       setTimeout(() => this.deathReset(), 4000);
     }
   }
