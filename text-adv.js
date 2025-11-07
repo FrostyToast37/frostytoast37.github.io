@@ -281,63 +281,64 @@ function block() {
 
 //TERMINAL SCRIPTING
 let output;
-document.getElementById("prompt_input").addEventListener("keypress", function(event) {
-  if (event.key === "Enter") {
-    //input
-    event.preventDefault();
-    const userInput = document.getElementById("prompt_input").value;
-    const input = userInput.trim().toUpperCase();
-    document.getElementById("prompt_input").value = "";
+document.getElementById("prompt_input").addEventListener("keypress", 
+  function(inputProcessing) {
+    if (inputProcessing.key === "Enter") {
+      //input
+      inputProcessing.preventDefault();
+      const userInput = document.getElementById("prompt_input").value;
+      const input = userInput.trim().toUpperCase();
+      document.getElementById("prompt_input").value = "";
 
-    //pre-turn
-    rawOutput = "";
+      //pre-turn
+      rawOutput = "";
 
-    //turn
-    if (currentRoom.monster && ["ATTACK", "LOAD", "BLOCK"].includes(input)) {
-      currentRoom.monster.setTurn();
-    }
+      //turn
+      if (currentRoom.monster && ["ATTACK", "LOAD", "BLOCK"].includes(input)) {
+        currentRoom.monster.setTurn();
+      }
 
-    //input handling
-    if (input == "N" || input == "E" || input == "S" || input == "W" || input == "D" || input == "U") {
-      move(currentRoom, input);
-    } else if (input == "INVENTORY" || input == "INV") {
-      showInventory();
-    } else if (/^SWAP [0-7] [0-7]$/.test(input)) {
-      const slot1 = parseInt(input[5]);
-      const slot2 = parseInt(input[7]);
-      swap(slot1, slot2);
-    }else if (input == "BLOCK") {
-      p_player.turn = "block";
-    } else if (input == "ATTACK") {
-      p_player.turn = "attack";
-    } else if (input == "LOAD") {
-      p_player.turn = "load";
-    } else {
-      rawOutput = "Unknown command.";
-    }
+      //input handling
+      if (input == "N" || input == "E" || input == "S" || input == "W" || input == "D" || input == "U") {
+        move(currentRoom, input);
+      } else if (input == "INVENTORY" || input == "INV") {
+        showInventory();
+      } else if (/^SWAP [0-7] [0-7]$/.test(input)) {
+        const slot1 = parseInt(input[5]);
+        const slot2 = parseInt(input[7]);
+        swap(slot1, slot2);
+      }else if (input == "BLOCK") {
+        p_player.turn = "block";
+      } else if (input == "ATTACK") {
+        p_player.turn = "attack";
+      } else if (input == "LOAD") {
+        p_player.turn = "load";
+      } else {
+        rawOutput = "Unknown command.";
+      }
 
-    //post-turn
-    if (p_player.turn == "load") {
-      load();
-    } else if (p_player.turn == "attack") {
-      attack();
-    } else if (p_player.turn == "block") {
-      block();
-    }
+      //post-turn
+      if (p_player.turn == "load") {
+        load();
+      } else if (p_player.turn == "attack") {
+        attack();
+      } else if (p_player.turn == "block") {
+        block();
+      }
 
-    if (currentRoom.monster) {
-      currentRoom.monster.deathCheck();
+      if (currentRoom.monster) {
+        currentRoom.monster.deathCheck();
+      }
+      if (currentRoom.monster) {
+        currentRoom.monster.doTurn();
+      }
+      p_player.turn = "";
+      p_player.deathCheck();
+      
+      //output
+      output = rawOutput;
+      outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + userInput + "<br>" + output;
+      document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
+      document.body.scrollTop = document.body.scrollHeight;
     }
-    if (currentRoom.monster) {
-      currentRoom.monster.doTurn();
-    }
-    p_player.turn = "";
-    p_player.deathCheck();
-    
-    //output
-    output = rawOutput;
-    outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + userInput + "<br>" + output;
-    document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
-    document.body.scrollTop = document.body.scrollHeight;
-  }
-}, true);
+  }, true);
