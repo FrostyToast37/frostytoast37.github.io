@@ -311,7 +311,7 @@ document.getElementById("prompt_input").addEventListener("keypress",
       if (input == "DEVTOOLS") {
         devTest = true;
         rawOutput = "You are trying to use devtools, please enter password";
-      } else if (devTest = true) {
+      } else if (devTest == true) {
         if (input == devPass) {
           devtools = true;
           devTest = false;
