@@ -1,6 +1,10 @@
 //global
 let rawOutput;
 let diddyBlud = 3;
+let devTest = false;
+let devPass = "PASSWORD123";
+let devtools = true;
+
 function deadTextAnimation() {
   outputLog = "";
   rawOutput = "You awake back at the gate. You can continue north back to the mansion.";
@@ -294,6 +298,7 @@ document.getElementById("prompt_input").addEventListener("keypress",
 
       //pre-turn
       rawOutput = "";
+      
 
       //turn
       if (currentRoom.monster && ["ATTACK", "LOAD", "BLOCK"].includes(input)) {
@@ -301,7 +306,22 @@ document.getElementById("prompt_input").addEventListener("keypress",
       }
 
       //input handling
-      if (input == "N" || input == "E" || input == "S" || input == "W" || input == "D" || input == "U") {
+        //devtools
+          //setting up devtools
+      if (input == "DEVTOOLS") {
+        devTest = true;
+      } else if (devTest = true) {
+        if (input == devPass) {
+          devtools = true;
+          devTest = false;
+        }
+          //devtools commands
+      } else if (devtools = true) {
+        if (/^TP \([0-20]\,[0-20]\,[0-5]\)$/.test(input)) {
+          currentRoom = map[parseInt(input[5])][parseInt(input[7])][parseInt(input[9])];
+        }
+        //Other commands
+      } else if (input == "N" || input == "E" || input == "S" || input == "W" || input == "D" || input == "U") {
         move(currentRoom, input);
       } else if (input == "INVENTORY" || input == "INV") {
         showInventory();
