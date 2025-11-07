@@ -310,16 +310,26 @@ document.getElementById("prompt_input").addEventListener("keypress",
           //setting up devtools
       if (input == "DEVTOOLS") {
         devTest = true;
+        rawOutput = "You are trying to use devtools, please enter password";
       } else if (devTest = true) {
         if (input == devPass) {
           devtools = true;
           devTest = false;
+          rawOutput = "Devtools enabled";
+        }
+        else {
+          devTest = false;
+          rawOutput = "Password incorrect";
         }
           //devtools commands
-      } else if (devtools = true) {
-        if (/^TP \([0-20]\,[0-20]\,[0-5]\)$/.test(input)) {
-          currentRoom = map[parseInt(input[5])][parseInt(input[7])][parseInt(input[9])];
+      } else if (/^D / && devtools == true) {
+        if (/^D TP \([0-20]\,[0-20]\,[0-5]\)$/.test(input)) {
+          currentRoom = map[parseInt(input[7])][parseInt(input[9])][parseInt(input[11])];
+          rawOutput = currentRoom.dialogue;
+        } else {
+          rawOutput = "dev command invalid"
         }
+
         //Other commands
       } else if (input == "N" || input == "E" || input == "S" || input == "W" || input == "D" || input == "U") {
         move(currentRoom, input);
