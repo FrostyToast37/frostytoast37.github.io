@@ -327,8 +327,13 @@ document.getElementById("prompt_input").addEventListener("keypress",
           let match = input.match(/^D TP \((\d+),(\d+),(\d+)\)$/);
           currentRoom = map[parseInt(match[1])][parseInt(match[2])][parseInt(match[3])];
           rawOutput = currentRoom.dialogue;
+        } else if (/^D RUN ()$/.test(input)) {
+          input.match(/^D RUN ()$/);
+          function inputFunc(code) {eval(code);}
+          inputFunc(match[1]);
+
         } else {
-          rawOutput = "dev command invalid"
+          rawOutput = "dev command invalid";
         }
 
         //Other commands
