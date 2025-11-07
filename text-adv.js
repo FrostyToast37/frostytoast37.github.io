@@ -21,7 +21,7 @@ class Player {
     if (this.health <= 0) {
       rawOutput = "YOU DIED.";
       setTimeout(deadTextAnimation, 1500);
-      setTimeout(this.deathReset, 4000);
+      setTimeout(() => this.deathReset(), 4000);
     }
   }
 }
