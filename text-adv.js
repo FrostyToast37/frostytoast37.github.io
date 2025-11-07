@@ -324,6 +324,7 @@ document.getElementById("prompt_input").addEventListener("keypress",
           //devtools commands
       } else if (/^D /.test(input) && devtools == true) {
         if (/^D TP \((\d+)\,(\d+)\,(\d+)\)$/.test(input)) {
+          let match = input.match(/^D TP \((\d+),(\d+),(\d+)\)$/);
           currentRoom = map[parseInt(match[1])][parseInt(match[2])][parseInt(match[3])];
           rawOutput = currentRoom.dialogue;
         } else {
