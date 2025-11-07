@@ -322,7 +322,7 @@ document.getElementById("prompt_input").addEventListener("keypress",
           rawOutput = "Password incorrect";
         }
           //devtools commands
-      } else if (/^D / && devtools == true) {
+      } else if (/^D /.test(input) && devtools == true) {
         if (/^D TP \([0-20]\,[0-20]\,[0-5]\)$/.test(input)) {
           currentRoom = map[parseInt(input[7])][parseInt(input[9])][parseInt(input[11])];
           rawOutput = currentRoom.dialogue;
