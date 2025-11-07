@@ -323,8 +323,8 @@ document.getElementById("prompt_input").addEventListener("keypress",
         }
           //devtools commands
       } else if (/^D /.test(input) && devtools == true) {
-        if (/^D TP \([0-9]\,[0-9]\,[0-9]\)$/.test(input)) {
-          currentRoom = map[parseInt(input[7])][parseInt(input[9])][parseInt(input[11])];
+        if (/^D TP \((\d+)\,(\d+)\,(\d+)\)$/.test(input)) {
+          currentRoom = map[parseInt(match[1])][parseInt(match[2])][parseInt(match[3])];
           rawOutput = currentRoom.dialogue;
         } else {
           rawOutput = "dev command invalid"
