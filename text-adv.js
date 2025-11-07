@@ -1,11 +1,28 @@
 //global
 let rawOutput;
+let diddyBlud = 3;
+function deadTextAnimation() {
+
+}
 
 class Player {
   constructor() {
     this.health = 10;
     this.inventory = [null, null, null, null, null, null, null, null];
     this.turn = "";
+  }
+  //methods
+  deathReset(){
+    currentRoom.items.push(...this.inventory)
+    currentRoom = r_gate;
+    this.inventory = [w_dagger, null, null, null, null, null, null, null];
+  }
+  deathCheck() {
+    if (this.health <= 0) {
+      rawOutput = "YOU DIED.";
+      setTimeout(deadTextAnimation, 1500);
+      setTimeout(this.deathReset, 4000);
+    }
   }
 }
 
@@ -315,6 +332,7 @@ document.getElementById("prompt_input").addEventListener("keypress", function(ev
       currentRoom.monster.doTurn();
     }
     p_player.turn = "";
+    p_player.deathCheck();
     
     //output
     output = rawOutput;
