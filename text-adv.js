@@ -90,7 +90,7 @@ class Monster {
     if (this.turn == "attack") {
       if(p_player.turn != "block") {
         this.dealDamage();
-        rawOutput += " The " + this.name + " dealt " + this.damage + "damage to you. You are now at " + p_player.health + " health";
+        rawOutput += " The " + this.name + " dealt " + this.damage + " damage to you. You are now at " + p_player.health + " health";
       }
       else {rawOutput += " The " + this.name + "'s attack failed because you blocked.";}
     } 
