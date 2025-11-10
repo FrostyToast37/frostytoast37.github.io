@@ -328,7 +328,7 @@ document.getElementById("prompt_input").addEventListener("keypress",
           currentRoom = map[parseInt(match[1])][parseInt(match[2])][parseInt(match[3])];
           rawOutput = currentRoom.dialogue;
         } else if (/^\/RUN (.+)$/.test(input)) {
-          let match = input.match(/^\/RUN (.+)$/);
+          let match = userInput.match(/^\/run (.+)$/);
           try {
             // Code that might throw an error
             rawOutput = eval(match[1]);
