@@ -324,13 +324,18 @@ document.getElementById("prompt_input").addEventListener("keypress",
           //devtools commands
       } else if (/^\//.test(input) && devtools == true) {
         if (/^\/TP \((\d+)\,(\d+)\,(\d+)\)$/.test(input)) {
-          let match = input.match(/^D TP \((\d+),(\d+),(\d+)\)$/);
+          let match = input.match(/^\/TP \((\d+),(\d+),(\d+)\)$/);
           currentRoom = map[parseInt(match[1])][parseInt(match[2])][parseInt(match[3])];
           rawOutput = currentRoom.dialogue;
         } else if (/^\/RUN (.+)$/.test(input)) {
-          let match = input.match(/^D RUN (.+)$/);
-          rawOutput = eval(match[1]);
-          
+          let match = input.match(/^\/RUN (.+)$/);
+          try {
+            // Code that might throw an error
+            rawOutput = eval(match[1]);
+          } catch (error) {
+            // Code that runs if an error happens
+            rawOutput = error.message;
+          }
         } else {
           rawOutput = "dev command invalid";
         }
