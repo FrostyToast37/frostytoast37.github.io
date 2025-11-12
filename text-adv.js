@@ -110,7 +110,7 @@ class Monster {
 }
 
 const m_g_chef =          new Monster(5, ["load", "attack", "block", "block"], 1, "Pierre the Polturgeist");
-const m_g_hydrangeaSons = new Monster(20, ["attack", "block", "block", "attack", "attack", "attack", "block"], 4, "Hydrangea's Sons");
+const m_g_hydrangeaSons = new Monster(20, ["attack", "block", "load", "load", "attack", "attack", "block", "block"], 4, "Hydrangea's Sons");
 
 //Room definition
 class Room {
