@@ -172,8 +172,8 @@ const r_mapRoom =        new Room(2, 6, 1, ["E","W"], mapRoom_d);
 const r_secretRoom_3 =   new Room(3, 6, 1, ["W"], secretRoom3_d);
 
 //upper floor (z = 2)
-const r_mainStairsZ2 =   new Room(4, 4, 2, ["W","D","E"], "If you look back down the stairwell, only darkness is visible. There is a singular window directly across the spiral staircase and you can see the forest surrounding you out of it. There are hallways leading to your east and west.");
-const r_h_X3Y4Z2 =       new Room(3, 4, 2, ["E","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the west and the stairwell is to the east.");
+const r_mainStairsZ2 =   new Room(4, 4, 2, ["W","D","E"], mainStairsZ2_d);
+const r_h_X3Y4Z2 =       new Room(3, 4, 2, ["E","W"], X3Y4Z2h_d);
 const r_h_X2Y4Z2 =       new Room(2, 4, 2, ["E","S","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the east and west, and there is a room to your south.");
 const r_h_X1Y4Z2 =       new Room(1, 4, 2, ["N","E","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches, except, for one thing... The hallway continues to the east and there are rooms to your north and west. Then it hits you! The torch on the west wall looks a little dull.");
 const r_laboratory =     new Room(2, 3, 2, ["N"], "The smell of chlorine and chemicals greets your nose as you enter the laboratory. As you enter, you see active experiments occurring, but before you get a good look, the emergency doors slide shut, blocking your view. Do you go back north?");
