@@ -129,6 +129,9 @@ class Room {
     for (const itemObj of this.items) {
       itemList += "a " + itemObj.name + ", ";
     }
+    if (currentRoom.items.length == 0) {
+      itemList = "nothing"
+    }
     rawOutput = "In this room you find " + itemList;
   }
   
