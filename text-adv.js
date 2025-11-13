@@ -255,12 +255,12 @@ function swap(slot1,slot2) {
 
 function grab(item) {
   for (const itemObj of currentRoom.items) {
-    if (item == itemObj.name.toUpperCase()) {
+    if (item.toUpperCase() == itemObj.name.toUpperCase()) {
       let slotNum = 0;
       for (const slot of p_player.inventory) {
         if (!slot) {
           p_player.inventory[slotNum] = itemObj;
-          currentRoom.items.splice(currentRoom.items[indexOf(itemObj)],1);
+          currentRoom.items.splice(currentRoom.items[currentRoom.items.indexOf(itemObj)],1);
           showInventory();
           rawOutput += "You picked up the " + itemObj.name;
           break;
