@@ -124,8 +124,14 @@ class Room {
     this.monster = monster;
   }
   // methods
-  search() {}
-  loot() {}
+  search() {
+    let itemList = "";
+    for (const itemObj of this.items) {
+      itemList += "a " + itemObj.name + ", ";
+    }
+    rawOutput = "In this room you find " + itemList;
+  }
+  
 }
 
 //create 3d array to store Rooms
@@ -363,6 +369,8 @@ document.getElementById("prompt_input").addEventListener("keypress",
         move(currentRoom, input);
       } else if (input == "INVENTORY" || input == "INV") {
         showInventory();
+      } else if (input == "SEARCH") {
+        currentRoom.search();
       } else if (/^SWAP [0-7] [0-7]$/.test(input)) {
         const slot1 = parseInt(input[5]);
         const slot2 = parseInt(input[7]);
