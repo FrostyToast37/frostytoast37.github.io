@@ -29,7 +29,7 @@ async function deadTextAnimation() {
       allTextArray[randomIndex] = "";
       allText = allTextArray.join("");
       document.getElementById("output").textContent = allText;
-      await sleep(1);
+      await sleep(0.2);
     }
   }
 
