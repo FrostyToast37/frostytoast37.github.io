@@ -26,7 +26,7 @@ async function deadTextAnimation() {
       randomNum = Math.random();
       randomIndex = Math.round(randomNum * allText.length);
       allTextArray = Array.from(allText);
-      allTextArray[randomIndex] = " ";
+      allTextArray[randomIndex] = "";
       allText = allTextArray.join("");
       document.getElementById("output").textContent = allText;
       await sleep(1);
