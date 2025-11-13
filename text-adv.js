@@ -253,6 +253,24 @@ function swap(slot1,slot2) {
   showInventory();
 }
 
+function grab(item) {
+  for (const itemObj of currentRoom.items) {
+    if (item == itemObj.name.toUpperCase()) {
+      let slotNum = 0;
+      for (const slot of p_player.inventory) {
+        if (!slot) {
+          p_player.inventory[slotNum] = itemObj;
+          currentRoom.items.splice(currentRoom.items[indexOf(itemObj)],1);
+          showInventory();
+          rawOutput += "You picked up the " + itemObj.name;
+          break;
+        }
+        slotNum += 1;
+      }
+    }
+  }
+}
+
 function load() {
   p_player.inventory[0].load()
   rawOutput = "your " + p_player.inventory[0].name + " now has " + p_player.inventory[0].mag + " uses.";
