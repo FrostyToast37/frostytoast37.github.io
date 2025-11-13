@@ -4,6 +4,7 @@ let diddyBlud = 3;
 let devTest = false;
 let devPass = "PASSWORD123";
 let devtools = true;
+let gameState = "playing";
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -27,8 +28,8 @@ async function deadTextAnimation() {
       allTextArray = Array.from(allText);
       allTextArray[randomIndex] = " ";
       allText = allTextArray.join("");
-      document.body.getElementById("output").textContent = allText;
-      await sleep(5);
+      document.getElementById("output").textContent = allText;
+      await sleep(1);
     }
   }
 
@@ -42,19 +43,33 @@ class Player {
   }
   //methods
   deathReset(){
-    currentRoom.items.push(...this.inventory)
+    const itemsToDrop = this.inventory.filter(item => item !== null);
+    currentRoom.items.push(...itemsToDrop)
     currentRoom = r_gate;
     this.health = 10;
     this.inventory = [w_dagger, null, null, null, null, null, null, null];
-    outputLog = "";
-    rawOutput += "You awake back at the gate. You can continue north back to the mansion.";
   }
-  deathCheck() {
-    if (this.health <= 0) {
+  async deathCheck() {
+    if (this.health <= 0 && gameState === "playing") {
+      gameState = "dead";
       rawOutput = "<h1>YOU DIED.</h1>";
-      setTimeout(deadTextAnimation, 1500);
-      setTimeout(() => this.deathReset(), 4000);
+      outputLog = outputLog + "<br>" + rawOutput;
+      document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
+
+      await sleep(1500);
+      await deadTextAnimation();
+      await sleep(4000)
+      this.deathReset();
+
+      outputLog = "";
+      rawOutput = "You awake back at the gate. You can continue north back to the mansion.";
+      outputLog = rawOutput;
+      document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
+      
+      gameState = "playing";
+      return true;
     }
+    else {return false;}
   }
 }
 
@@ -341,7 +356,13 @@ function block() {
 //TERMINAL SCRIPTING
 let output;
 document.getElementById("prompt_input").addEventListener("keypress", 
-  function(inputProcessing) {
+  async function(inputProcessing) {
+
+    if (gameState === "dead") {
+      inputProcessing.preventDefault();
+      return;
+    }
+
     if (inputProcessing.key === "Enter") {
       //input
       inputProcessing.preventDefault();
@@ -433,12 +454,14 @@ document.getElementById("prompt_input").addEventListener("keypress",
         currentRoom.monster.doTurn();
       }
       p_player.turn = "";
-      p_player.deathCheck();
+      const playerDied = await p_player.deathCheck();
       
-      //output
-      output = rawOutput;
-      outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + userInput + "<br>" + output;
-      document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
-      document.body.scrollTop = document.body.scrollHeight;
+      //output 
+      if (!playerDied) {
+        output = rawOutput;
+        outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + userInput + "<br>" + output;
+        document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
+        document.body.scrollTop = document.body.scrollHeight;
+      }
     }
   }, true);
