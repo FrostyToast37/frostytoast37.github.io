@@ -7,7 +7,7 @@ let devtools = true;
 
 function deadTextAnimation() {
   outputLog = "";
-  rawOutput = "You awake back at the gate. You can continue north back to the mansion.";
+  rawOutput += "You awake back at the gate. You can continue north back to the mansion.";
 }
 
 class Player {
@@ -26,7 +26,7 @@ class Player {
   deathCheck() {
     if (this.health <= 0) {
       rawOutput = "<h1>YOU DIED.</h1>";
-      setTimeout(deadTextAnimation(), 1500);
+      setTimeout(deadTextAnimation, 1500);
       setTimeout(() => this.deathReset(), 4000);
     }
   }
@@ -260,7 +260,7 @@ function grab(item) {
       for (const slot of p_player.inventory) {
         if (!slot) {
           p_player.inventory[slotNum] = itemObj;
-          currentRoom.items.splice(currentRoom.items[currentRoom.items.indexOf(itemObj)],1);
+          currentRoom.items.splice(currentRoom.items.indexOf(itemObj), 1);
           showInventory();
           rawOutput += "You picked up the " + itemObj.name;
           break;
@@ -367,6 +367,9 @@ document.getElementById("prompt_input").addEventListener("keypress",
         const slot1 = parseInt(input[5]);
         const slot2 = parseInt(input[7]);
         swap(slot1, slot2);
+      } else if (/^GRAB (.+)$/.test(input)) {
+        let match = input.match(/^GRAB (.+)$/);
+        grab(match[1]);
       }else if (input == "BLOCK") {
         p_player.turn = "block";
       } else if (input == "ATTACK") {
