@@ -15,23 +15,19 @@ async function deadTextAnimation() {
   let backup = document.getElementById("output").textContent;
   let allTextArray;
   let indexesModified = [];
-  let percentage = 0;
   let randomNum = 0;
   let randomIndex = 0;
-  let iterations;
-  for (j = 0; j < 5; j++) {
-    percentage += 0.2;
-    iterations = Math.round(percentage * allText.length);
-    for (i = 0; i < iterations; i++) {
-      randomNum = Math.random();
-      randomIndex = Math.round(randomNum * allText.length);
-      allTextArray = Array.from(allText);
-      allTextArray[randomIndex] = "";
-      allText = allTextArray.join("");
-      document.getElementById("output").textContent = allText;
-      await sleep(0.005);
-    }
+  let iterations = allText.length;
+  for (i = 0; i < iterations; i++) {
+    randomNum = Math.random();
+    randomIndex = Math.round(randomNum * allText.length);
+    allTextArray = Array.from(allText);
+    allTextArray[randomIndex] = "";
+    allText = allTextArray.join("");
+    document.getElementById("output").textContent = allText;
+    await sleep(0.005);
   }
+  
 
 }
 
