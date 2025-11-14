@@ -29,7 +29,7 @@ async function deadTextAnimation() {
       allTextArray[randomIndex] = "";
       allText = allTextArray.join("");
       document.getElementById("output").textContent = allText;
-      await sleep(0.2);
+      await sleep(0.05);
     }
   }
 
@@ -58,7 +58,7 @@ class Player {
 
       await sleep(1500);
       await deadTextAnimation();
-      await sleep(4000)
+      await sleep(500)
       this.deathReset();
 
       outputLog = "";
