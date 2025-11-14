@@ -3,7 +3,7 @@ let rawOutput;
 let diddyBlud = 3;
 let devTest = false;
 let devPass = "PASSWORD123";
-let devtools = true;
+let devtools = false;
 let gameState = "playing";
 
 function sleep(ms) {
@@ -29,7 +29,7 @@ async function deadTextAnimation() {
       allTextArray[randomIndex] = "";
       allText = allTextArray.join("");
       document.getElementById("output").textContent = allText;
-      await sleep(0.05);
+      //await sleep(0.05);
     }
   }
 
