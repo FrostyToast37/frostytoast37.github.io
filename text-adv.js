@@ -11,24 +11,17 @@ function sleep(ms) {
 }
 
 async function deadTextAnimation() {
-  let allText = document.getElementById("output").textContent;
-  let backup = document.getElementById("output").textContent;
-  let allTextArray;
-  let indexesModified = [];
-  let randomNum = 0;
+  let text = document.getElementById("output").textContent;
   let randomIndex = 0;
-  let iterations = allText.length;
+  let iterations = text.length;
   for (i = 0; i < iterations; i++) {
-    randomNum = Math.random();
-    randomIndex = Math.round(randomNum * allText.length);
-    allTextArray = Array.from(allText);
-    allTextArray[randomIndex] = "";
-    allText = allTextArray.join("");
-    document.getElementById("output").textContent = allText;
-    await sleep(0.005);
+    randomIndex = Math.floor(Math.random() * text.length);
+    text = text.slice(0, randomIndex) + text.slice(randomIndex + 1);
+    if (i % 5 == 0) {
+      document.getElementById("output").textContent = text;
+      await sleep(0.005);
+    }
   }
-  
-
 }
 
 class Player {
