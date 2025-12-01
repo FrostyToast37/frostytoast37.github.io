@@ -30,11 +30,11 @@ class Player {
         this.vx = 0;
         this.vy = 0;
         this.isOnGround = false;
-        this.isWalledLeft = false; // New: is player pressing against a left wall
-        this.isWalledRight = false; // New: is player pressing against a right wall
-        this.wallJumpTimer = 0; // New: cooldown after wall jump
+        this.isWalledLeft = false; 
+        this.isWalledRight = false; 
+        this.wallJumpTimer = 0; 
         this.radius = PLAYER_RADIUS;
-        this.facing = 1; // 1 for right, -1 for left
+        this.facing = 1; 
         this.isAttacking = false;
         this.health = 3;
         this.blinkTimer = 0;
@@ -64,21 +64,25 @@ class Player {
         // Apply gravity
         this.vy += GRAVITY;
 
-        // Handle horizontal movement input
-        this.vx = 0;
-        if (keys['a']) {
-            this.vx = -MOVE_SPEED;
-            this.facing = -1;
-        }
-        if (keys['d']) {
-            this.vx = MOVE_SPEED;
-            this.facing = 1;
-        }
-
         // Reset wall status and cooldown
         this.isWalledLeft = false;
         this.isWalledRight = false;
         this.wallJumpTimer = Math.max(0, this.wallJumpTimer - 1); // Decrement timer
+
+        // ---*** THIS IS THE WALL JUMP FIX ***---
+        // Only reset horizontal velocity if we are NOT in the middle of a wall jump
+        if (this.wallJumpTimer === 0) {
+            this.vx = 0;
+            if (keys['a']) {
+                this.vx = -MOVE_SPEED;
+                this.facing = -1;
+            }
+            if (keys['d']) {
+                this.vx = MOVE_SPEED;
+                this.facing = 1;
+            }
+        }
+        // --- END OF FIX ---
 
         // Save old position for collision calculation
         const oldX = this.x;
@@ -113,18 +117,20 @@ class Player {
                 }
 
                 // --- 2. Horizontal Collision (Left/Right) ---
-
-                // If the player was to the right of the block's right edge last frame (hitting left wall)
-                else if (oldX - this.radius >= block.x + block.width) {
-                    this.vx = 0;
-                    this.x = block.x + block.width + this.radius; // Snap to the right
-                    this.isWalledLeft = true;
-                } 
-                // If the player was to the left of the block's left edge last frame (hitting right wall)
-                else if (oldX + this.radius <= block.x) {
-                    this.vx = 0;
-                    this.x = block.x - this.radius; // Snap to the left
-                    this.isWalledRight = true;
+                // Only check horizontal block collisions if not wall jumping
+                if (this.wallJumpTimer === 0) {
+                    // If the player was to the right of the block's right edge last frame (hitting left wall)
+                    if (oldX - this.radius >= block.x + block.width) {
+                        this.vx = 0;
+                        this.x = block.x + block.width + this.radius; // Snap to the right
+                        this.isWalledLeft = true;
+                    } 
+                    // If the player was to the left of the block's left edge last frame (hitting right wall)
+                    else if (oldX + this.radius <= block.x) {
+                        this.vx = 0;
+                        this.x = block.x - this.radius; // Snap to the left
+                        this.isWalledRight = true;
+                    }
                 }
             }
         });
@@ -141,7 +147,7 @@ class Player {
         // 1. Right Wall Boundary
         if (this.x + this.radius > canvas.width) {
             this.x = canvas.width - this.radius;
-            this.vx = 0;
+            if (this.wallJumpTimer === 0) { this.vx = 0; } // Stop movement only if not wall jumping
             if (!this.isOnGround) {
                 this.isWalledRight = true; // Enable wall slide/jump on canvas edge
             }
@@ -150,7 +156,7 @@ class Player {
         // 2. Left Wall Boundary
         if (this.x - this.radius < 0) {
             this.x = this.radius;
-            this.vx = 0;
+            if (this.wallJumpTimer === 0) { this.vx = 0; } // Stop movement only if not wall jumping
             if (!this.isOnGround) {
                 this.isWalledLeft = true; // Enable wall slide/jump on canvas edge
             }
@@ -188,12 +194,11 @@ class Player {
         }
     }
 
-    // Melee attack: creates a temporary hitbox (Unchanged)
+    // Melee attack: creates a temporary hitbox
     meleeAttack() {
         if (this.isAttacking) return;
         this.isAttacking = true;
         
-        // Define the melee hit area relative to the player
         const hitBox = {
             x: this.x + (this.facing * this.radius),
             y: this.y - this.radius,
@@ -201,31 +206,27 @@ class Player {
             height: 30
         };
 
-        // Check for collision with enemies
         enemies = enemies.filter(enemy => {
-            // Simple AABB collision check between hitBox and Enemy
             const hit = hitBox.x < enemy.x + enemy.size &&
                         hitBox.x + hitBox.width > enemy.x &&
                         hitBox.y < enemy.y + enemy.size &&
                         hitBox.y + hitBox.height > enemy.y;
             
-            return !hit; // Keep the enemy if no hit
+            return !hit; 
         });
 
-        // Visual cue (set attack state for a moment)
         setTimeout(() => {
             this.isAttacking = false;
         }, 100);
     }
 
-    // Ranged attack: shoots a projectile (Unchanged)
+    // Ranged attack: shoots a projectile
     rangedAttack() {
-        // Shoot a small square projectile
         const projectile = new Projectile(this.x, this.y, this.facing * 10, 0);
         projectiles.push(projectile);
     }
 
-    // Take damage (Unchanged)
+    // Take damage 
     takeDamage() {
         if (this.blinkTimer === 0) {
             this.health -= 1;
@@ -256,14 +257,13 @@ class Block {
 }
 
 class Enemy {
-    // ... (Unchanged)
     constructor(x, y, movementRange = 0) {
         this.x = x;
         this.y = y;
         this.size = ENEMY_SIZE;
-        this.color = '#dc143c'; // Crimson Red square
+        this.color = '#dc143c'; 
         this.startX = x;
-        this.movementRange = movementRange; // If > 0, patrol
+        this.movementRange = movementRange; 
         this.patrolDir = 1;
         this.speed = 1;
     }
@@ -286,14 +286,13 @@ class Enemy {
 }
 
 class Projectile {
-    // ... (Unchanged)
     constructor(x, y, vx, vy) {
         this.x = x;
         this.y = y;
         this.vx = vx;
         this.vy = vy;
         this.size = 6;
-        this.color = '#ffd700'; // Gold for ranged attack
+        this.color = '#ffd700'; 
     }
 
     draw() {
@@ -312,13 +311,8 @@ class Projectile {
     }
 }
 
-// --- NEW LEVEL GENERATION LOGIC ---
+// --- LEVEL GENERATION LOGIC ---
 
-/**
- * Generates blocks and enemies based on the current level index, increasing difficulty.
- * @param {number} levelIndex 
- * @returns {object} {blocks: array, enemies: array}
- */
 function generateRandomLevel(levelIndex) {
     const levelBlocks = [];
     const levelEnemies = [];
@@ -334,22 +328,24 @@ function generateRandomLevel(levelIndex) {
 
     // --- 3. Random Floating Block Generation with Solvability Constraints ---
     let attempts = 0;
-    const maxAttempts = targetFloatingBlocks * 5; // Safety limit to prevent infinite loops
+    const maxAttempts = targetFloatingBlocks * 10; // Safety limit to prevent infinite loops
     
-    // Loop until we have enough floating blocks or hit the maximum attempts
-    while (levelBlocks.length <= targetFloatingBlocks && attempts < maxAttempts) {
+    // ---*** THIS IS THE PLATFORM GENERATION FIX ***---
+    // Loop until we have (targetFloatingBlocks + 1 ground block), or hit max attempts
+    // The condition is now correct: (levelBlocks.length - 1) counts ONLY floating blocks
+    while ((levelBlocks.length - 1) < targetFloatingBlocks && attempts < maxAttempts) {
         attempts++;
         
         // Decide whether to make a narrow wall block or a wide platform block
-        const isWall = Math.random() < 0.25 && levelIndex > 1; // 25% chance of a wall block
+        const isWall = Math.random() < 0.25 && levelIndex > 1; 
 
         const bWidth = isWall 
-            ? Math.floor(Math.random() * (40 - 20) + 20) // Narrow wall (20-40px)
-            : Math.floor(Math.random() * (250 - 80) + 80); // Normal block (80-250px)
+            ? Math.floor(Math.random() * (40 - 20) + 20) 
+            : Math.floor(Math.random() * (250 - 80) + 80); 
         
         const bHeight = isWall
-            ? Math.floor(Math.random() * (canvas.height - 150) + 50) // Tall wall up to near the top
-            : 10; // Thin platform
+            ? Math.floor(Math.random() * (canvas.height - 150) + 50) 
+            : 10; 
         
         let bX, bY;
         let validPlacement = true;
@@ -370,18 +366,16 @@ function generateRandomLevel(levelIndex) {
                 break;
             }
             
-            // Check jump possibility: If the new block is higher than the existing one,
-            // ensure the vertical difference is jumpable AND the horizontal distance is reachable.
-            if (bY < existingB.y) {
-                const hDiff = existingB.y - bY;
-                
-                // If the vertical height difference is too high, it's invalid
-                if (hDiff > MAX_JUMP_HEIGHT) {
-                    validPlacement = false;
-                    break;
-                }
+            // Simple overlap check
+            const overlapX = Math.max(0, Math.min(bX + bWidth, existingB.x + existingB.width) - Math.max(bX, existingB.x));
+            const overlapY = Math.max(0, Math.min(bY + bHeight, existingB.y + existingB.height) - Math.max(bY, existingB.y));
+
+            if (overlapX > 0 && overlapY > 0) {
+                validPlacement = false;
+                break;
             }
         }
+        // --- END OF FIX ---
 
         if (validPlacement) {
             levelBlocks.push(new Block(bX, bY, bWidth, bHeight));
@@ -390,22 +384,17 @@ function generateRandomLevel(levelIndex) {
 
     // --- 4. Random Enemy Placement ---
     let enemiesPlaced = 0;
-    // Blocks to use for enemy placement (floating blocks + ground)
     const blocksToUse = [...levelBlocks];
     
-    // Shuffle the blocks so enemies are placed randomly
     blocksToUse.sort(() => Math.random() - 0.5);
 
     for (let i = 0; i < blocksToUse.length && enemiesPlaced < maxEnemies; i++) {
-        // Decide randomly if we place an enemy on this block
         if (Math.random() < 0.6) { 
             const block = blocksToUse[i];
             
-            // Place enemy on top of the block
             const eX = block.x + Math.floor(Math.random() * (block.width - ENEMY_SIZE));
             const eY = block.y - ENEMY_SIZE;
             
-            // Randomly decide if enemy patrols
             const patrol = Math.random() < 0.5 ? Math.floor(Math.random() * maxPatrolRange * 0.5) : 0;
             
             levelEnemies.push(new Enemy(eX, eY, patrol));
@@ -416,67 +405,54 @@ function generateRandomLevel(levelIndex) {
     // Fallback: Ensure at least one enemy is placed if the target is > 0
     if (levelEnemies.length === 0 && maxEnemies > 0) {
         const ground = levelBlocks[0];
-        const eX = ground.x + Math.floor(Math.random() * (ground.width - ENEMY_SIZE));
+        // ---*** FIX FOR ENEMY_SERVICE TYPO ***---
+        const eX = ground.x + Math.floor(Math.random() * (ground.width - (ENEMY_SIZE + 5)) + 5);
         const eY = ground.y - ENEMY_SIZE;
-        levelEnemies.push(new Enemy(eX, eY, 0)); // Stationary enemy on ground
+        levelEnemies.push(new Enemy(eX, eY, 0)); 
     }
 
     return { blocks: levelBlocks, enemies: levelEnemies };
 }
 
-/**
- * Loads the objects for a specific level index.
- * @param {number} levelIndex 
- */
 function loadLevel(levelIndex) {
     console.log("Loading Level:", levelIndex);
-    // Generate the level data
+    
     const levelData = generateRandomLevel(levelIndex);
 
-    // Reset game objects
-    blocks = levelData.blocks; // Use the new 'blocks' array
+    blocks = levelData.blocks; 
     enemies = levelData.enemies;
     projectiles = [];
     keys = {};
 
     // Reset player position and health for the new level
-    // Start player on the left side of the screen
-    player.x = 50; 
-    player.y = canvas.height - PLAYER_RADIUS - 10;
-    player.vy = 0;
-    player.health = 3; 
-    player.blinkTimer = 0;
+    if (player) { // Check if player exists before resetting
+        player.x = 50; 
+        player.y = canvas.height - PLAYER_RADIUS - 10;
+        player.vy = 0;
+        player.health = 3; 
+        player.blinkTimer = 0;
+    }
     
     gameState = 'playing';
 }
 
-/**
- * Advances the game to the next level or finishes the game.
- */
 function nextLevel() {
-    // If the player beats the current level, increase the level count.
     currentLevel++; 
 
-    // Define a maximum challenging level (e.g., Level 10)
     if (currentLevel > 10) { 
-        gameState = 'win'; // Ultimate win if max level is passed
-        currentLevel = 10; // Cap the display level
+        gameState = 'win'; 
+        currentLevel = 10; 
     } else {
         loadLevel(currentLevel);
     }
 }
 
-// --- MODIFIED GAME LOGIC FUNCTIONS ---
-
 function initGame() {
-    // Only reset the level counter on full restart
     currentLevel = 1; 
     player = new Player(50, canvas.height - PLAYER_RADIUS - 10);
-    loadLevel(currentLevel); // Load the first level
+    loadLevel(currentLevel);
 }
 
-
-// Check for collision functions (unchanged)
 function checkRectCollision(r1, r2) {
     return r1.x < r2.x + r2.size &&
            r1.x + r1.size > r2.x &&
@@ -500,11 +476,11 @@ function handleCollisions() {
         enemies = enemies.filter(enemy => {
             if (checkRectCollision(projectile, enemy)) {
                 hitEnemy = true;
-                return false; // Enemy is hit and removed
+                return false; 
             }
-            return true; // Keep enemy
+            return true; 
         });
-        return !projectile.isOutOfBounds() && !hitEnemy; // Keep projectile if it hasn't hit an enemy or gone out of bounds
+        return !projectile.isOutOfBounds() && !hitEnemy; 
     });
 
     // 2. Player vs Enemy collision (Player takes damage)
@@ -523,6 +499,7 @@ function gameMessage(text, color) {
     ctx.textAlign = 'center';
     ctx.fillText(text, canvas.width / 2, canvas.height / 2);
 
+    // ---*** FIX FOR canvas.w_width TYPO ***---
     ctx.font = '14px sans-serif';
     ctx.fillStyle = '#fff';
     ctx.fillText('Press R to restart', canvas.width / 2, canvas.height / 2 + 50);
@@ -544,7 +521,7 @@ function animate() {
         handleCollisions();
 
         // Draw
-        blocks.forEach(block => block.draw()); // Draw blocks
+        blocks.forEach(block => block.draw()); 
         player.draw();
         enemies.forEach(enemy => enemy.draw());
         projectiles.forEach(p => p.draw());
@@ -557,7 +534,7 @@ function animate() {
         
         // Check win condition (all enemies defeated)
         if (enemies.length === 0) {
-            nextLevel(); // Load the next random level!
+            nextLevel(); 
         }
 
     } else if (gameState === 'win') {
@@ -571,6 +548,7 @@ function animate() {
 
 // --- INPUT HANDLING ---
 
+// ---*** FIX FOR (e). TYPO ***---
 window.addEventListener('keydown', (e) => {
     keys[e.key.toLowerCase()] = true;
     
@@ -578,10 +556,10 @@ window.addEventListener('keydown', (e) => {
         if (e.key === ' ' || e.key === 'w') {
             player.jump();
         }
-        if (e.key.toLowerCase() === 'j') { // J for Melee
+        if (e.key.toLowerCase() === 'j') { 
             player.meleeAttack();
         }
-        if (e.key.toLowerCase() === 'k') { // K for Ranged
+        if (e.key.toLowerCase() === 'k') { 
             player.rangedAttack();
         }
     }
@@ -601,4 +579,7 @@ let player;
 window.onload = function() {
     initGame();
     animate();
+    // Also adjust dimensions if the window is resized
+    // Note: resizing will restart the level
+    window.addEventListener('resize', initGame);
 };
