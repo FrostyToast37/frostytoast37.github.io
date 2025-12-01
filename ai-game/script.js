@@ -69,10 +69,25 @@ class Player {
         this.isWalledRight = false;
         this.wallJumpTimer = Math.max(0, this.wallJumpTimer - 1); // Decrement timer
 
-        // ---*** THIS IS THE WALL JUMP FIX ***---
-        // Only reset horizontal velocity if we are NOT in the middle of a wall jump
-        if (this.wallJumpTimer === 0) {
+// ---*** THIS IS THE AIR CONTROL FIX ***---
+        // This logic allows the player to control horizontal movement
+        // both on the ground and in the air.
+
+        if (this.isOnGround) {
+            // On the ground: velocity is set directly by keys
             this.vx = 0;
+            if (keys['a']) {
+                this.vx = -MOVE_SPEED;
+                this.facing = -1;
+            }
+            if (keys['d']) {
+                this.vx = MOVE_SPEED;
+                this.facing = 1;
+            }
+        } else {
+            // In the air: Keys *override* the current horizontal velocity.
+            // If no keys are pressed, this.vx (from a wall jump) is preserved,
+            // allowing the player to "drift".
             if (keys['a']) {
                 this.vx = -MOVE_SPEED;
                 this.facing = -1;
