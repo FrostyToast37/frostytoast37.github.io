@@ -13,8 +13,9 @@ let enemies = [];
 let projectiles = [];
 let keys = {};
 let gameState = 'playing'; // 'playing', 'win', 'lose'
+let currentLevel = 1; // New variable to track the current level
 
-// --- GAME OBJECT CLASSES ---
+// --- GAME OBJECT CLASSES (Unchanged) ---
 
 class Player {
     constructor(x, y) {
@@ -220,37 +221,138 @@ class Projectile {
     }
 }
 
-// --- GAME LOGIC FUNCTIONS ---
+// --- NEW LEVEL GENERATION LOGIC ---
 
-function initGame() {
-    // Player starts near the bottom left
-    player = new Player(50, canvas.height - PLAYER_RADIUS - 10);
+/**
+ * Generates platforms and enemies based on the current level index, increasing difficulty.
+ * @param {number} levelIndex 
+ * @returns {object} {platforms: array, enemies: array}
+ */
+function generateRandomLevel(levelIndex) {
+    const levelPlatforms = [];
+    const levelEnemies = [];
 
-    // Level design (Platforms)
-    platforms = [
-        // Ground
-        new Platform(0, canvas.height - 10, canvas.width, 10),
-        // Floating platforms
-        new Platform(150, 300, 150, 10),
-        new Platform(400, 200, 200, 10),
-        new Platform(650, 300, 100, 10),
-    ];
+    // --- 1. Difficulty Scaling ---
+    const maxPlatforms = 4 + levelIndex * 2; // More platforms for higher levels
+    const maxEnemies = 2 + levelIndex;      // More enemies for higher levels
+    const maxPatrolRange = 50 + levelIndex * 30; // Enemies patrol further
 
-    // Enemies (Squares)
-    enemies = [
-        // Stationary
-        new Enemy(500, canvas.height - ENEMY_SIZE - 10),
-        // Patrolling
-        new Enemy(180, 280 - ENEMY_SIZE, 100),
-        new Enemy(450, 180 - ENEMY_SIZE, 150),
-    ];
+    // --- 2. Base Platform Setup ---
+    // Ground Platform (Mandatory)
+    levelPlatforms.push(new Platform(0, canvas.height - 10, canvas.width, 10));
 
-    projectiles = [];
-    gameState = 'playing';
-    keys = {};
+    // --- 3. Random Floating Platform Generation ---
+    for (let i = 0; i < maxPlatforms; i++) {
+        const pWidth = Math.floor(Math.random() * (250 - 80) + 80); // Width between 80 and 250
+        const pHeight = 10; 
+        
+        // y position: always above 100px from the bottom to allow jumping space
+        const pY = Math.floor(Math.random() * (canvas.height - 150 - 100) + 100);
+        const pX = Math.floor(Math.random() * (canvas.width - pWidth));
+
+        // Simple check to prevent platforms from being too close vertically
+        let tooClose = false;
+        for (const existingP of levelPlatforms) {
+            if (Math.abs(pY - existingP.y) < 50) { // platforms must be at least 50px apart vertically
+                tooClose = true;
+                break;
+            }
+        }
+
+        if (!tooClose) {
+            levelPlatforms.push(new Platform(pX, pY, pWidth, pHeight));
+        }
+    }
+
+    // --- 4. Random Enemy Placement ---
+    let enemiesPlaced = 0;
+    // Platforms to use for enemy placement (floating platforms + ground)
+    const platformsToUse = [...levelPlatforms];
+    
+    // Shuffle the platforms so enemies are placed randomly
+    platformsToUse.sort(() => Math.random() - 0.5);
+
+    for (let i = 0; i < platformsToUse.length && enemiesPlaced < maxEnemies; i++) {
+        // Decide randomly if we place an enemy on this platform
+        if (Math.random() < 0.6) { 
+            const platform = platformsToUse[i];
+            
+            // Place enemy on top of the platform
+            const eX = platform.x + Math.floor(Math.random() * (platform.width - ENEMY_SIZE));
+            const eY = platform.y - ENEMY_SIZE;
+            
+            // Randomly decide if enemy patrols
+            const patrol = Math.random() < 0.5 ? Math.floor(Math.random() * maxPatrolRange * 0.5) : 0;
+            
+            levelEnemies.push(new Enemy(eX, eY, patrol));
+            enemiesPlaced++;
+        }
+    }
+
+    // Fallback: Ensure at least one enemy is placed if the target is > 0
+    if (levelEnemies.length === 0 && maxEnemies > 0) {
+        const ground = levelPlatforms[0];
+        const eX = ground.x + Math.floor(Math.random() * (ground.width - ENEMY_SIZE));
+        const eY = ground.y - ENEMY_SIZE;
+        levelEnemies.push(new Enemy(eX, eY, 0)); // Stationary enemy on ground
+    }
+
+    return { platforms: levelPlatforms, enemies: levelEnemies };
 }
 
-// Check for collision between two rectangles (used for Projectile vs Enemy)
+/**
+ * Loads the objects for a specific level index.
+ * @param {number} levelIndex 
+ */
+function loadLevel(levelIndex) {
+    console.log("Loading Level:", levelIndex);
+    // Generate the level data
+    const levelData = generateRandomLevel(levelIndex);
+
+    // Reset game objects
+    platforms = levelData.platforms;
+    enemies = levelData.enemies;
+    projectiles = [];
+    keys = {};
+
+    // Reset player position and health for the new level
+    // Start player on the left side of the screen
+    player.x = 50; 
+    player.y = canvas.height - PLAYER_RADIUS - 10;
+    player.vy = 0;
+    player.health = 3; 
+    player.blinkTimer = 0;
+    
+    gameState = 'playing';
+}
+
+/**
+ * Advances the game to the next level or finishes the game.
+ */
+function nextLevel() {
+    // If the player beats the current level, increase the level count.
+    currentLevel++; 
+
+    // Define a maximum challenging level (e.g., Level 10)
+    if (currentLevel > 10) { 
+        gameState = 'win'; // Ultimate win if max level is passed
+        currentLevel = 10; // Cap the display level
+    } else {
+        loadLevel(currentLevel);
+    }
+}
+
+// --- MODIFIED GAME LOGIC FUNCTIONS ---
+
+function initGame() {
+    // Only reset the level counter on full restart
+    currentLevel = 1; 
+    player = new Player(50, canvas.height - PLAYER_RADIUS - 10);
+    loadLevel(currentLevel); // Load the first level
+}
+
+
+// Check for collision functions (unchanged)
 function checkRectCollision(r1, r2) {
     return r1.x < r2.x + r2.size &&
            r1.x + r1.size > r2.x &&
@@ -258,7 +360,6 @@ function checkRectCollision(r1, r2) {
            r1.y + r1.size > r2.y;
 }
 
-// Check for collision between a circle (Player) and a rectangle (Enemy)
 function checkCircleRectCollision(circle, rect) {
     const closestX = Math.max(rect.x, Math.min(circle.x, rect.x + rect.size));
     const closestY = Math.max(rect.y, Math.min(circle.y, rect.y + rect.size));
@@ -324,13 +425,19 @@ function animate() {
         enemies.forEach(enemy => enemy.draw());
         projectiles.forEach(p => p.draw());
 
+        // Draw current level count on the canvas
+        ctx.font = '20px sans-serif';
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'left';
+        ctx.fillText('Level: ' + currentLevel, 10, 30);
+        
         // Check win condition (all enemies defeated)
         if (enemies.length === 0) {
-            gameState = 'win';
+            nextLevel(); // Load the next random level!
         }
 
     } else if (gameState === 'win') {
-        gameMessage('You Won!', 'lightgreen'); 
+        gameMessage('YOU BEAT ALL THE LEVELS!', 'lightgreen'); 
     } else if (gameState === 'lose') {
         gameMessage('Game Over', 'crimson'); 
     }
