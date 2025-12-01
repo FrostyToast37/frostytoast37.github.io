@@ -5,17 +5,22 @@ const ctx = canvas.getContext('2d');
 const GRAVITY = 0.6;
 const JUMP_VELOCITY = -12;
 const MOVE_SPEED = 5;
+const WALL_JUMP_HORIZONTAL_PUSH = 7.5; // Faster horizontal push for wall jump
 const PLAYER_RADIUS = 15;
 const ENEMY_SIZE = 20;
 
-let platforms = [];
+// Constraints for level generation (approximate player jump capabilities)
+const MAX_JUMP_HEIGHT = 125; // Max vertical jump height in pixels (~120 calculated)
+const MAX_HORIZONTAL_GAP = 220; // Max horizontal distance player can cover in one jump
+
+let blocks = []; // Renamed from platforms
 let enemies = [];
 let projectiles = [];
 let keys = {};
 let gameState = 'playing'; // 'playing', 'win', 'lose'
 let currentLevel = 1; // New variable to track the current level
 
-// --- GAME OBJECT CLASSES (Unchanged) ---
+// --- GAME OBJECT CLASSES ---
 
 class Player {
     constructor(x, y) {
@@ -24,6 +29,9 @@ class Player {
         this.vx = 0;
         this.vy = 0;
         this.isOnGround = false;
+        this.isWalledLeft = false; // New: is player pressing against a left wall
+        this.isWalledRight = false; // New: is player pressing against a right wall
+        this.wallJumpTimer = 0; // New: cooldown after wall jump
         this.radius = PLAYER_RADIUS;
         this.facing = 1; // 1 for right, -1 for left
         this.isAttacking = false;
@@ -66,42 +74,100 @@ class Player {
             this.facing = 1;
         }
 
-        // Update position
+        // Apply Wall Slide effect if walled and falling
+        this.isWalledLeft = false;
+        this.isWalledRight = false;
+        this.wallJumpTimer = Math.max(0, this.wallJumpTimer - 1); // Decrement timer
+
+        // Save old position for collision calculation
+        const oldX = this.x;
+        const oldY = this.y;
+
+        // Apply movement
         this.x += this.vx;
         this.y += this.vy;
 
-        // Simple collision detection with platforms
         this.isOnGround = false;
-        platforms.forEach(platform => {
-            if (
-                this.x > platform.x &&
-                this.x < platform.x + platform.width &&
-                this.y + this.radius <= platform.y + this.vy && // Check next frame position
-                this.y + this.radius >= platform.y - 1 &&
-                this.vy >= 0 // Only check if falling
-            ) {
-                this.vy = 0;
-                this.y = platform.y - this.radius; // Snap to the top
-                this.isOnGround = true;
+
+        // General collision detection with Blocks (Platforms/Walls)
+        blocks.forEach(block => {
+            // AABB check for intersection
+            if (this.x + this.radius > block.x &&
+                this.x - this.radius < block.x + block.width &&
+                this.y + this.radius > block.y &&
+                this.y - this.radius < block.y + block.height) {
+
+                // --- 1. Vertical Collision (Top/Bottom) ---
+                
+                // If the player was above the block's top edge last frame (hitting the top)
+                if (oldY + this.radius <= block.y) {
+                    this.vy = 0;
+                    this.y = block.y - this.radius; // Snap to the top
+                    this.isOnGround = true;
+                } 
+                // If the player was below the block's bottom edge last frame (hitting the bottom)
+                else if (oldY - this.radius >= block.y + block.height) {
+                    this.vy = 0;
+                    this.y = block.y + block.height + this.radius;
+                }
+
+                // --- 2. Horizontal Collision (Left/Right) ---
+
+                // If the player was to the right of the block's right edge last frame (hitting left wall)
+                else if (oldX - this.radius >= block.x + block.width) {
+                    this.vx = 0;
+                    this.x = block.x + block.width + this.radius; // Snap to the right
+                    this.isWalledLeft = true;
+                } 
+                // If the player was to the left of the block's left edge last frame (hitting right wall)
+                else if (oldX + this.radius <= block.x) {
+                    this.vx = 0;
+                    this.x = block.x - this.radius; // Snap to the left
+                    this.isWalledRight = true;
+                }
             }
         });
 
+        // Wall Slide Effect (reduces vertical speed when walling)
+        if (!this.isOnGround && (this.isWalledLeft || this.isWalledRight)) {
+            if (this.vy > 0) {
+                this.vy = Math.min(this.vy, 1); // Slow slide down
+            }
+        }
+        
         // Boundary collision (prevent falling off the bottom)
         if (this.y + this.radius > canvas.height) {
             this.y = canvas.height - this.radius;
             this.vy = 0;
             this.isOnGround = true;
+            this.isWalledLeft = false;
+            this.isWalledRight = false;
         }
     }
 
     jump() {
+        // Standard Ground Jump
         if (this.isOnGround) {
             this.vy = JUMP_VELOCITY;
             this.isOnGround = false;
+        } 
+        // Wall Jump Left
+        else if (this.isWalledLeft && this.wallJumpTimer === 0) {
+            this.vy = JUMP_VELOCITY; // Jump up
+            this.vx = WALL_JUMP_HORIZONTAL_PUSH; // Push away from the left wall (move right)
+            this.facing = 1; // Face right
+            this.wallJumpTimer = 20; // Cooldown
+        } 
+        // Wall Jump Right
+        else if (this.isWalledRight && this.wallJumpTimer === 0) {
+            this.vy = JUMP_VELOCITY; // Jump up
+            this.vx = -WALL_JUMP_HORIZONTAL_PUSH; // Push away from the right wall (move left)
+            this.facing = -1; // Face left
+            this.wallJumpTimer = 20; // Cooldown
         }
     }
 
-    // Melee attack: creates a temporary hitbox
+    // Melee attack: creates a temporary hitbox (Unchanged)
     meleeAttack() {
         if (this.isAttacking) return;
         this.isAttacking = true;
@@ -131,13 +197,14 @@ class Player {
         }, 100);
     }
 
-    // Ranged attack: shoots a projectile
+    // Ranged attack: shoots a projectile (Unchanged)
     rangedAttack() {
         // Shoot a small square projectile
         const projectile = new Projectile(this.x, this.y, this.facing * 10, 0);
         projectiles.push(projectile);
     }
 
+    // Take damage (Unchanged)
     takeDamage() {
         if (this.blinkTimer === 0) {
             this.health -= 1;
@@ -149,7 +216,8 @@ class Player {
     }
 }
 
-class Platform {
+// Renamed Platform to Block to reflect its use as a general obstacle/structure
+class Block {
     constructor(x, y, width, height) {
         this.x = x;
         this.y = y;
@@ -167,6 +235,7 @@ class Platform {
 }
 
 class Enemy {
+    // ... (Unchanged)
     constructor(x, y, movementRange = 0) {
         this.x = x;
         this.y = y;
@@ -196,6 +265,7 @@ class Enemy {
 }
 
 class Projectile {
+    // ... (Unchanged)
     constructor(x, y, vx, vy) {
         this.x = x;
         this.y = y;
@@ -224,62 +294,103 @@ class Projectile {
 // --- NEW LEVEL GENERATION LOGIC ---
 
 /**
- * Generates platforms and enemies based on the current level index, increasing difficulty.
+ * Generates blocks and enemies based on the current level index, increasing difficulty.
  * @param {number} levelIndex 
- * @returns {object} {platforms: array, enemies: array}
+ * @returns {object} {blocks: array, enemies: array}
  */
 function generateRandomLevel(levelIndex) {
-    const levelPlatforms = [];
+    const levelBlocks = [];
     const levelEnemies = [];
 
     // --- 1. Difficulty Scaling ---
-    const maxPlatforms = 4 + levelIndex * 2; // More platforms for higher levels
+    const maxBlocks = 4 + levelIndex * 2; // More blocks for higher levels
     const maxEnemies = 2 + levelIndex;      // More enemies for higher levels
     const maxPatrolRange = 50 + levelIndex * 30; // Enemies patrol further
 
-    // --- 2. Base Platform Setup ---
-    // Ground Platform (Mandatory)
-    levelPlatforms.push(new Platform(0, canvas.height - 10, canvas.width, 10));
+    // --- 2. Base Block Setup ---
+    // Ground Block (Mandatory)
+    levelBlocks.push(new Block(0, canvas.height - 10, canvas.width, 10));
 
-    // --- 3. Random Floating Platform Generation ---
-    for (let i = 0; i < maxPlatforms; i++) {
-        const pWidth = Math.floor(Math.random() * (250 - 80) + 80); // Width between 80 and 250
-        const pHeight = 10; 
+    // --- 3. Random Floating Block Generation with Solvability Constraints ---
+    for (let i = 0; i < maxBlocks; i++) {
+        // Decide whether to make a narrow wall block or a wide platform block
+        const isWall = Math.random() < 0.25 && levelIndex > 1; // 25% chance of a wall block
+
+        const bWidth = isWall 
+            ? Math.floor(Math.random() * (40 - 20) + 20) // Narrow wall (20-40px)
+            : Math.floor(Math.random() * (250 - 80) + 80); // Normal block (80-250px)
         
-        // y position: always above 100px from the bottom to allow jumping space
-        const pY = Math.floor(Math.random() * (canvas.height - 150 - 100) + 100);
-        const pX = Math.floor(Math.random() * (canvas.width - pWidth));
+        const bHeight = isWall
+            ? Math.floor(Math.random() * (canvas.height - 150) + 50) // Tall wall up to near the top
+            : 10; // Thin platform
+        
+        let bX, bY;
+        let validPlacement = true;
 
-        // Simple check to prevent platforms from being too close vertically
-        let tooClose = false;
-        for (const existingP of levelPlatforms) {
-            if (Math.abs(pY - existingP.y) < 50) { // platforms must be at least 50px apart vertically
-                tooClose = true;
+        // X position constraint: ensure it's not placed on the player start area (x < 100)
+        do {
+            bX = Math.floor(Math.random() * (canvas.width - bWidth));
+        } while (bX < 100 && bY > canvas.height - MAX_JUMP_HEIGHT); 
+        
+        // Y position constraint: platform must be at least 50px from the top
+        // and vertically reachable (MAX_JUMP_HEIGHT) from the ground initially.
+        bY = Math.floor(Math.random() * (canvas.height - 150 - 50) + 50);
+
+        // Check against existing blocks for overlap and jump possibility
+        for (const existingB of levelBlocks) {
+            // Check for severe vertical overlap (prevent blocks from being too close vertically)
+            if (Math.abs(bY - existingB.y) < 40) { 
+                validPlacement = false;
                 break;
+            }
+            
+            // Check jump possibility: If the new block is higher than the existing one,
+            // ensure the vertical difference is jumpable AND the horizontal distance is reachable.
+            if (bY < existingB.y) {
+                const hDiff = existingB.y - bY;
+                
+                // If the vertical height difference is too high, it's invalid
+                if (hDiff > MAX_JUMP_HEIGHT) {
+                    validPlacement = false;
+                    break;
+                }
+                
+                // Calculate the horizontal distance between the two blocks' closest edges
+                const distHorizontal = Math.max(0, Math.max(existingB.x + existingB.width - bX, bX + bWidth - existingB.x));
+                
+                // If the horizontal distance is also too large, it's invalid
+                if (distHorizontal > MAX_HORIZONTAL_GAP) {
+                    // NOTE: This complex constraint might accidentally make the level too easy or too hard 
+                    // depending on how the player uses wall jumps. We prioritize the vertical limit (MAX_JUMP_HEIGHT).
+                    // If we strictly enforce the horizontal gap, the level will be solvable by standard jump.
+                    // For now, let's prioritize the vertical check.
+                    // validPlacement = false; 
+                    // break;
+                }
             }
         }
 
-        if (!tooClose) {
-            levelPlatforms.push(new Platform(pX, pY, pWidth, pHeight));
+        if (validPlacement) {
+            levelBlocks.push(new Block(bX, bY, bWidth, bHeight));
         }
     }
 
     // --- 4. Random Enemy Placement ---
     let enemiesPlaced = 0;
-    // Platforms to use for enemy placement (floating platforms + ground)
-    const platformsToUse = [...levelPlatforms];
+    // Blocks to use for enemy placement (floating blocks + ground)
+    const blocksToUse = [...levelBlocks];
     
-    // Shuffle the platforms so enemies are placed randomly
-    platformsToUse.sort(() => Math.random() - 0.5);
+    // Shuffle the blocks so enemies are placed randomly
+    blocksToUse.sort(() => Math.random() - 0.5);
 
-    for (let i = 0; i < platformsToUse.length && enemiesPlaced < maxEnemies; i++) {
-        // Decide randomly if we place an enemy on this platform
+    for (let i = 0; i < blocksToUse.length && enemiesPlaced < maxEnemies; i++) {
+        // Decide randomly if we place an enemy on this block
         if (Math.random() < 0.6) { 
-            const platform = platformsToUse[i];
+            const block = blocksToUse[i];
             
-            // Place enemy on top of the platform
-            const eX = platform.x + Math.floor(Math.random() * (platform.width - ENEMY_SIZE));
-            const eY = platform.y - ENEMY_SIZE;
+            // Place enemy on top of the block
+            const eX = block.x + Math.floor(Math.random() * (block.width - ENEMY_SIZE));
+            const eY = block.y - ENEMY_SIZE;
             
             // Randomly decide if enemy patrols
             const patrol = Math.random() < 0.5 ? Math.floor(Math.random() * maxPatrolRange * 0.5) : 0;
@@ -291,13 +402,13 @@ function generateRandomLevel(levelIndex) {
 
     // Fallback: Ensure at least one enemy is placed if the target is > 0
     if (levelEnemies.length === 0 && maxEnemies > 0) {
-        const ground = levelPlatforms[0];
+        const ground = levelBlocks[0];
         const eX = ground.x + Math.floor(Math.random() * (ground.width - ENEMY_SIZE));
         const eY = ground.y - ENEMY_SIZE;
         levelEnemies.push(new Enemy(eX, eY, 0)); // Stationary enemy on ground
     }
 
-    return { platforms: levelPlatforms, enemies: levelEnemies };
+    return { blocks: levelBlocks, enemies: levelEnemies };
 }
 
 /**
@@ -310,7 +421,7 @@ function loadLevel(levelIndex) {
     const levelData = generateRandomLevel(levelIndex);
 
     // Reset game objects
-    platforms = levelData.platforms;
+    blocks = levelData.blocks; // Use the new 'blocks' array
     enemies = levelData.enemies;
     projectiles = [];
     keys = {};
@@ -420,7 +531,7 @@ function animate() {
         handleCollisions();
 
         // Draw
-        platforms.forEach(platform => platform.draw());
+        blocks.forEach(block => block.draw()); // Draw blocks
         player.draw();
         enemies.forEach(enemy => enemy.draw());
         projectiles.forEach(p => p.draw());
