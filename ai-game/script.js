@@ -74,7 +74,7 @@ class Player {
             this.facing = 1;
         }
 
-        // Apply Wall Slide effect if walled and falling
+        // Reset wall status and cooldown
         this.isWalledLeft = false;
         this.isWalledRight = false;
         this.wallJumpTimer = Math.max(0, this.wallJumpTimer - 1); // Decrement timer
@@ -135,7 +135,27 @@ class Player {
             }
         }
         
-        // Boundary collision (prevent falling off the bottom)
+        // --- Canvas Boundary Collision (Walls of the screen) ---
+
+        // 1. Right Wall Boundary
+        if (this.x + this.radius > canvas.width) {
+            this.x = canvas.width - this.radius;
+            this.vx = 0;
+            if (!this.isOnGround) {
+                this.isWalledRight = true; // Enable wall slide/jump on canvas edge
+            }
+        }
+
+        // 2. Left Wall Boundary
+        if (this.x - this.radius < 0) {
+            this.x = this.radius;
+            this.vx = 0;
+            if (!this.isOnGround) {
+                this.isWalledLeft = true; // Enable wall slide/jump on canvas edge
+            }
+        }
+        
+        // 3. Bottom Boundary (prevent falling off the bottom)
         if (this.y + this.radius > canvas.height) {
             this.y = canvas.height - this.radius;
             this.vy = 0;
@@ -156,14 +176,14 @@ class Player {
             this.vy = JUMP_VELOCITY; // Jump up
             this.vx = WALL_JUMP_HORIZONTAL_PUSH; // Push away from the left wall (move right)
             this.facing = 1; // Face right
-            this.wallJumpTimer = 20; // Cooldown
+            this.wallJumpTimer = 20; // Cooldown (prevents spamming)
         } 
         // Wall Jump Right
         else if (this.isWalledRight && this.wallJumpTimer === 0) {
             this.vy = JUMP_VELOCITY; // Jump up
             this.vx = -WALL_JUMP_HORIZONTAL_PUSH; // Push away from the right wall (move left)
             this.facing = -1; // Face left
-            this.wallJumpTimer = 20; // Cooldown
+            this.wallJumpTimer = 20; // Cooldown (prevents spamming)
         }
     }
 
@@ -327,15 +347,15 @@ function generateRandomLevel(levelIndex) {
         let bX, bY;
         let validPlacement = true;
 
+        // FIX: Define bY before bX constraint check
+        // Y position constraint: platform must be at least 50px from the top
+        bY = Math.floor(Math.random() * (canvas.height - 150 - 50) + 50);
+
         // X position constraint: ensure it's not placed on the player start area (x < 100)
         do {
             bX = Math.floor(Math.random() * (canvas.width - bWidth));
-        } while (bX < 100 && bY > canvas.height - MAX_JUMP_HEIGHT); 
+        } while (bX < 100 && bY > canvas.height - 100); 
         
-        // Y position constraint: platform must be at least 50px from the top
-        // and vertically reachable (MAX_JUMP_HEIGHT) from the ground initially.
-        bY = Math.floor(Math.random() * (canvas.height - 150 - 50) + 50);
-
         // Check against existing blocks for overlap and jump possibility
         for (const existingB of levelBlocks) {
             // Check for severe vertical overlap (prevent blocks from being too close vertically)
@@ -356,17 +376,9 @@ function generateRandomLevel(levelIndex) {
                 }
                 
                 // Calculate the horizontal distance between the two blocks' closest edges
-                const distHorizontal = Math.max(0, Math.max(existingB.x + existingB.width - bX, bX + bWidth - existingB.x));
-                
-                // If the horizontal distance is also too large, it's invalid
-                if (distHorizontal > MAX_HORIZONTAL_GAP) {
-                    // NOTE: This complex constraint might accidentally make the level too easy or too hard 
-                    // depending on how the player uses wall jumps. We prioritize the vertical limit (MAX_JUMP_HEIGHT).
-                    // If we strictly enforce the horizontal gap, the level will be solvable by standard jump.
-                    // For now, let's prioritize the vertical check.
-                    // validPlacement = false; 
-                    // break;
-                }
+                // Note: The previous logic for horizontal distance calculation was confusing. 
+                // We mainly rely on the MAX_JUMP_HEIGHT constraint for solvability.
+                // We'll keep the vertical constraint as the primary check.
             }
         }
 
