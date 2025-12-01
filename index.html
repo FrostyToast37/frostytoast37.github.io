@@ -17,6 +17,7 @@
     <button onclick="openGOL()">What is Life?</button>
     <button onclick="openMC()">Fun?</button>
     <button onclick="openOOS()">OOS?</button>
+    <button onclick="openAI()">Game?</button>
     </div>
     
     
@@ -100,7 +101,7 @@
         }
         function openTextAdventure() {
             var win = window.open()
-            var url = "https://frostytoast37.github.io/text-adventure.html"
+            var url = "https://frostytoast37.github.io/text-adventure"
             var iframe = win.document.createElement('iframe')
             iframe.style.width = "100%";
             iframe.style.height = "100%";
@@ -110,7 +111,7 @@
         }
         function openGOL() {
             var win = window.open()
-            var url = "https://frostytoast37.github.io/gol.html"
+            var url = "https://frostytoast37.github.io/gol"
             var iframe = win.document.createElement('iframe')
             iframe.style.width = "100%";
             iframe.style.height = "100%";
@@ -131,6 +132,16 @@
         function openOOS() {
             var win = window.open()
             var url = "https://frostytoast37.github.io/OOS.html"
+            var iframe = win.document.createElement('iframe')
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            iframe.src = url
+            win.document.body.appendChild(iframe)
+        }
+        function openAI() {
+            var win = window.open()
+            var url = "https://frostytoast37.github.io/ai-game"
             var iframe = win.document.createElement('iframe')
             iframe.style.width = "100%";
             iframe.style.height = "100%";
