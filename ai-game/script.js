@@ -3,9 +3,10 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 const GRAVITY = 0.6;
-const JUMP_VELOCITY = -12;
+const JUMP_VELOCITY = -12; // Standard ground jump vertical force
+const WALL_JUMP_V_VELOCITY = -10; // Slightly less vertical boost for wall jump
 const MOVE_SPEED = 5;
-const WALL_JUMP_HORIZONTAL_PUSH = 7.5; // Faster horizontal push for wall jump
+const WALL_JUMP_HORIZONTAL_PUSH = 14; // Increased horizontal push for angled launch
 const PLAYER_RADIUS = 15;
 const ENEMY_SIZE = 20;
 
@@ -171,16 +172,16 @@ class Player {
             this.vy = JUMP_VELOCITY;
             this.isOnGround = false;
         } 
-        // Wall Jump Left
+        // Wall Jump Left (Launch away from the left wall)
         else if (this.isWalledLeft && this.wallJumpTimer === 0) {
-            this.vy = JUMP_VELOCITY; // Jump up
+            this.vy = WALL_JUMP_V_VELOCITY; // Jump up
             this.vx = WALL_JUMP_HORIZONTAL_PUSH; // Push away from the left wall (move right)
             this.facing = 1; // Face right
             this.wallJumpTimer = 20; // Cooldown (prevents spamming)
         } 
-        // Wall Jump Right
+        // Wall Jump Right (Launch away from the right wall)
         else if (this.isWalledRight && this.wallJumpTimer === 0) {
-            this.vy = JUMP_VELOCITY; // Jump up
+            this.vy = WALL_JUMP_V_VELOCITY; // Jump up
             this.vx = -WALL_JUMP_HORIZONTAL_PUSH; // Push away from the right wall (move left)
             this.facing = -1; // Face left
             this.wallJumpTimer = 20; // Cooldown (prevents spamming)
@@ -323,7 +324,7 @@ function generateRandomLevel(levelIndex) {
     const levelEnemies = [];
 
     // --- 1. Difficulty Scaling ---
-    const maxBlocks = 4 + levelIndex * 2; // More blocks for higher levels
+    const targetFloatingBlocks = 4 + levelIndex * 2; // More blocks for higher levels
     const maxEnemies = 2 + levelIndex;      // More enemies for higher levels
     const maxPatrolRange = 50 + levelIndex * 30; // Enemies patrol further
 
@@ -332,7 +333,13 @@ function generateRandomLevel(levelIndex) {
     levelBlocks.push(new Block(0, canvas.height - 10, canvas.width, 10));
 
     // --- 3. Random Floating Block Generation with Solvability Constraints ---
-    for (let i = 0; i < maxBlocks; i++) {
+    let attempts = 0;
+    const maxAttempts = targetFloatingBlocks * 5; // Safety limit to prevent infinite loops
+    
+    // Loop until we have enough floating blocks or hit the maximum attempts
+    while (levelBlocks.length <= targetFloatingBlocks && attempts < maxAttempts) {
+        attempts++;
+        
         // Decide whether to make a narrow wall block or a wide platform block
         const isWall = Math.random() < 0.25 && levelIndex > 1; // 25% chance of a wall block
 
@@ -347,7 +354,6 @@ function generateRandomLevel(levelIndex) {
         let bX, bY;
         let validPlacement = true;
 
-        // FIX: Define bY before bX constraint check
         // Y position constraint: platform must be at least 50px from the top
         bY = Math.floor(Math.random() * (canvas.height - 150 - 50) + 50);
 
@@ -374,11 +380,6 @@ function generateRandomLevel(levelIndex) {
                     validPlacement = false;
                     break;
                 }
-                
-                // Calculate the horizontal distance between the two blocks' closest edges
-                // Note: The previous logic for horizontal distance calculation was confusing. 
-                // We mainly rely on the MAX_JUMP_HEIGHT constraint for solvability.
-                // We'll keep the vertical constraint as the primary check.
             }
         }
 
