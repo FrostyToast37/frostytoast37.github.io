@@ -532,11 +532,6 @@
     // to ensure every single element is ready.
     window.onload = function() {
 
-      // --- TEST #1 ---
-      // This alert MUST appear when you load the page.
-      // If it doesn't, the new script is not loading (caching).
-      alert("Clash JS script is running!");
-
       // --- NEW MAIN MENU LOGIC ---
       const mainMenuPage = document.getElementById('main-menu-page');
       const gamePage = document.getElementById('game-page');
@@ -564,6 +559,14 @@
       const playButton = document.getElementById('play-button'); // This is the IN-GAME play button
       const gameOverMenu = document.getElementById('game-over-menu');
       const playAgainButton = document.getElementById('play-again-button');
+      
+      // --- (THIS IS THE NEW, MOVED LISTENER) ---
+      if (playButton) {
+        playButton.addEventListener('click', startGame);
+      } else {
+        // If this alert pops up, the ID "play-button" is wrong in the HTML.
+        alert("CRITICAL ERROR: The in-game 'play-button' could not be found!");
+      }
 
       if (gameOverMenu && playAgainButton) {
         playAgainButton.addEventListener('click', () => {
@@ -1139,11 +1142,8 @@
       }
 
       function startGame() {
-        
-        // --- TEST #2 ---
-        // This alert MUST appear when you click the in-game "Play" button.
-        // If it doesn't, the button is not connected.
-        alert("Start button clicked!");
+        // We're past the test, so we can remove this alert now
+        // alert("Start button clicked!"); 
 
         gameRunning = true;
         gameMenu.style.display = 'none'; 
@@ -1231,7 +1231,8 @@
             }
 
             const dx = moveTarget._x - troop._x;
-            const dy = moveTargt._y - troop._y;
+            // --- (THIS IS THE FIXED TYPO) ---
+            const dy = moveTarget._y - troop._y; 
             const distToMoveTarget = Math.sqrt(dx * dx + dy * dy);
 
             if (distToMoveTarget > 1) {
@@ -1348,8 +1349,7 @@
       updateElixirDisplay();
       initializeCards(); 
 
-      // --- ATTACH BUTTON LISTENERS ---
-      playButton.addEventListener('click', startGame);
+      // --- (The listener was moved up higher) ---
 
     }; // --- END OF window.onload WRAPPER ---
   </script>
