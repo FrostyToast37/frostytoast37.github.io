@@ -4,18 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clash JS</title>
-
-  <script>
-    window.onerror = function(message, source, lineno, colno, error) {
-      alert(
-        "A JavaScript error occurred:\n\n" +
-        "Message: " + message + "\n" +
-        "Line: " + lineno + "\n" +
-        "Column: " + colno + "\n" +
-        "Error: " + (error ? error.stack : 'N/A')
-      );
-    };
-  </script>
   <style>
     /* --- NEW Main Menu Styles --- */
     body {
@@ -543,6 +531,11 @@
     // We will put ALL logic inside window.onload
     // to ensure every single element is ready.
     window.onload = function() {
+
+      // --- TEST #1 ---
+      // This alert MUST appear when you load the page.
+      // If it doesn't, the new script is not loading (caching).
+      alert("Clash JS script is running!");
 
       // --- NEW MAIN MENU LOGIC ---
       const mainMenuPage = document.getElementById('main-menu-page');
@@ -1146,6 +1139,12 @@
       }
 
       function startGame() {
+        
+        // --- TEST #2 ---
+        // This alert MUST appear when you click the in-game "Play" button.
+        // If it doesn't, the button is not connected.
+        alert("Start button clicked!");
+
         gameRunning = true;
         gameMenu.style.display = 'none'; 
         updateElixirDisplay();
@@ -1232,7 +1231,7 @@
             }
 
             const dx = moveTarget._x - troop._x;
-            const dy = moveTarget._y - troop._y;
+            const dy = moveTargt._y - troop._y;
             const distToMoveTarget = Math.sqrt(dx * dx + dy * dy);
 
             if (distToMoveTarget > 1) {
