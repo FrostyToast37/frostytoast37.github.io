@@ -536,7 +536,13 @@
   <script type="module">
     // We will put ALL logic inside window.onload
     // to ensure every single element is ready.
-    window.onload = () => {
+ window.onload = function() {
+    ctx.font = "20px 'ClashRoyale', Arial"; // Set font after it's loaded
+    drawCards(); // Initial draw
+
+    // --- ADD THIS LINE TO CONNECT THE BUTTON ---
+    document.getElementById("playButton").addEventListener("click", startGame);
+};
 
       // --- NEW MAIN MENU LOGIC ---
       const mainMenuPage = document.getElementById('main-menu-page');
@@ -1163,9 +1169,13 @@
         resetGame();
       }
 
-      function startGame() {
-        resetGame(); // Clear any previous game state
+     function startGame() {
+    // --- ADD THIS LINE TO HIDE THE START SCREEN ---
+    document.getElementById("startScreen").style.display = "none";
 
+    isPaused = false;
+    gameLoop(); // Start the game loop
+}
         // Set up new game
         gameRunning = true;
         gameMenu.style.display = 'none'; // Hide the in-game menu
