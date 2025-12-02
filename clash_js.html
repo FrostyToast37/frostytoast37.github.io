@@ -4,6 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clash JS</title>
+
+  <script>
+    window.onerror = function(message, source, lineno, colno, error) {
+      alert(
+        "A JavaScript error occurred:\n\n" +
+        "Message: " + message + "\n" +
+        "Line: " + lineno + "\n" +
+        "Column: " + colno + "\n" +
+        "Error: " + (error ? error.stack : 'N/A')
+      );
+    };
+  </script>
   <style>
     /* --- NEW Main Menu Styles --- */
     body {
@@ -531,9 +543,6 @@
     // We will put ALL logic inside window.onload
     // to ensure every single element is ready.
     window.onload = function() {
-    
-      // --- FIX #1: THE BROKEN window.onload BLOCK IS GONE ---
-      // (The old code that mentioned `ctx` and `drawCards` was here, causing a crash)
 
       // --- NEW MAIN MENU LOGIC ---
       const mainMenuPage = document.getElementById('main-menu-page');
@@ -545,8 +554,6 @@
         mainMenuPlayButton.addEventListener('click', () => {
           mainMenuPage.classList.add('hidden');
           gamePage.classList.remove('hidden');
-          // Now, the user will see the *in-game* menu (#game-menu)
-          // and can click *its* play button to start the game.
         });
       }
 
@@ -559,7 +566,7 @@
         });
       }
 
-      // --- YOUR EXISTING MENU LOGIC (from DOMContentLoaded) ---
+      // --- YOUR EXISTING MENU LOGIC ---
       const gameMenu = document.getElementById('game-menu');
       const playButton = document.getElementById('play-button'); // This is the IN-GAME play button
       const gameOverMenu = document.getElementById('game-over-menu');
@@ -567,15 +574,11 @@
 
       if (gameOverMenu && playAgainButton) {
         playAgainButton.addEventListener('click', () => {
-          // This will reload the whole page, sending
-          // the user back to the new Main Menu.
           location.reload(); 
         });
       }
 
-      // --- YOUR EXISTING GAME SCRIPT (from window.onload) ---
-
-      // --- DOM Elements ---
+      // --- YOUR EXISTING GAME SCRIPT ---
       const battlefield = document.getElementById('battlefield');
       const cards = document.querySelectorAll('.card');
       const elixirBar = document.getElementById('elixir-bar');
@@ -587,7 +590,7 @@
       const menuTitle = gameMenu.querySelector('h1');
       const menuSubtitle = gameMenu.querySelector('p');
 
-      // --- Troop Database (w/ TargetType, attackType, and isFlying) ---
+      // --- Troop Database ---
       const TROOP_DATA = {
         Knight: {
           cost: 3,
@@ -624,7 +627,7 @@
         },
         Musketeer: {
           cost: 4,
-          imageUrl: 'https://i.postimg.cc/TP4R1WPX/download-(8).jpg', // <-- YOUR NEW LINK
+          imageUrl: 'https://i.postimg.cc/TP4R1WPX/download-(8).jpg',
           speed: 0.5,
           health: 300,
           damage: 90,
@@ -809,7 +812,6 @@
             y <= ENEMY_KING_Y + kingTowerHeight;
 
           if (isOverKingTower) {
-            // Using a console log instead of alert
             console.warn('Cannot deploy directly on the King Tower!');
             draggedCardData = null;
             return;
@@ -832,19 +834,17 @@
             updateElixirDisplay();
             deployTroop(draggedCardData.troop, x, y, 'player');
           } else {
-            // Using a console log instead of alert
             console.warn(
               'Cannot deploy there! Take the Princess Tower on this lane first.',
             );
           }
         } else {
-          // Using a console log instead of alert
           console.warn('Not enough elixir!');
         }
         draggedCardData = null;
       });
 
-      // --- Initialize Towers (w/ Target Lock & attackType) ---
+      // --- Initialize Towers ---
       function initializeTowers() {
         const towerElements = [
           {
@@ -951,14 +951,12 @@
       function initializeCards() {
         cards.forEach((card) => {
           const troopName = card.dataset.troop;
-          if (!troopName) return; // Skip if it's not a troop card (like our new spell)
+          if (!troopName) return; 
           const data = TROOP_DATA[troopName];
           if (!data) return;
 
-          // --- FIX: Prevent adding duplicate images on "Play Again" ---
           const existingImage = card.querySelector('.card-image');
-          if (existingImage) return; // If image is already there, skip
-          // --- End Fix ---
+          if (existingImage) return; 
 
           const img = document.createElement('img');
           img.src = data.imageUrl;
@@ -1033,7 +1031,7 @@
         activeTroops.push(troop);
       }
 
-      // --- Find New Target Function (UPDATED for Flying) ---
+      // --- Find New Target Function ---
       function findNewTarget(troop) {
         const enemyFaction = troop.faction === 'player' ? 'ai' : 'player';
         const enemyPrefix = troop.faction === 'player' ? 'enemy' : 'player';
@@ -1099,25 +1097,20 @@
         troop.currentTarget = closestTarget;
       }
 
-      // --- NEW: Game Control Functions ---
-
+      // --- Game Control Functions ---
       function resetGame() {
-        // Stop all game intervals
         gameRunning = false;
         if (elixirInterval) clearInterval(elixirInterval);
         if (aiInterval) clearInterval(aiInterval);
         elixirInterval = null;
         aiInterval = null;
 
-        // Clear all active troops from array and DOM
         activeTroops.forEach((troop) => {
           troop.element.remove();
           troop.healthBarContainer.remove();
         });
         activeTroops = [];
 
-        // Clear all tower health bars from DOM
-        // We check if towerObjects exists before trying to loop
         if (Object.keys(towerObjects).length > 0) {
           Object.values(towerObjects).forEach((tower) => {
             if (tower.healthBarContainer) {
@@ -1125,8 +1118,7 @@
             }
           });
         }
-
-        // Reset game state
+        
         towerObjects = {};
         currentElixir = 5;
         aiElixir = 5;
@@ -1149,23 +1141,16 @@
           resultText.textContent = 'Your King Destroyed!';
         }
 
-        gameOverMenu.style.display = 'flex'; // Show the dedicated menu
-
-        // Reset the game state
+        gameOverMenu.style.display = 'flex'; 
         resetGame();
       }
 
-      // --- FIX #2: THE `startGame` FUNCTION WAS BROKEN ---
-      // This is the fully corrected version. The one you pasted
-      // had syntax errors and was missing all its logic.
       function startGame() {
-        // Set up new game
         gameRunning = true;
-        gameMenu.style.display = 'none'; // Hide the in-game menu
+        gameMenu.style.display = 'none'; 
         updateElixirDisplay();
-        initializeTowers(); // Re-create all towers and health bars
+        initializeTowers(); 
 
-        // Start game intervals
         elixirInterval = setInterval(() => {
           if (!gameRunning) return;
           if (currentElixir < maxElixir) {
@@ -1192,15 +1177,14 @@
           }
         }, 3000);
 
-        // Start the game loop
         gameLoop();
       }
 
-      // --- Game Loop (UPDATED) ---
+      // --- Game Loop ---
       function gameLoop() {
-        if (!gameRunning) return; // <-- This is now the main kill-switch
+        if (!gameRunning) return; 
 
-        // --- 1. Dead Unit Cleanup ---
+        // 1. Dead Unit Cleanup
         for (let i = activeTroops.length - 1; i >= 0; i--) {
           const troop = activeTroops[i];
           if (troop.isDead) {
@@ -1210,9 +1194,8 @@
           }
         }
       
-        // --- 2. Troop Logic ---
+        // 2. Troop Logic
         for (const troop of activeTroops) {
-          // 2a. Find a target
           if (
             troop.targetType === 'any' ||
             !troop.currentTarget ||
@@ -1228,7 +1211,7 @@
           const distance = getDistance(troop, finalTarget);
 
           if (distance > troop.range) {
-            // --- Move ---
+            // Move
             let moveTarget = finalTarget;
             const needsToCross =
               (troop.faction === 'player' &&
@@ -1238,7 +1221,6 @@
                 finalTarget._y > RIVER_Y &&
                 troop._y < RIVER_Y);
 
-            // UPDATED to check for isFlying
             if (needsToCross && !troop.isFlying) {
               let bridgeX =
                 finalTarget._x < ARENA_WIDTH / 2 ? BRIDGE_LEFT_X : BRIDGE_RIGHT_X;
@@ -1265,7 +1247,7 @@
               troop.healthBarContainer.style.top = `${troop.y - 8}px`;
             }
           } else {
-            // --- Attack ---
+            // Attack
             troop.attackCooldown--;
             if (troop.attackCooldown <= 0) {
               troop.attackCooldown = troop.attackSpeed;
@@ -1288,19 +1270,18 @@
                 finalTarget.isDead = true;
                 troop.currentTarget = null;
 
-                // --- UPDATED: Call endGame() instead of alert() ---
                 if (finalTarget.id && finalTarget.id.includes('-king')) {
                   const message =
                     troop.faction === 'player' ? 'You Win!' : 'You Lose!';
                   endGame(message);
-                  return; // Stop the loop immediately
+                  return; 
                 }
               }
             }
           }
         }
 
-        // --- 3. Tower Logic ---
+        // 3. Tower Logic
         for (const towerId in towerObjects) {
           const tower = towerObjects[towerId];
           if (tower.isDead) continue;
@@ -1353,25 +1334,22 @@
           }
         }
 
-        // --- Loop ---
+        // Loop
         if (gameRunning) {
-          // <-- Add final check
           try {
             requestAnimationFrame(gameLoop);
           } catch (e) {
             console.error('Critical error in gameLoop, stopping game.', e);
-            endGame('Critical Error!'); // NEW: Call endGame on error
+            endGame('Critical Error!');
           }
         }
       }
 
       // --- Initialize Page ---
       updateElixirDisplay();
-      initializeCards(); // <-- Only run this once on page load
+      initializeCards(); 
 
-      // --- FIX #3: THIS IS THE CORRECT BUTTON LISTENER ---
-      // This line was correct at the end of your pasted code.
-      // It connects the in-game 'play-button' to the corrected `startGame` function.
+      // --- ATTACH BUTTON LISTENERS ---
       playButton.addEventListener('click', startGame);
 
     }; // --- END OF window.onload WRAPPER ---
