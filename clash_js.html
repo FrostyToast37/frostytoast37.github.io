@@ -438,19 +438,15 @@
 </head>
 <body>
 
-  <!-- This is the main container that holds our "pages" -->
   <div id="app-container">
 
-    <!-- NEW MAIN MENU PAGE (Visible by default) -->
     <div id="main-menu-page">
       <h1>Clash JS</h1>
       <button id="main-menu-play-button" class="main-menu-button">Play</button>
       <button id="main-menu-deck-button" class="main-menu-button">Deck</button>
     </div>
 
-    <!-- YOUR GAME PAGE (Hidden by default) -->
     <div id="game-page" class="hidden">
-      <!-- Your entire game container HTML goes here -->
       <div id="game-container">
         <div id="game-menu">
           <div class="menu-content">
@@ -472,15 +468,15 @@
           <div class="no-deploy-zone" id="no-deploy-zone-left"></div>
           <div class="no-deploy-zone" id="no-deploy-zone-right"></div>
           <div class="no-deploy-zone" id="no-deploy-zone-king"></div>
-      
+        
           <div class="tower enemy-king" id="enemy-king"></div>
           <div class="tower enemy-princess" id="enemy-p1"></div>
           <div class="tower enemy-princess" id="enemy-p2"></div>
-      
+        
           <div id="river"></div>
           <div class="bridge" id="bridge-left"></div>
           <div class="bridge" id="bridge-right"></div>
-      
+        
           <div class="tower player-king" id="player-king"></div>
           <div class="tower player-princess" id="player-p1"></div>
           <div class="tower player-princess" id="player-p2"></div>
@@ -531,18 +527,12 @@
       </div>
     </div>
 
-  </div> <!-- End #app-container -->
-
-  <script type="module">
+  </div> <script type="module">
     // We will put ALL logic inside window.onload
     // to ensure every single element is ready.
- window.onload = function() {
-    ctx.font = "20px 'ClashRoyale', Arial"; // Set font after it's loaded
-    drawCards(); // Initial draw
-
-    // --- ADD THIS LINE TO CONNECT THE BUTTON ---
-    document.getElementById("playButton").addEventListener("click", startGame);
-};
+    window.onload = function() {
+    
+      // --- (DELETED THE BROKEN CTX/DRAWCARD BLOCK) ---
 
       // --- NEW MAIN MENU LOGIC ---
       const mainMenuPage = document.getElementById('main-menu-page');
@@ -574,10 +564,6 @@
       const gameOverMenu = document.getElementById('game-over-menu');
       const playAgainButton = document.getElementById('play-again-button');
 
-      // Note: We leave the 'playButton' listener off here
-      // because your 'startGame()' function (further down)
-      // already attaches it.
-
       if (gameOverMenu && playAgainButton) {
         playAgainButton.addEventListener('click', () => {
           // This will reload the whole page, sending
@@ -597,8 +583,6 @@
       const noDeployLeft = document.getElementById('no-deploy-zone-left');
       const noDeployRight = document.getElementById('no-deploy-zone-right');
       const noDeployKing = document.getElementById('no-deploy-zone-king');
-      // const gameMenu = document.getElementById('game-menu'); // Already defined above
-      // const playButton = document.getElementById('play-button'); // Already defined above
       const menuTitle = gameMenu.querySelector('h1');
       const menuSubtitle = gameMenu.querySelector('p');
 
@@ -744,6 +728,7 @@
         if (speed < 0.8) return 'Fast';
         return 'Very Fast';
       }
+
       function getDistance(unitA, unitB) {
         const ax = unitA._x || unitA.x;
         const ay = unitA._y || unitA.y;
@@ -1163,19 +1148,14 @@
           resultText.textContent = 'Your King Destroyed!';
         }
 
-        gameOverMenu.style.display = 'flex';  // Show the dedicated menu
+        gameOverMenu.style.display = 'flex'; // Show the dedicated menu
 
         // Reset the game state
         resetGame();
       }
 
-     function startGame() {
-    // --- ADD THIS LINE TO HIDE THE START SCREEN ---
-    document.getElementById("startScreen").style.display = "none";
-
-    isPaused = false;
-    gameLoop(); // Start the game loop
-}
+      // --- (THIS IS THE FIXED STARTGAME FUNCTION) ---
+      function startGame() {
         // Set up new game
         gameRunning = true;
         gameMenu.style.display = 'none'; // Hide the in-game menu
@@ -1226,7 +1206,7 @@
             activeTroops.splice(i, 1);
           }
         }
-        
+      
         // --- 2. Troop Logic ---
         for (const troop of activeTroops) {
           // 2a. Find a target
