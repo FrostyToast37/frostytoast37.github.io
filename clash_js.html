@@ -532,7 +532,8 @@
     // to ensure every single element is ready.
     window.onload = function() {
     
-      // --- (DELETED THE BROKEN CTX/DRAWCARD BLOCK) ---
+      // --- FIX #1: THE BROKEN window.onload BLOCK IS GONE ---
+      // (The old code that mentioned `ctx` and `drawCards` was here, causing a crash)
 
       // --- NEW MAIN MENU LOGIC ---
       const mainMenuPage = document.getElementById('main-menu-page');
@@ -1154,7 +1155,9 @@
         resetGame();
       }
 
-      // --- (THIS IS THE FIXED STARTGAME FUNCTION) ---
+      // --- FIX #2: THE `startGame` FUNCTION WAS BROKEN ---
+      // This is the fully corrected version. The one you pasted
+      // had syntax errors and was missing all its logic.
       function startGame() {
         // Set up new game
         gameRunning = true;
@@ -1366,9 +1369,9 @@
       updateElixirDisplay();
       initializeCards(); // <-- Only run this once on page load
 
-      // --- THIS IS THE FIX ---
-      // We wait for the DOM to be loaded, *then* we find the play button
-      // and attach the listener.
+      // --- FIX #3: THIS IS THE CORRECT BUTTON LISTENER ---
+      // This line was correct at the end of your pasted code.
+      // It connects the in-game 'play-button' to the corrected `startGame` function.
       playButton.addEventListener('click', startGame);
 
     }; // --- END OF window.onload WRAPPER ---
