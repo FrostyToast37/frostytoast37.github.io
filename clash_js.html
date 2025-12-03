@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Clash</title>
+<title>AI Clash v1.1.5</title>
 <style>
     /* --- MAIN MENU & UI STYLES --- */
     body {
@@ -725,8 +725,7 @@ window.onload = function() {
       const noDeployRight = document.getElementById('no-deploy-zone-right');
       const noDeployKing = document.getElementById('no-deploy-zone-king');
 
-      // --- CARD DATA UPDATED v2.1 ---
-      // Changes: SkeletonArmy speed 0.55 -> 0.75.
+      // --- CARD DATA v1.1.5 (IMAGES UPDATED & SKELETON NERF) ---
       const CARD_DATA = {
         Knight: { type: 'troop', cost: 3, imageUrl: 'https://i.postimg.cc/qM5Cfg8Z/download.jpg', speed: 0.6, health: 660, damage: 75, attackSpeed: 70, range: 10, targetType: 'any', attackType: 'ground', count: 1, isFlying: false, deployTime: 1000 },
         Archer: { type: 'troop', cost: 3, imageUrl: 'https://i.postimg.cc/1XWV33bS/download-(1).jpg', speed: 0.5, health: 120, damage: 40, attackSpeed: 60, range: 100, targetType: 'any', attackType: 'airAndGround', count: 2, isFlying: false, projectileType: 'arrow', deployTime: 1000 },
@@ -741,14 +740,14 @@ window.onload = function() {
         
         Minions: { type: 'troop', cost: 3, imageUrl: 'https://i.postimg.cc/bvfQphyq/download-(9).jpg', speed: 0.8, health: 90, damage: 40, attackSpeed: 50, range: 20, targetType: 'any', attackType: 'airAndGround', count: 3, isFlying: true, projectileType: 'dark_elixir', deployTime: 1000 },
         
-        Cannon: { type: 'building', cost: 3, imageUrl: 'https://i.postimg.cc/pT1W2d53/download-1.jpg', speed: 0, health: 450, damage: 70, attackSpeed: 40, range: 115, targetType: 'any', attackType: 'ground', count: 1, isFlying: false, projectileType: 'cannonball', deployTime: 1000 },
+        Cannon: { type: 'building', cost: 3, imageUrl: 'https://i.postimg.cc/Pq0rFbQv/download-(16).jpg', speed: 0, health: 450, damage: 70, attackSpeed: 40, range: 115, targetType: 'any', attackType: 'ground', count: 1, isFlying: false, projectileType: 'cannonball', deployTime: 1000 },
         
-        GoblinHut: { type: 'building', cost: 5, imageUrl: 'https://i.postimg.cc/26y7064Q/download-2.jpg', speed: 0, health: 800, damage: 0, attackSpeed: 0, range: 0, targetType: 'none', attackType: 'none', count: 1, isFlying: false, spawnUnit: 'SpearGoblins', spawnRate: 2500, deployTime: 1000 },
+        GoblinHut: { type: 'building', cost: 5, imageUrl: 'https://i.postimg.cc/k5GBHg3m/download-(15).jpg', speed: 0, health: 800, damage: 0, attackSpeed: 0, range: 0, targetType: 'none', attackType: 'none', count: 1, isFlying: false, spawnUnit: 'SpearGoblins', spawnRate: 2500, deployTime: 1000 },
         
-        SpearGoblins: { type: 'troop', cost: 2, imageUrl: 'https://i.postimg.cc/0j1tL2y2/download-3.jpg', speed: 0.85, health: 52, damage: 24, attackSpeed: 50, range: 100, targetType: 'any', attackType: 'airAndGround', count: 3, isFlying: false, projectileType: 'spear', deployTime: 1000 },
+        SpearGoblins: { type: 'troop', cost: 2, imageUrl: 'https://i.postimg.cc/SQBCzC0g/download-(14).jpg', speed: 0.85, health: 52, damage: 24, attackSpeed: 50, range: 100, targetType: 'any', attackType: 'airAndGround', count: 3, isFlying: false, projectileType: 'spear', deployTime: 1000 },
         
-        // --- SKELETON ARMY: ADJUSTED SPEED TO 0.75 ---
-        SkeletonArmy: { type: 'troop', cost: 3, imageUrl: 'https://i.postimg.cc/Rh4v644q/download-4.jpg', speed: 0.75, health: 20, damage: 32, attackSpeed: 40, range: 10, targetType: 'any', attackType: 'ground', count: 20, isFlying: false, deployTime: 1000 },
+        // SKELETON NERF: Speed 0.6, Damage 18
+        SkeletonArmy: { type: 'troop', cost: 3, imageUrl: 'https://i.postimg.cc/28W3pKKn/download-(13).jpg', speed: 0.6, health: 20, damage: 18, attackSpeed: 40, range: 10, targetType: 'any', attackType: 'ground', count: 20, isFlying: false, deployTime: 1000 },
         
         Fireball: { type: 'spell', cost: 4, imageUrl: 'https://i.postimg.cc/8Psdb4Xk/download-(10).jpg', damage: 200, radius: 80, targetAir: true, targetGround: true, spellEffect: 'fireball' },
         Arrows: { type: 'spell', cost: 3, imageUrl: 'https://i.postimg.cc/C5rGgn1m/download-(11).jpg', damage: 100, radius: 120, targetAir: true, targetGround: true, spellEffect: 'arrows' },
@@ -784,7 +783,7 @@ window.onload = function() {
       let currentElixir = 5;
       let aiElixir = 5;
       const maxElixir = 10;
-      let elixirRegenRate = 2000; // Will become 1000 in double elixir
+      let elixirRegenRate = 2000; 
       let draggedCardData = null;
       let activeTroops = [];
       let towerObjects = {};
@@ -917,7 +916,7 @@ window.onload = function() {
             currentElixir -= draggedCardData.cost;
             updateElixirDisplay();
             if (data.type === 'troop' || data.type === 'building') deployTroop(draggedCardData.name, x, y, 'player');
-            else if (data.type === 'spell') applySpell(draggedCardData.name, x, y);
+            else if (data.type === 'spell') applySpell(draggedCardData.name, x, y, 'player');
           } else { console.warn('Cannot deploy there!'); }
         } else { console.warn('Not enough elixir!'); }
         draggedCardData = null;
@@ -1033,7 +1032,7 @@ window.onload = function() {
       }
 
 
-      function applySpell(spellName, x, y) {
+      function applySpell(spellName, x, y, faction) {
         const data = CARD_DATA[spellName];
         if (!data) return;
 
@@ -1041,7 +1040,12 @@ window.onload = function() {
            triggerSpellVisual(data.spellEffect, x, y);
         }
 
-        const targets = [...activeTroops, ...Object.values(towerObjects)].filter(unit => !unit.isDead);
+        // TARGETING FIX: ONLY HIT ENEMIES
+        const enemyFaction = faction === 'player' ? 'ai' : 'player';
+        
+        // Filter targets that are NOT dead AND belong to the ENEMY faction
+        const targets = [...activeTroops, ...Object.values(towerObjects)].filter(unit => !unit.isDead && unit.faction === enemyFaction);
+        
         const inRange = targets.filter(unit => getDistance({ _x: x, _y: y }, unit) <= data.radius 
           && ((data.targetGround && !unit.isFlying) || (data.targetAir && unit.isFlying) || (!unit.isFlying && !('isFlying' in unit))));
         
@@ -1087,7 +1091,6 @@ window.onload = function() {
       }
 
       function initializeTowers() {
-        // TOWER ATTACK SPEED BUFFED: Reduced delay from 60 to 35
         const towerElements = [
           { id: 'enemy-p1', faction: 'ai', element: document.getElementById('enemy-p1'), x: ENEMY_TOWER_LEFT_X, y: ENEMY_TOWER_Y, maxHealth: 1400, currentHealth: 1400, damage: 50, range: 150, attackSpeed: 35, attackType: 'airAndGround' },
           { id: 'enemy-p2', faction: 'ai', element: document.getElementById('enemy-p2'), x: ENEMY_TOWER_RIGHT_X, y: ENEMY_TOWER_Y, maxHealth: 1400, currentHealth: 1400, damage: 50, range: 150, attackSpeed: 35, attackType: 'airAndGround' },
@@ -1170,20 +1173,25 @@ window.onload = function() {
             lastSpawnTime: Date.now(),
             // DEPLOY LOGIC
             currentDeployTimer: data.deployTime || 1000,
-            deployTimerElement: deployTimerContainer
+            deployTimerElement: deployTimerContainer,
+            // RETARGETING
+            retargetDelay: Math.floor(Math.random() * 20) // Randomize initial check to reduce CPU spike
           };
           activeTroops.push(troop);
         }
       }
 
-      function findNewTarget(troop) {
+      // --- NEW TARGETING LOGIC v1.1.5 ---
+      function getBestTarget(troop) {
         const enemyFaction = troop.faction === 'player' ? 'ai' : 'player';
         const enemyPrefix = troop.faction === 'player' ? 'enemy' : 'player';
         let closestTarget = null;
         let minDistance = 9999;
         
+        // 1. Check if we attack buildings only
         if (troop.targetType === 'buildings') {
           let targets = [towerObjects[`${enemyPrefix}-p1`], towerObjects[`${enemyPrefix}-p2`], towerObjects[`${enemyPrefix}-king`]];
+          // Add enemy buildings
           for (const t of activeTroops) {
               if (t.faction === enemyFaction && !t.isDead && t.type === 'building') {
                   targets.push(t);
@@ -1195,10 +1203,10 @@ window.onload = function() {
               if (dist < minDistance) { minDistance = dist; closestTarget = tower; }
             }
           }
-          troop.currentTarget = closestTarget;
-          return;
+          return { target: closestTarget, distance: minDistance };
         }
 
+        // 2. Check Troops
         for (const t of activeTroops) {
           if (t.faction === enemyFaction && !t.isDead) {
             if (t.isFlying && troop.attackType === 'ground') continue;
@@ -1206,6 +1214,8 @@ window.onload = function() {
             if (dist < minDistance) { minDistance = dist; closestTarget = t; }
           }
         }
+        
+        // 3. Check Towers
         let targets = [towerObjects[`${enemyPrefix}-p1`], towerObjects[`${enemyPrefix}-p2`], towerObjects[`${enemyPrefix}-king`]];
         for (const tower of targets) {
           if (tower && !tower.isDead) {
@@ -1213,7 +1223,34 @@ window.onload = function() {
             if (dist < minDistance) { minDistance = dist; closestTarget = tower; }
           }
         }
-        troop.currentTarget = closestTarget;
+        
+        return { target: closestTarget, distance: minDistance };
+      }
+
+      function findNewTarget(troop) {
+        const result = getBestTarget(troop);
+        troop.currentTarget = result.target;
+      }
+
+      function checkForBetterTarget(troop) {
+          // If we have no target, find one
+          if (!troop.currentTarget || troop.currentTarget.isDead) {
+              findNewTarget(troop);
+              return;
+          }
+
+          // Existing distance
+          const currentDistance = getDistance(troop, troop.currentTarget);
+          
+          // Best possible distance
+          const result = getBestTarget(troop);
+          
+          // THRESHOLD LOGIC: Only switch if the new target is >10px closer
+          if (result.target && result.target !== troop.currentTarget) {
+              if (result.distance < currentDistance - 10) {
+                  troop.currentTarget = result.target;
+              }
+          }
       }
 
       function resetGame() {
@@ -1267,7 +1304,7 @@ window.onload = function() {
                 aiElixir -= data.cost;
                 let deployX = Math.random() > 0.5 ? 100 : 300;
                 if (data.type === 'troop' || data.type === 'building') deployTroop(cardName, deployX, 120, 'ai');
-                else if (data.type === 'spell') applySpell(cardName, Math.random() > 0.5 ? 100 : 300, 400);
+                else if (data.type === 'spell') applySpell(cardName, Math.random() > 0.5 ? 100 : 300, 'ai');
             }
           }, 3000 / (isDoubleElixir ? 2 : 1)); // AI plays faster in double elixir
       }
@@ -1333,15 +1370,13 @@ window.onload = function() {
           
           // --- DEPLOY TIMER CHECK ---
           if (troop.currentDeployTimer > 0) {
-              troop.currentDeployTimer -= 16; // Approx 60fps frame time
+              troop.currentDeployTimer -= 16; 
               if (troop.currentDeployTimer <= 0) {
-                  // Timer finished
                   if (troop.deployTimerElement) {
                       troop.deployTimerElement.remove();
                       troop.deployTimerElement = null;
                   }
               } else {
-                  // Still deploying: Skip move/attack/spawn logic
                   continue; 
               }
           }
@@ -1355,8 +1390,17 @@ window.onload = function() {
               }
           }
 
+          // --- RETARGETING CHECK (v1.1.5) ---
           if (!troop.currentTarget || troop.currentTarget.isDead) {
-            findNewTarget(troop);
+             findNewTarget(troop);
+          } else {
+             // Dynamic Retargeting: Check every 15 frames (~0.25s)
+             if (!troop.retargetDelay) troop.retargetDelay = 0;
+             troop.retargetDelay--;
+             if (troop.retargetDelay <= 0) {
+                 troop.retargetDelay = 15;
+                 checkForBetterTarget(troop);
+             }
           }
           
           const finalTarget = troop.currentTarget;
@@ -1405,21 +1449,16 @@ window.onload = function() {
               setTimeout(() => {
                   // --- SPLASH DAMAGE LOGIC ---
                   if (troop.splashRadius) {
-                      // Determine Splash Center
-                      // Melee splash (Valkyrie) centers on self. Ranged splash (Baby Dragon) centers on target.
                       let splashCenterX, splashCenterY;
-                      
                       if (troop.range < 30) { // Melee (Valkyrie)
                           splashCenterX = troop._x;
                           splashCenterY = troop._y;
                       } else {
                           splashCenterX = finalTarget._x;
                           splashCenterY = finalTarget._y;
-                          // Baby Dragon visual: no shake
                           if (troop.cardName === 'BabyDragon') triggerSpellVisual('fireball_quiet', splashCenterX, splashCenterY);
                       }
 
-                      // Find all enemies in radius
                       const enemyFaction = troop.faction === 'player' ? 'ai' : 'player';
                       const targets = [...activeTroops, ...Object.values(towerObjects)].filter(unit => !unit.isDead && unit.faction === enemyFaction);
                       
