@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Clash v1.1.5</title>
-<style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Clash v1.2.0 - Living Buildings</title>
+
+  <style>
     /* --- MAIN MENU & UI STYLES --- */
     body {
       background-color: #333;
@@ -163,6 +164,36 @@
     }
     .spin-animation {
         animation: spin-attack 0.3s linear;
+    }
+
+    /* Building Pop/Inflate Animation */
+    @keyframes inflate-pop {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+    .inflate-animation {
+        animation: inflate-pop 0.2s ease-out;
+    }
+
+    /* Sleeping Zzz Animation */
+    .sleeping-icon {
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 20px;
+        color: white;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px black;
+        opacity: 0;
+        pointer-events: none;
+        animation: sleep-float 2s infinite;
+        z-index: 15;
+    }
+    @keyframes sleep-float {
+        0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
+        50% { opacity: 1; }
+        100% { transform: translate(10px, -20px) scale(1.2); opacity: 0; }
     }
 
     /* Full Screen Flash for Lightning */
@@ -602,10 +633,12 @@
     }
     #play-button:hover, #play-again-button:hover { transform: scale(1.05); box-shadow: 0 6px 12px rgba(0,0,0,0.4); }
     #play-button:active, #play-again-button:active { transform: scale(0.98); }
-</style>
+  </style>
+
+  
 </head>
 <body>
-<div id="app-container">
+  <div id="app-container">
     <div id="main-menu-page">
       <h1>AI Clash</h1>
       <button id="main-menu-play-button" class="main-menu-button">Play</button>
@@ -672,8 +705,8 @@
     </div>
   </div>
 
-<script>
-window.onload = function() {
+  <script>
+    window.onload = function() {
       // --- MENU LOGIC ---
       const mainMenuPage = document.getElementById('main-menu-page');
       const gamePage = document.getElementById('game-page');
@@ -725,7 +758,7 @@ window.onload = function() {
       const noDeployRight = document.getElementById('no-deploy-zone-right');
       const noDeployKing = document.getElementById('no-deploy-zone-king');
 
-      // --- CARD DATA v1.1.5 (IMAGES UPDATED & SKELETON NERF) ---
+      // --- CARD DATA v1.2.0 (UPDATED RANGES & HUT) ---
       const CARD_DATA = {
         Knight: { type: 'troop', cost: 3, imageUrl: 'https://i.postimg.cc/qM5Cfg8Z/download.jpg', speed: 0.6, health: 660, damage: 75, attackSpeed: 70, range: 10, targetType: 'any', attackType: 'ground', count: 1, isFlying: false, deployTime: 1000 },
         Archer: { type: 'troop', cost: 3, imageUrl: 'https://i.postimg.cc/1XWV33bS/download-(1).jpg', speed: 0.5, health: 120, damage: 40, attackSpeed: 60, range: 100, targetType: 'any', attackType: 'airAndGround', count: 2, isFlying: false, projectileType: 'arrow', deployTime: 1000 },
@@ -734,68 +767,50 @@ window.onload = function() {
         MiniPekka: { type: 'troop', cost: 4, imageUrl: 'https://i.postimg.cc/d3JG0X1j/download-(4).jpg', speed: 0.7, health: 500, damage: 250, attackSpeed: 100, range: 10, targetType: 'any', attackType: 'ground', count: 1, isFlying: false, deployTime: 1000 },
         Goblins: { type: 'troop', cost: 2, imageUrl: 'https://i.postimg.cc/XYPKgQHf/download-(5).jpg', speed: 0.9, health: 80, damage: 45, attackSpeed: 40, range: 10, targetType: 'any', attackType: 'ground', count: 4, isFlying: false, deployTime: 1000 },
         
-        Valkyrie: { type: 'troop', cost: 4, imageUrl: 'https://i.postimg.cc/9FWBX4w5/download-(6).jpg', speed: 0.6, health: 700, damage: 100, attackSpeed: 80, range: 25, targetType: 'any', attackType: 'ground', count: 1, isFlying: false, splashRadius: 35, deployTime: 1500 },
+        Valkyrie: { type: 'troop', cost: 4, imageUrl: 'https://i.postimg.cc/9FWBX4w5/download-(6).jpg', speed: 0.6, health: 700, damage: 100, attackSpeed: 80, range: 25, targetType: 'any', attackType: 'ground', count: 1, isFlying: false, splashRadius: 35, deployTime: 1000 },
+        BabyDragon: { type: 'troop', cost: 4, imageUrl: 'https://i.postimg.cc/wvb6C0Wq/download-(7).jpg', speed: 0.65, health: 600, damage: 100, splashRadius: 40, attackSpeed: 90, range: 80, targetType: 'any', attackType: 'airAndGround', count: 1, isFlying: true, projectileType: 'fireball_small', deployTime: 1000 },
+        Minions: { type: 'troop', cost: 3, imageUrl: 'https://i.postimg.cc/T1917Zst/download-(9).jpg', speed: 0.8, health: 90, damage: 40, attackSpeed: 50, range: 20, targetType: 'any', attackType: 'airAndGround', count: 3, isFlying: true, projectileType: 'dark_elixir', deployTime: 1000 },
         
-        BabyDragon: { type: 'troop', cost: 4, imageUrl: 'https://i.postimg.cc/KjGHB0jc/download-(7).jpg', speed: 0.5, health: 600, damage: 60, attackSpeed: 70, range: 80, targetType: 'any', attackType: 'airAndGround', count: 1, isFlying: true, projectileType: 'fireball_small', splashRadius: 60, deployTime: 1000 },
+        // CANNON: Range Increased 115 -> 150
+        Cannon: { type: 'building', cost: 3, imageUrl: 'https://i.postimg.cc/Pq0rFbQv/download-(16).jpg', speed: 0, health: 450, damage: 70, attackSpeed: 40, range: 150, targetType: 'any', attackType: 'ground', count: 1, isFlying: false, projectileType: 'cannonball', deployTime: 1000 },
         
-        Minions: { type: 'troop', cost: 3, imageUrl: 'https://i.postimg.cc/bvfQphyq/download-(9).jpg', speed: 0.8, health: 90, damage: 40, attackSpeed: 50, range: 20, targetType: 'any', attackType: 'airAndGround', count: 3, isFlying: true, projectileType: 'dark_elixir', deployTime: 1000 },
-        
-        Cannon: { type: 'building', cost: 3, imageUrl: 'https://i.postimg.cc/Pq0rFbQv/download-(16).jpg', speed: 0, health: 450, damage: 70, attackSpeed: 40, range: 115, targetType: 'any', attackType: 'ground', count: 1, isFlying: false, projectileType: 'cannonball', deployTime: 1000 },
-        
-        GoblinHut: { type: 'building', cost: 5, imageUrl: 'https://i.postimg.cc/k5GBHg3m/download-(15).jpg', speed: 0, health: 800, damage: 0, attackSpeed: 0, range: 0, targetType: 'none', attackType: 'none', count: 1, isFlying: false, spawnUnit: 'SpearGoblins', spawnRate: 2500, deployTime: 1000 },
+        // GOBLIN HUT: Added Range 150 (for threat detection)
+        GoblinHut: { type: 'building', cost: 5, imageUrl: 'https://i.postimg.cc/k5GBHg3m/download-(15).jpg', speed: 0, health: 800, damage: 0, attackSpeed: 0, range: 150, targetType: 'none', attackType: 'none', count: 1, isFlying: false, spawnUnit: 'SpearGoblins', spawnRate: 2500, deployTime: 1000 },
         
         SpearGoblins: { type: 'troop', cost: 2, imageUrl: 'https://i.postimg.cc/SQBCzC0g/download-(14).jpg', speed: 0.85, health: 52, damage: 24, attackSpeed: 50, range: 100, targetType: 'any', attackType: 'airAndGround', count: 3, isFlying: false, projectileType: 'spear', deployTime: 1000 },
-        
-        // SKELETON NERF: Speed 0.6, Damage 18
         SkeletonArmy: { type: 'troop', cost: 3, imageUrl: 'https://i.postimg.cc/28W3pKKn/download-(13).jpg', speed: 0.6, health: 20, damage: 18, attackSpeed: 40, range: 10, targetType: 'any', attackType: 'ground', count: 20, isFlying: false, deployTime: 1000 },
         
         Fireball: { type: 'spell', cost: 4, imageUrl: 'https://i.postimg.cc/8Psdb4Xk/download-(10).jpg', damage: 200, radius: 80, targetAir: true, targetGround: true, spellEffect: 'fireball' },
         Arrows: { type: 'spell', cost: 3, imageUrl: 'https://i.postimg.cc/C5rGgn1m/download-(11).jpg', damage: 100, radius: 120, targetAir: true, targetGround: true, spellEffect: 'arrows' },
-        Lightning: { type: 'spell', cost: 6, imageUrl: 'https://i.postimg.cc/8CLm6CKF/download-(12).jpg', damage: 300, radius: 100, maxTargets: 3, targetAir: true, targetGround: true, spellEffect: 'lightning' },
+        Lightning: { type: 'spell', cost: 6, imageUrl: 'https://i.postimg.cc/Kj59Y6y1/download-(12).jpg', damage: 300, radius: 100, maxTargets: 3, targetAir: true, targetGround: true, spellEffect: 'lightning' }
       };
 
-      const allCardNames = Object.keys(CARD_DATA);
-      let selectedDeck = ['Knight', 'Archer', 'Giant', 'Cannon', 'SpearGoblins', 'SkeletonArmy', 'GoblinHut', 'BabyDragon'];
+      const aiDeck = ['Giant', 'Musketeer', 'MiniPekka', 'Arrows', 'Knight', 'Archer', 'Goblins', 'Fireball'];
+      let selectedDeck = ['Knight', 'Archer', 'Giant', 'Musketeer', 'MiniPekka', 'Goblins', 'Fireball', 'Arrows'];
+      
       const savedDeck = localStorage.getItem('selectedDeck');
-      if (savedDeck) selectedDeck = JSON.parse(savedDeck);
-
-      function populateDeckSelection() {
-        const container = document.getElementById('deck-cards-container');
-        container.innerHTML = '';
-        allCardNames.forEach(name => {
-          const card = createCardElement(name, true);
-          if (selectedDeck.includes(name)) card.classList.add('selected');
-          card.addEventListener('click', () => {
-            if (card.classList.contains('selected')) {
-              card.classList.remove('selected');
-              selectedDeck = selectedDeck.filter(n => n !== name);
-            } else if (selectedDeck.length < 8) {
-              card.classList.add('selected');
-              selectedDeck.push(name);
-            }
-          });
-          container.appendChild(card);
-        });
+      if (savedDeck) {
+        try {
+          selectedDeck = JSON.parse(savedDeck);
+        } catch(e) { console.error("Error loading deck", e); }
       }
-      populateDeckSelection();
-
-      // --- Game State ---
-      let currentElixir = 5;
-      let aiElixir = 5;
-      const maxElixir = 10;
-      let elixirRegenRate = 2000; 
-      let draggedCardData = null;
-      let activeTroops = [];
-      let towerObjects = {};
-      const aiDeck = ['Knight', 'Archer', 'Giant', 'SkeletonArmy', 'Musketeer', 'BabyDragon', 'Minions', 'Arrows'];
-      let gameRunning = false;
-      let elixirInterval = null;
-      let aiInterval = null;
-      let gameTimerInterval = null;
-      let gameTimeRemaining = 120; // 2 minutes
-      let isDoubleElixir = false;
 
       const ARENA_WIDTH = 400;
+      const ARENA_HEIGHT = 700;
+      let gameRunning = false;
+      let activeTroops = [];
+      let currentElixir = 5;
+      const maxElixir = 10;
+      let aiElixir = 5;
+      let elixirRegenRate = 2000;
+      let gameTimerInterval;
+      let gameTimeRemaining = 120; // 2 minutes
+      let elixirInterval;
+      let aiInterval;
+      let draggedCardData = null;
+      let towerObjects = {};
+      let isDoubleElixir = false;
+
       const RIVER_Y = 245;
       const BRIDGE_LEFT_X = 70;
       const BRIDGE_RIGHT_X = 330;
@@ -839,18 +854,23 @@ window.onload = function() {
         card.dataset.name = name;
         card.dataset.cost = data.cost;
         card.draggable = !forDeck;
+
         const nameSpan = document.createElement('span');
         nameSpan.classList.add('card-name');
         nameSpan.textContent = name;
+        
         const costSpan = document.createElement('span');
         costSpan.classList.add('card-cost');
         costSpan.textContent = data.cost;
+        
         const img = document.createElement('img');
         img.src = data.imageUrl;
         img.classList.add('card-image');
+        
         card.appendChild(img);
         card.appendChild(nameSpan);
         card.appendChild(costSpan);
+        
         return card;
       }
 
@@ -859,82 +879,130 @@ window.onload = function() {
         selectedDeck.forEach(name => {
           const card = createCardElement(name);
           card.addEventListener('dragstart', (e) => {
-            if (!gameRunning) return;
-            const cardName = e.target.dataset.name;
-            const data = CARD_DATA[cardName];
-            if (data.type !== 'spell') {
-              if (!towerObjects['enemy-p1'].isDead) noDeployLeft.classList.add('visible');
-              if (!towerObjects['enemy-p2'].isDead) noDeployRight.classList.add('visible');
-              noDeployKing.classList.add('visible');
-            }
-            draggedCardData = { name: cardName, cost: parseInt(e.target.dataset.cost, 10) };
-            e.dataTransfer.setData('text/plain', name);
+             if (!gameRunning) return;
+             const cardName = e.currentTarget.dataset.name;
+             const data = CARD_DATA[cardName];
+             if (currentElixir < data.cost) {
+               e.preventDefault();
+               return;
+             }
+             draggedCardData = { name: cardName, ...data };
+             e.dataTransfer.setData('text/plain', cardName);
+             e.dataTransfer.effectAllowed = "move";
+             
+             // Show Stat Overlay
+             statOverlay.innerHTML = `
+                <h3>${cardName}</h3>
+                <p>HP: ${data.health} | Dmg: ${data.damage}</p>
+                <p>Spd: ${getSpeedCategory(data.speed)} | Tgt: ${data.targetType}</p>
+             `;
+             statOverlay.classList.add('visible');
+             
+             // Show No-Deploy Zones
+             noDeployLeft.classList.add('visible');
+             noDeployRight.classList.add('visible');
+             noDeployKing.classList.add('visible');
           });
-          card.addEventListener('dragend', (e) => {
-            noDeployLeft.classList.remove('visible');
-            noDeployRight.classList.remove('visible');
-            noDeployKing.classList.remove('visible');
+          card.addEventListener('dragend', () => {
+             draggedCardData = null;
+             statOverlay.classList.remove('visible');
+             noDeployLeft.classList.remove('visible');
+             noDeployRight.classList.remove('visible');
+             noDeployKing.classList.remove('visible');
           });
-          card.addEventListener('mouseover', (e) => {
-            const cardName = e.currentTarget.dataset.name;
-            const data = CARD_DATA[cardName];
-            statOverlay.innerHTML = `<h3>${cardName}</h3><p><b>Health:</b> ${data.health||'N/A'}</p><p><b>Damage:</b> ${data.damage||'N/A'}</p><p><b>Speed:</b> ${getSpeedCategory(data.speed)||'N/A'}</p>`;
-            statOverlay.classList.add('visible');
-          });
-          card.addEventListener('mouseout', () => statOverlay.classList.remove('visible'));
           cardTray.appendChild(card);
         });
       }
 
-      battlefield.addEventListener('dragover', (e) => e.preventDefault());
+      // Populate Deck Page
+      function populateDeckPage() {
+        const container = document.getElementById('deck-cards-container');
+        container.innerHTML = '';
+        Object.keys(CARD_DATA).forEach(name => {
+            const card = createCardElement(name, true);
+            if (selectedDeck.includes(name)) card.classList.add('selected');
+            card.addEventListener('click', () => {
+                if (selectedDeck.includes(name)) {
+                    if (selectedDeck.length > 8) { // Allow removing if we have extra (shouldn't happen but safe)
+                         selectedDeck = selectedDeck.filter(n => n !== name);
+                         card.classList.remove('selected');
+                    } else if (selectedDeck.length === 8) {
+                        selectedDeck = selectedDeck.filter(n => n !== name);
+                        card.classList.remove('selected');
+                    }
+                } else {
+                    if (selectedDeck.length < 8) {
+                        selectedDeck.push(name);
+                        card.classList.add('selected');
+                    } else {
+                        alert("Deck full! Remove a card first.");
+                    }
+                }
+            });
+            container.appendChild(card);
+        });
+      }
+      populateDeckPage();
+
+      battlefield.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+
       battlefield.addEventListener('drop', (e) => {
         e.preventDefault();
-        noDeployLeft.classList.remove('visible');
-        noDeployRight.classList.remove('visible');
-        noDeployKing.classList.remove('visible');
-        if (!gameRunning || !draggedCardData) return;
-        const data = CARD_DATA[draggedCardData.name];
+        if (!draggedCardData) return;
+        const rect = battlefield.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
         if (currentElixir >= draggedCardData.cost) {
-          const rect = battlefield.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          let isOverTower = false;
-          Object.values(towerObjects).forEach(t => {
-            if (!t.isDead && x >= t.x && x <= t.x+60 && y >= t.y && y <= t.y+80) isOverTower = true;
-          });
-          if (isOverTower && data.type !== 'spell') {
-            console.warn('Cannot deploy troops on a Tower!'); draggedCardData = null; return;
-          }
-          const isLeftLane = x < ARENA_WIDTH / 2;
-          const isEnemyTerritory = y < RIVER_Y;
-          let canDeploy = true;
-          if ((data.type === 'troop' || data.type === 'building') && isEnemyTerritory) {
-            if (isLeftLane && !towerObjects['enemy-p1'].isDead) canDeploy = false;
-            else if (!isLeftLane && !towerObjects['enemy-p2'].isDead) canDeploy = false;
-          }
-          if (canDeploy) {
-            currentElixir -= draggedCardData.cost;
-            updateElixirDisplay();
-            if (data.type === 'troop' || data.type === 'building') deployTroop(draggedCardData.name, x, y, 'player');
-            else if (data.type === 'spell') applySpell(draggedCardData.name, x, y, 'player');
-          } else { console.warn('Cannot deploy there!'); }
-        } else { console.warn('Not enough elixir!'); }
+            // Check Placement Validity (Simplified: Cannot place on towers)
+            const data = draggedCardData;
+            
+            // Basic collision with towers to prevent stacking exactly on top
+            let collides = false;
+            Object.values(towerObjects).forEach(t => {
+                if (Math.abs(x - t._x) < 30 && Math.abs(y - t._y) < 30) collides = true;
+            });
+            if (collides) {
+                console.warn('Cannot deploy troops on a Tower!');
+                draggedCardData = null;
+                return;
+            }
+
+            const isLeftLane = x < ARENA_WIDTH / 2;
+            const isEnemyTerritory = y < RIVER_Y;
+            
+            let canDeploy = true;
+            if ((data.type === 'troop' || data.type === 'building') && isEnemyTerritory) {
+                if (isLeftLane && !towerObjects['enemy-p1'].isDead) canDeploy = false;
+                else if (!isLeftLane && !towerObjects['enemy-p2'].isDead) canDeploy = false;
+            }
+            
+            if (canDeploy) {
+                currentElixir -= draggedCardData.cost;
+                updateElixirDisplay();
+                if (data.type === 'troop' || data.type === 'building') deployTroop(draggedCardData.name, x, y, 'player');
+                else if (data.type === 'spell') applySpell(draggedCardData.name, x, y, 'player');
+            } else {
+                console.warn('Cannot deploy there!');
+            }
+        } else {
+            console.warn('Not enough elixir!');
+        }
         draggedCardData = null;
       });
 
       // --- ANIMATION HELPERS ---
-
       function triggerShake() {
         battlefield.classList.remove('shake-effect');
         void battlefield.offsetWidth; 
         battlefield.classList.add('shake-effect');
       }
-
+      
       function triggerFlash() {
         flashOverlay.classList.add('active');
-        setTimeout(() => {
-          flashOverlay.classList.remove('active');
-        }, 150);
+        setTimeout(() => { flashOverlay.classList.remove('active'); }, 150);
       }
 
       function triggerSpellVisual(type, x, y) {
@@ -944,70 +1012,68 @@ window.onload = function() {
         visual.style.top = `${y}px`;
         
         if (type === 'fireball') {
-          visual.classList.add('fireball-explosion');
-          triggerShake();
+            visual.classList.add('fireball-explosion');
+            triggerShake();
         } else if (type === 'fireball_quiet') {
-          // No shake version for Baby Dragon
-          visual.classList.add('fireball-explosion');
+             // No shake version for Baby Dragon
+             visual.classList.add('fireball-explosion');
         } else if (type === 'arrows') {
-          visual.classList.add('arrows-area');
-          for(let i=0; i<50; i++) {
-            const arrow = document.createElement('div');
-            arrow.className = 'mini-arrow';
-            const rx = (Math.random() - 0.5) * 160;
-            const ry = (Math.random() - 0.5) * 160;
-            arrow.style.left = `${120 + rx}px`;
-            arrow.style.top = `${120 + ry}px`;
-            arrow.style.animationDelay = `${Math.random() * 0.4}s`;
-            visual.appendChild(arrow);
-          }
+            visual.classList.add('arrows-area');
+            for(let i=0; i<50; i++) {
+                const arrow = document.createElement('div');
+                arrow.className = 'mini-arrow';
+                const rx = (Math.random() - 0.5) * 160;
+                const ry = (Math.random() - 0.5) * 160;
+                arrow.style.left = `${120 + rx}px`;
+                arrow.style.top = `${120 + ry}px`;
+                arrow.style.animationDelay = `${Math.random() * 0.4}s`;
+                visual.appendChild(arrow);
+            }
         } else if (type === 'lightning') {
-          visual.classList.add('lightning-bolt');
-          visual.style.top = `${y - 200}px`; 
-          triggerFlash();
-          triggerShake();
+             triggerFlash();
+             visual.classList.add('lightning-bolt');
+             visual.style.height = '400px'; 
+             visual.style.top = `${y - 400}px`;
         }
-
+        
         battlefield.appendChild(visual);
-        setTimeout(() => visual.remove(), 800);
+        setTimeout(() => visual.remove(), 1000);
       }
 
       function triggerProjectile(startUnit, targetUnit, type) {
+        if (!startUnit || !targetUnit) return;
         const projectile = document.createElement('div');
         projectile.className = 'projectile';
         
-        let width = 5, height = 5, color = 'black';
-        let isRound = false;
+        let color = 'black';
+        let width = 6;
+        let height = 6;
+        let isRound = true;
         
         if (type === 'arrow') {
-            width = 15; height = 3; color = '#8B4513';
-            projectile.style.borderRadius = '0 50% 50% 0';
+            color = '#8d6e63'; width = 4; height = 12; isRound = false;
         } else if (type === 'spear') {
-            width = 18; height = 2; color = '#D2691E'; 
-        } else if (type === 'cannonball') {
-            width = 10; height = 10; color = '#111';
-            isRound = true;
+            color = '#a1887f'; width = 3; height = 14; isRound = false;
         } else if (type === 'fireball_small') {
-            width = 12; height = 12; color = 'orange';
-            isRound = true;
-        } else if (type === 'bullet') {
-            width = 6; height = 6; color = '#222';
-            isRound = true;
+            color = '#ff5722'; width = 10; height = 10;
+            projectile.style.boxShadow = '0 0 4px #ff5722';
+        } else if (type === 'cannonball') {
+             color = '#222'; width = 10; height = 10;
         } else if (type === 'dark_elixir') {
-            width = 14; height = 14; 
-            projectile.style.background = 'radial-gradient(circle, #D8BFD8 0%, #4B0082 100%)';
-            projectile.style.boxShadow = '0 0 6px #8A2BE2';
-            isRound = true;
+             width = 14; height = 14;
+             projectile.style.background = 'radial-gradient(circle, #D8BFD8 0%, #4B0082 100%)';
+             projectile.style.boxShadow = '0 0 6px #8A2BE2';
+             isRound = true;
         } else {
-            projectile.style.background = 'black';
+             projectile.style.background = 'black';
         }
-
+        
         if (isRound) projectile.style.borderRadius = '50%';
         if (!type.includes('dark_elixir')) projectile.style.background = color;
-
+        
         projectile.style.width = `${width}px`;
         projectile.style.height = `${height}px`;
-
+        
         const startX = startUnit._x;
         const startY = startUnit._y;
         const targetX = targetUnit._x;
@@ -1015,29 +1081,25 @@ window.onload = function() {
         
         const angle = Math.atan2(targetY - startY, targetX - startX) * (180 / Math.PI);
         projectile.style.transform = `rotate(${angle}deg)`;
-
+        
         battlefield.appendChild(projectile);
 
         const animation = projectile.animate([
             { left: `${startX}px`, top: `${startY}px` },
             { left: `${targetX}px`, top: `${targetY}px` }
-        ], {
-            duration: 300, 
-            easing: 'linear'
-        });
+        ], { duration: 300, easing: 'linear' });
 
         animation.onfinish = () => {
             projectile.remove();
         };
       }
 
-
       function applySpell(spellName, x, y, faction) {
         const data = CARD_DATA[spellName];
         if (!data) return;
-
+        
         if (spellName === 'Fireball' || spellName === 'Arrows') {
-           triggerSpellVisual(data.spellEffect, x, y);
+            triggerSpellVisual(data.spellEffect, x, y);
         }
 
         // TARGETING FIX: ONLY HIT ENEMIES
@@ -1046,51 +1108,56 @@ window.onload = function() {
         // Filter targets that are NOT dead AND belong to the ENEMY faction
         const targets = [...activeTroops, ...Object.values(towerObjects)].filter(unit => !unit.isDead && unit.faction === enemyFaction);
         
-        const inRange = targets.filter(unit => getDistance({ _x: x, _y: y }, unit) <= data.radius 
-          && ((data.targetGround && !unit.isFlying) || (data.targetAir && unit.isFlying) || (!unit.isFlying && !('isFlying' in unit))));
-        
+        const inRange = targets.filter(unit => getDistance({ _x: x, _y: y }, unit) <= data.radius && 
+          ((data.targetGround && !unit.isFlying) || (data.targetAir && unit.isFlying) || (!unit.isFlying && !('isFlying' in unit))));
+
         if (spellName === 'Lightning') {
-          inRange.sort((a, b) => b.currentHealth - a.currentHealth);
-          const hitTargets = inRange.slice(0, data.maxTargets);
-          hitTargets.forEach(target => {
-            triggerSpellVisual('lightning', target._x, target._y);
-            takeDamage(target, data.damage);
-          });
+             inRange.sort((a, b) => b.currentHealth - a.currentHealth);
+             const hitTargets = inRange.slice(0, data.maxTargets);
+             hitTargets.forEach(target => {
+                 triggerSpellVisual('lightning', target._x, target._y);
+                 takeDamage(target, data.damage);
+             });
         } else {
-          setTimeout(() => {
-              inRange.forEach(target => {
-                takeDamage(target, data.damage);
-              });
-          }, 250);
+             setTimeout(() => {
+                 inRange.forEach(target => {
+                     takeDamage(target, data.damage);
+                 });
+             }, 250);
         }
       }
 
       function takeDamage(unit, amount) {
-          unit.currentHealth -= amount;
-          updateHealthBar(unit);
-          checkDeath(unit);
-      }
+        if (unit.isDead) return;
+        unit.currentHealth -= amount;
+        
+        // Flash Effect
+        unit.element.classList.add('hit-flash');
+        setTimeout(() => unit.element.classList.remove('hit-flash'), 100);
 
-      function updateHealthBar(unit) {
-        const healthPercent = (unit.currentHealth / unit.maxHealth) * 100;
-        unit.healthBar.style.width = `${Math.max(0, healthPercent)}%`;
-        unit.healthBar.classList.add('hit-flash');
-        setTimeout(() => {
-            unit.healthBar.classList.remove('hit-flash');
-        }, 100);
-      }
-
-      function checkDeath(unit) {
-        if (unit.currentHealth <= 0 && !unit.isDead) {
-          unit.isDead = true;
-          if (unit.element) unit.element.style.display = 'none';
-          if (unit.healthBarContainer) unit.healthBarContainer.style.display = 'none';
-          if (unit.deployTimerElement) unit.deployTimerElement.style.display = 'none';
-          if (unit.id && unit.id.includes('-king')) endGame(unit.faction === 'ai' ? 'You Win!' : 'You Lose!');
+        if (unit.currentHealth <= 0) {
+            unit.currentHealth = 0;
+            unit.isDead = true;
+            unit.element.style.display = 'none';
+            if (unit.healthBarContainer) unit.healthBarContainer.style.display = 'none';
+            
+            // Tower Destruction Logic
+            if (unit.id && unit.id.includes('king')) {
+                endGame(unit.faction === 'ai' ? 'You Win!' : 'You Lose!');
+            }
+        }
+        
+        // Update Health Bar
+        if (unit.healthBar) {
+            const percent = (unit.currentHealth / unit.maxHealth) * 100;
+            unit.healthBar.style.width = `${percent}%`;
         }
       }
 
       function initializeTowers() {
+        // Clear old tower data
+        towerObjects = {};
+        
         const towerElements = [
           { id: 'enemy-p1', faction: 'ai', element: document.getElementById('enemy-p1'), x: ENEMY_TOWER_LEFT_X, y: ENEMY_TOWER_Y, maxHealth: 1400, currentHealth: 1400, damage: 50, range: 150, attackSpeed: 35, attackType: 'airAndGround' },
           { id: 'enemy-p2', faction: 'ai', element: document.getElementById('enemy-p2'), x: ENEMY_TOWER_RIGHT_X, y: ENEMY_TOWER_Y, maxHealth: 1400, currentHealth: 1400, damage: 50, range: 150, attackSpeed: 35, attackType: 'airAndGround' },
@@ -1099,77 +1166,85 @@ window.onload = function() {
           { id: 'player-p2', faction: 'player', element: document.getElementById('player-p2'), x: PLAYER_TOWER_RIGHT_X, y: PLAYER_TOWER_Y, maxHealth: 1400, currentHealth: 1400, damage: 50, range: 150, attackSpeed: 35, attackType: 'airAndGround' },
           { id: 'player-king', faction: 'player', element: document.getElementById('player-king'), x: PLAYER_KING_X, y: PLAYER_KING_Y, maxHealth: 2400, currentHealth: 2400, damage: 60, range: 130, attackSpeed: 45, attackType: 'airAndGround' },
         ];
+
         towerElements.forEach((towerData) => {
-          const healthBarContainer = document.createElement('div');
-          healthBarContainer.className = 'health-bar-container';
-          healthBarContainer.style.left = `${towerData.x + 5}px`;
-          healthBarContainer.style.top = `${towerData.y - 15}px`;
-          const healthBarCurrent = document.createElement('div');
-          healthBarCurrent.className = `health-bar-current ${towerData.faction}`;
-          healthBarContainer.appendChild(healthBarCurrent);
-          battlefield.appendChild(healthBarContainer);
-          towerObjects[towerData.id] = { ...towerData, _x: towerData.x + 30, _y: towerData.y + 40, healthBar: healthBarCurrent, healthBarContainer: healthBarContainer, isDead: false, attackCooldown: 0, currentTarget: null };
+           const healthBarContainer = document.createElement('div');
+           healthBarContainer.className = 'health-bar-container';
+           healthBarContainer.style.left = `${towerData.x + 5}px`;
+           healthBarContainer.style.top = `${towerData.y - 15}px`;
+           
+           const healthBarCurrent = document.createElement('div');
+           healthBarCurrent.className = `health-bar-current ${towerData.faction}`;
+           healthBarContainer.appendChild(healthBarCurrent);
+           battlefield.appendChild(healthBarContainer);
+           
+           towerObjects[towerData.id] = { ...towerData, _x: towerData.x + 30, _y: towerData.y + 40, healthBar: healthBarCurrent, healthBarContainer: healthBarContainer, isDead: false, currentTarget: null, attackCooldown: 0 };
+           towerData.element.style.display = 'flex'; // Reset display if hidden
         });
       }
 
       function deployTroop(cardName, x, y, faction, countOverride = null) {
         const data = CARD_DATA[cardName];
         if (!data) return;
+
+        const count = countOverride || data.count;
         
-        const count = countOverride !== null ? countOverride : data.count;
-
         for (let i = 0; i < count; i++) {
-          const jitterX = (Math.random() - 0.5) * 20; 
-          const jitterY = (Math.random() - 0.5) * 20;
-          let startX = x - 20 + jitterX;
-          let startY = y - 20 + jitterY;
-          if (count < 5 && count > 1) {
-             const offsetX = (i - Math.floor(count / 2)) * 10;
-             const offsetY = i % 2 * 10;
-             startX = x - 20 + offsetX;
-             startY = y - 20 + offsetY;
-          }
-
+          let startX = x + (Math.random() * 20 - 10);
+          let startY = y + (Math.random() * 20 - 10);
+          
           const troopElement = document.createElement('img');
-          troopElement.classList.add('troop');
           troopElement.src = data.imageUrl;
+          troopElement.className = 'troop';
           troopElement.style.left = `${startX}px`;
           troopElement.style.top = `${startY}px`;
           
           const healthBarContainer = document.createElement('div');
           healthBarContainer.className = 'troop-health-bar';
-          healthBarContainer.style.left = `${startX + 5}px`;
-          healthBarContainer.style.top = `${startY - 8}px`;
           const healthBarCurrent = document.createElement('div');
           healthBarCurrent.className = `troop-health-bar-current ${faction}`;
           healthBarContainer.appendChild(healthBarCurrent);
-          
-          // --- VISUAL TIMER ELEMENT ---
+
+          // Deploy Timer Visual
           const deployTimerContainer = document.createElement('div');
           deployTimerContainer.className = 'deploy-timer-container';
           deployTimerContainer.style.left = `${startX + 10}px`;
-          deployTimerContainer.style.top = `${startY + 10}px`;
-          const clock = document.createElement('div');
-          clock.className = 'deploy-clock';
-          deployTimerContainer.appendChild(clock);
+          deployTimerContainer.style.top = `${startY - 25}px`;
+          const deployClock = document.createElement('div');
+          deployClock.className = 'deploy-clock';
+          deployTimerContainer.appendChild(deployClock);
 
           let defaultTargetTower, finalTarget;
           if (faction === 'player') {
-            finalTarget = towerObjects['enemy-king'];
-            defaultTargetTower = x < ARENA_WIDTH / 2 ? towerObjects['enemy-p1'] : towerObjects['enemy-p2'];
+             finalTarget = towerObjects['enemy-king'];
+             defaultTargetTower = x < ARENA_WIDTH / 2 ? towerObjects['enemy-p1'] : towerObjects['enemy-p2'];
           } else {
-            finalTarget = towerObjects['player-king'];
-            defaultTargetTower = x < ARENA_WIDTH / 2 ? towerObjects['player-p1'] : towerObjects['player-p2'];
+             finalTarget = towerObjects['player-king'];
+             defaultTargetTower = x < ARENA_WIDTH / 2 ? towerObjects['player-p1'] : towerObjects['player-p2'];
           }
-          
+
           battlefield.appendChild(troopElement);
           battlefield.appendChild(healthBarContainer);
           battlefield.appendChild(deployTimerContainer);
 
           const troop = {
-            ...data, cardName: cardName, element: troopElement, faction: faction, x: startX, y: startY, _x: startX + 20, _y: startY + 20,
-            attackCooldown: 0, maxHealth: data.health, currentHealth: data.health, healthBar: healthBarCurrent, healthBarContainer: healthBarContainer,
-            isDead: false, currentTarget: null, defaultTargetTower: defaultTargetTower, finalTarget: finalTarget,
+            ...data,
+            cardName: cardName,
+            element: troopElement,
+            faction: faction,
+            x: startX,
+            y: startY,
+            _x: startX + 20,
+            _y: startY + 20,
+            attackCooldown: 0,
+            maxHealth: data.health,
+            currentHealth: data.health,
+            healthBar: healthBarCurrent,
+            healthBarContainer: healthBarContainer,
+            isDead: false,
+            currentTarget: null,
+            defaultTargetTower: defaultTargetTower,
+            finalTarget: finalTarget,
             lastSpawnTime: Date.now(),
             // DEPLOY LOGIC
             currentDeployTimer: data.deployTime || 1000,
@@ -1177,80 +1252,103 @@ window.onload = function() {
             // RETARGETING
             retargetDelay: Math.floor(Math.random() * 20) // Randomize initial check to reduce CPU spike
           };
+          
+          // ADD SLEEPING ICON FOR HUT
+          if (cardName === 'GoblinHut') {
+              const zzz = document.createElement('div');
+              zzz.className = 'sleeping-icon';
+              zzz.textContent = 'Zzz';
+              troopElement.appendChild(zzz); // Actually this won't work on img. Need wrapper or separate append.
+              
+              // We append to battlefield but track position
+              zzz.style.left = `${startX + 20}px`;
+              zzz.style.top = `${startY - 10}px`;
+              battlefield.appendChild(zzz);
+              troop.sleepingIcon = zzz;
+          }
+
           activeTroops.push(troop);
         }
       }
 
       // --- NEW TARGETING LOGIC v1.1.5 ---
       function getBestTarget(troop) {
-        const enemyFaction = troop.faction === 'player' ? 'ai' : 'player';
-        const enemyPrefix = troop.faction === 'player' ? 'enemy' : 'player';
-        let closestTarget = null;
-        let minDistance = 9999;
-        
-        // 1. Check if we attack buildings only
-        if (troop.targetType === 'buildings') {
-          let targets = [towerObjects[`${enemyPrefix}-p1`], towerObjects[`${enemyPrefix}-p2`], towerObjects[`${enemyPrefix}-king`]];
-          // Add enemy buildings
+          const enemyFaction = troop.faction === 'player' ? 'ai' : 'player';
+          const enemyPrefix = troop.faction === 'player' ? 'enemy' : 'player';
+          let closestTarget = null;
+          let minDistance = 9999;
+          
+          // 1. Check if we attack buildings only
+          if (troop.targetType === 'buildings') {
+              let targets = [towerObjects[`${enemyPrefix}-p1`], towerObjects[`${enemyPrefix}-p2`], towerObjects[`${enemyPrefix}-king`]];
+              // Add enemy buildings
+              for (const t of activeTroops) {
+                  if (t.faction === enemyFaction && !t.isDead && t.type === 'building') {
+                      targets.push(t);
+                  }
+              }
+
+              for (const tower of targets) {
+                  if (tower && !tower.isDead) {
+                      const dist = getDistance(troop, tower);
+                      if (dist < minDistance) {
+                          minDistance = dist;
+                          closestTarget = tower;
+                      }
+                  }
+              }
+              return { target: closestTarget, distance: minDistance };
+          }
+          
+          // 2. Check Troops
           for (const t of activeTroops) {
-              if (t.faction === enemyFaction && !t.isDead && t.type === 'building') {
-                  targets.push(t);
+              if (t.faction === enemyFaction && !t.isDead) {
+                  if (t.isFlying && troop.attackType === 'ground') continue;
+                  
+                  const dist = getDistance(troop, t);
+                  if (dist < minDistance && dist <= troop.range) {
+                      minDistance = dist;
+                      closestTarget = t;
+                  } else if (!closestTarget && dist < minDistance) { // Track closest even if out of range for aggro
+                       minDistance = dist;
+                       closestTarget = t;
+                  }
               }
           }
-          for (const tower of targets) {
-            if (tower && !tower.isDead) {
-              const dist = getDistance(troop, tower);
-              if (dist < minDistance) { minDistance = dist; closestTarget = tower; }
-            }
+          
+          // 3. If no troop in range, check towers
+          if (!closestTarget || minDistance > troop.range) {
+              const towers = [towerObjects[`${enemyPrefix}-p1`], towerObjects[`${enemyPrefix}-p2`], towerObjects[`${enemyPrefix}-king`]];
+              for (const t of towers) {
+                  if (!t.isDead) {
+                      const dist = getDistance(troop, t);
+                      if (dist < minDistance) {
+                          minDistance = dist;
+                          closestTarget = t;
+                      }
+                  }
+              }
           }
+          
           return { target: closestTarget, distance: minDistance };
-        }
-
-        // 2. Check Troops
-        for (const t of activeTroops) {
-          if (t.faction === enemyFaction && !t.isDead) {
-            if (t.isFlying && troop.attackType === 'ground') continue;
-            const dist = getDistance(troop, t);
-            if (dist < minDistance) { minDistance = dist; closestTarget = t; }
-          }
-        }
-        
-        // 3. Check Towers
-        let targets = [towerObjects[`${enemyPrefix}-p1`], towerObjects[`${enemyPrefix}-p2`], towerObjects[`${enemyPrefix}-king`]];
-        for (const tower of targets) {
-          if (tower && !tower.isDead) {
-            const dist = getDistance(troop, tower);
-            if (dist < minDistance) { minDistance = dist; closestTarget = tower; }
-          }
-        }
-        
-        return { target: closestTarget, distance: minDistance };
-      }
-
-      function findNewTarget(troop) {
-        const result = getBestTarget(troop);
-        troop.currentTarget = result.target;
       }
 
       function checkForBetterTarget(troop) {
-          // If we have no target, find one
-          if (!troop.currentTarget || troop.currentTarget.isDead) {
-              findNewTarget(troop);
-              return;
-          }
+         if (troop.type === 'building') return; // Buildings don't move/retarget like troops
+         const currentDistance = troop.currentTarget ? getDistance(troop, troop.currentTarget) : 9999;
+         const result = getBestTarget(troop);
+         
+         // THRESHOLD LOGIC: Only switch if the new target is >10px closer
+         if (result.target && result.target !== troop.currentTarget) {
+             if (result.distance < currentDistance - 10) {
+                 troop.currentTarget = result.target;
+             }
+         }
+      }
 
-          // Existing distance
-          const currentDistance = getDistance(troop, troop.currentTarget);
-          
-          // Best possible distance
+      function findNewTarget(troop) {
           const result = getBestTarget(troop);
-          
-          // THRESHOLD LOGIC: Only switch if the new target is >10px closer
-          if (result.target && result.target !== troop.currentTarget) {
-              if (result.distance < currentDistance - 10) {
-                  troop.currentTarget = result.target;
-              }
-          }
+          if (result.target) troop.currentTarget = result.target;
       }
 
       function resetGame() {
@@ -1258,17 +1356,25 @@ window.onload = function() {
         clearInterval(elixirInterval);
         clearInterval(aiInterval);
         clearInterval(gameTimerInterval);
-        elixirInterval = null; aiInterval = null; gameTimerInterval = null;
+        elixirInterval = null;
+        aiInterval = null;
+        gameTimerInterval = null;
         
-        activeTroops.forEach(troop => { 
-            troop.element.remove(); 
-            troop.healthBarContainer.remove(); 
-            if(troop.deployTimerElement) troop.deployTimerElement.remove();
+        activeTroops.forEach(troop => {
+           troop.element.remove();
+           troop.healthBarContainer.remove();
+           if(troop.deployTimerElement) troop.deployTimerElement.remove();
+           if(troop.sleepingIcon) troop.sleepingIcon.remove();
         });
         activeTroops = [];
-        Object.values(towerObjects).forEach(tower => { if (tower.healthBarContainer) tower.healthBarContainer.remove(); });
+        
+        Object.values(towerObjects).forEach(tower => {
+           if (tower.healthBarContainer) tower.healthBarContainer.remove();
+        });
         towerObjects = {};
-        currentElixir = 5; aiElixir = 5;
+        
+        currentElixir = 5;
+        aiElixir = 5;
         gameTimeRemaining = 120;
         isDoubleElixir = false;
         timerDisplay.textContent = "2:00";
@@ -1287,26 +1393,33 @@ window.onload = function() {
       }
 
       function startElixirAndAI() {
-          clearInterval(elixirInterval);
-          elixirInterval = setInterval(() => {
-            if (!gameRunning) return;
-            if (currentElixir < maxElixir) { currentElixir += 1; if (currentElixir > maxElixir) currentElixir = maxElixir; updateElixirDisplay(); }
-            if (aiElixir < maxElixir) { aiElixir += 1; if (aiElixir > maxElixir) aiElixir = maxElixir; }
-          }, elixirRegenRate);
-          
-          // AI Logic
-          clearInterval(aiInterval);
-          aiInterval = setInterval(() => {
-            if (!gameRunning) return;
-            const cardName = aiDeck[Math.floor(Math.random() * aiDeck.length)];
-            const data = CARD_DATA[cardName];
-            if (aiElixir >= data.cost) {
-                aiElixir -= data.cost;
-                let deployX = Math.random() > 0.5 ? 100 : 300;
-                if (data.type === 'troop' || data.type === 'building') deployTroop(cardName, deployX, 120, 'ai');
-                else if (data.type === 'spell') applySpell(cardName, Math.random() > 0.5 ? 100 : 300, 'ai');
-            }
-          }, 3000 / (isDoubleElixir ? 2 : 1)); // AI plays faster in double elixir
+        clearInterval(elixirInterval);
+        elixirInterval = setInterval(() => {
+          if (!gameRunning) return;
+          if (currentElixir < maxElixir) {
+            currentElixir += 1;
+            if (currentElixir > maxElixir) currentElixir = maxElixir;
+            updateElixirDisplay();
+          }
+          if (aiElixir < maxElixir) {
+            aiElixir += 1;
+            if (aiElixir > maxElixir) aiElixir = maxElixir;
+          }
+        }, elixirRegenRate);
+
+        // AI Logic
+        clearInterval(aiInterval);
+        aiInterval = setInterval(() => {
+          if (!gameRunning) return;
+          const cardName = aiDeck[Math.floor(Math.random() * aiDeck.length)];
+          const data = CARD_DATA[cardName];
+          if (aiElixir >= data.cost) {
+            aiElixir -= data.cost;
+            let deployX = Math.random() > 0.5 ? 100 : 300;
+            if (data.type === 'troop' || data.type === 'building') deployTroop(cardName, deployX, 100, 'ai');
+            else if (data.type === 'spell') applySpell(cardName, deployX, 350, 'ai');
+          }
+        }, 2000);
       }
 
       function updateTimer() {
@@ -1315,24 +1428,19 @@ window.onload = function() {
           
           let minutes = Math.floor(gameTimeRemaining / 60);
           let seconds = gameTimeRemaining % 60;
-          timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0'+seconds : seconds}`;
+          timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
           if (gameTimeRemaining === 60 && !isDoubleElixir) {
               isDoubleElixir = true;
-              elixirRegenRate = 1000; // Double speed
+              elixirRegenRate = 1000;
+              startElixirAndAI(); 
               timerDisplay.classList.add('double-elixir-mode');
               notificationOverlay.classList.add('visible');
-              setTimeout(() => notificationOverlay.classList.remove('visible'), 2000);
-              startElixirAndAI(); // Restart intervals with new speed
+              setTimeout(() => { notificationOverlay.classList.remove('visible'); }, 2000);
           }
 
           if (gameTimeRemaining <= 0) {
-              // Tie-breaker logic or draw
-              let pHealth = towerObjects['player-king'].currentHealth;
-              let eHealth = towerObjects['enemy-king'].currentHealth;
-              if (pHealth > eHealth) endGame('You Win!');
-              else if (eHealth > pHealth) endGame('You Lose!');
-              else endGame('Time Up!');
+              endGame("Time Up!");
           }
       }
 
@@ -1342,12 +1450,10 @@ window.onload = function() {
         updateElixirDisplay();
         populateCardTray();
         initializeTowers();
-        
         elixirRegenRate = 2000;
         gameTimeRemaining = 120;
         isDoubleElixir = false;
         timerDisplay.textContent = "2:00";
-        
         startElixirAndAI();
         gameTimerInterval = setInterval(updateTimer, 1000);
         gameLoop();
@@ -1355,39 +1461,81 @@ window.onload = function() {
 
       function gameLoop() {
         if (!gameRunning) return;
-        
+
         for (let i = activeTroops.length - 1; i >= 0; i--) {
           const troop = activeTroops[i];
           if (troop.isDead) {
             troop.element.remove();
             troop.healthBarContainer.remove();
             if(troop.deployTimerElement) troop.deployTimerElement.remove();
+            if(troop.sleepingIcon) troop.sleepingIcon.remove();
             activeTroops.splice(i, 1);
           }
         }
 
         for (const troop of activeTroops) {
-          
-          // --- DEPLOY TIMER CHECK ---
-          if (troop.currentDeployTimer > 0) {
-              troop.currentDeployTimer -= 16; 
-              if (troop.currentDeployTimer <= 0) {
-                  if (troop.deployTimerElement) {
-                      troop.deployTimerElement.remove();
-                      troop.deployTimerElement = null;
-                  }
-              } else {
-                  continue; 
-              }
+          // --- BUILDING LIFETIME DECAY ---
+          if (troop.type === 'building') {
+              // 40 second lifetime = 40 * 60 frames = 2400 frames
+              // decay per frame = maxHealth / 2400
+              const decayAmount = troop.maxHealth / 2400; 
+              takeDamage(troop, decayAmount);
           }
 
-          // --- SPAWNER LOGIC ---
+          // --- DEPLOY TIMER CHECK ---
+          if (troop.currentDeployTimer > 0) {
+             troop.currentDeployTimer -= 16;
+             if (troop.currentDeployTimer <= 0) {
+                 if (troop.deployTimerElement) {
+                     troop.deployTimerElement.remove();
+                     troop.deployTimerElement = null;
+                 }
+             } else {
+                 continue;
+             }
+          }
+
+          // --- SPAWNER LOGIC (GOBLIN HUT UPDATED) ---
           if (troop.spawnUnit && !troop.isDead) {
-              const now = Date.now();
-              if (now - troop.lastSpawnTime > troop.spawnRate) {
-                  deployTroop(troop.spawnUnit, troop.x, troop.y, troop.faction, 1);
-                  troop.lastSpawnTime = now;
-              }
+            let shouldSpawn = true;
+            
+            // If it's a Goblin Hut, check for threats
+            if (troop.cardName === 'GoblinHut') {
+                const enemyFaction = troop.faction === 'player' ? 'ai' : 'player';
+                let threatFound = false;
+                
+                // Check all active troops for enemies in range
+                for (const t of activeTroops) {
+                    if (t.faction === enemyFaction && !t.isDead) {
+                        if (getDistance(troop, t) <= troop.range) {
+                            threatFound = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (threatFound) {
+                    shouldSpawn = true;
+                    // Wake up
+                    if (troop.sleepingIcon) troop.sleepingIcon.style.opacity = 0;
+                } else {
+                    shouldSpawn = false;
+                    // Sleep
+                    if (troop.sleepingIcon) troop.sleepingIcon.style.opacity = 1;
+                }
+            }
+
+            if (shouldSpawn) {
+                const now = Date.now();
+                if (now - troop.lastSpawnTime > troop.spawnRate) {
+                    deployTroop(troop.spawnUnit, troop.x, troop.y, troop.faction, 1);
+                    troop.lastSpawnTime = now;
+                    
+                    // Pop Animation
+                    troop.element.classList.add('inflate-animation');
+                    setTimeout(() => troop.element.classList.remove('inflate-animation'), 200);
+                }
+            }
           }
 
           // --- RETARGETING CHECK (v1.1.5) ---
@@ -1402,106 +1550,130 @@ window.onload = function() {
                  checkForBetterTarget(troop);
              }
           }
-          
+
           const finalTarget = troop.currentTarget;
-          let distance = 9999;
-          if (finalTarget) distance = getDistance(troop, finalTarget);
-          
-          if (finalTarget && distance > troop.range && troop.speed > 0) {
-            let moveTarget = finalTarget;
-            const needsToCross = (troop.faction === 'player' && finalTarget._y < RIVER_Y && troop._y > RIVER_Y) ||
-                                 (troop.faction === 'ai' && finalTarget._y > RIVER_Y && troop._y < RIVER_Y);
-            if (needsToCross && !troop.isFlying) {
-              let bridgeX = finalTarget._x < ARENA_WIDTH / 2 ? BRIDGE_LEFT_X : BRIDGE_RIGHT_X;
-              const distToBridge = getDistance(troop, { _x: bridgeX, _y: RIVER_Y });
-              if (distToBridge > 5) moveTarget = { _x: bridgeX, _y: RIVER_Y };
-            }
-            const dx = moveTarget._x - troop._x;
-            const dy = moveTarget._y - troop._y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
-            if (dist > 1) {
-              troop.x += (dx/dist) * troop.speed;
-              troop.y += (dy/dist) * troop.speed;
-              troop._x = troop.x + 20;
-              troop._y = troop.y + 20;
-              troop.element.style.left = `${troop.x}px`;
-              troop.element.style.top = `${troop.y}px`;
-              troop.healthBarContainer.style.left = `${troop.x + 5}px`;
-              troop.healthBarContainer.style.top = `${troop.y - 8}px`;
-            }
-          } else if (finalTarget && distance <= troop.range) {
-            troop.attackCooldown--;
-            if (troop.attackCooldown <= 0) {
-              troop.attackCooldown = troop.attackSpeed;
-              
-              if (troop.cardName === 'Valkyrie') {
-                  // Trigger CSS Spin animation
-                  troop.element.classList.add('spin-animation');
-                  setTimeout(() => troop.element.classList.remove('spin-animation'), 300);
-              }
+          let targetX = finalTarget ? finalTarget._x : troop.x; // Default stay put if no target
+          let targetY = finalTarget ? finalTarget._y : troop.y;
 
-              if (troop.projectileType) {
-                  triggerProjectile(troop, finalTarget, troop.projectileType);
-              }
-              
-              let damageDelay = troop.projectileType ? 300 : 0;
-              
-              setTimeout(() => {
-                  // --- SPLASH DAMAGE LOGIC ---
-                  if (troop.splashRadius) {
-                      let splashCenterX, splashCenterY;
-                      if (troop.range < 30) { // Melee (Valkyrie)
-                          splashCenterX = troop._x;
-                          splashCenterY = troop._y;
-                      } else {
-                          splashCenterX = finalTarget._x;
-                          splashCenterY = finalTarget._y;
-                          if (troop.cardName === 'BabyDragon') triggerSpellVisual('fireball_quiet', splashCenterX, splashCenterY);
-                      }
+          // --- MOVEMENT LOGIC ---
+          if (troop.type === 'building' || !finalTarget) {
+              // Buildings don't move. Troops with no target stand still.
+          } else {
+              const distance = getDistance(troop, finalTarget);
 
-                      const enemyFaction = troop.faction === 'player' ? 'ai' : 'player';
-                      const targets = [...activeTroops, ...Object.values(towerObjects)].filter(unit => !unit.isDead && unit.faction === enemyFaction);
-                      
-                      targets.forEach(unit => {
-                          const dist = Math.sqrt((unit._x - splashCenterX)**2 + (unit._y - splashCenterY)**2);
-                          if (dist <= troop.splashRadius) {
-                              takeDamage(unit, troop.damage);
-                          }
-                      });
-
-                  } else {
-                      // Single Target Damage
-                      if (finalTarget && !finalTarget.isDead) {
-                          let currentDamage = troop.damage;
-                          takeDamage(finalTarget, currentDamage);
-                      }
+              if (distance > troop.range) {
+                  const angle = Math.atan2(targetY - troop.y, targetX - troop.x);
+                  const moveX = Math.cos(angle) * troop.speed;
+                  const moveY = Math.sin(angle) * troop.speed;
+                  
+                  // Bridge Funneling
+                  if (!troop.isFlying && Math.abs(troop.y - RIVER_Y) < 50) {
+                     // Simple logic: if near river, move towards nearest bridge center
+                     const distLeft = Math.abs(troop.x - BRIDGE_LEFT_X);
+                     const distRight = Math.abs(troop.x - BRIDGE_RIGHT_X);
+                     const bridgeX = distLeft < distRight ? BRIDGE_LEFT_X : BRIDGE_RIGHT_X;
+                     // Overwrite X movement to steer to bridge
+                     if (Math.abs(troop.x - bridgeX) > 10) {
+                        troop.x += (bridgeX - troop.x) * 0.05; 
+                     }
                   }
-              }, damageDelay);
-              
-              if (finalTarget.isDead) troop.currentTarget = null;
-            }
+
+                  troop.x += moveX;
+                  troop.y += moveY;
+              }
           }
+          
+          troop._x = troop.x + 20;
+          troop._y = troop.y + 20;
+          troop.element.style.left = `${troop.x}px`;
+          troop.element.style.top = `${troop.y}px`;
+          troop.healthBarContainer.style.left = `${troop.x - 5}px`;
+          troop.healthBarContainer.style.top = `${troop.y - 10}px`;
+          if (troop.sleepingIcon) {
+              troop.sleepingIcon.style.left = `${troop.x + 20}px`;
+              troop.sleepingIcon.style.top = `${troop.y - 10}px`;
+          }
+
+          // --- ATTACK LOGIC ---
+          if (finalTarget && !finalTarget.isDead) {
+              const distance = getDistance(troop, finalTarget);
+              if (distance <= troop.range) {
+                  if (troop.attackCooldown <= 0) {
+                      troop.attackCooldown = troop.attackSpeed;
+                      
+                      // Valkyrie Spin Visual
+                      if (troop.cardName === 'Valkyrie') {
+                          troop.element.classList.add('spin-animation');
+                          setTimeout(() => troop.element.classList.remove('spin-animation'), 300);
+                      }
+                      
+                      if (troop.projectileType) {
+                          triggerProjectile(troop, finalTarget, troop.projectileType);
+                      }
+                      
+                      let damageDelay = troop.projectileType ? 300 : 0;
+                      
+                      setTimeout(() => {
+                          // --- SPLASH DAMAGE LOGIC ---
+                          if (troop.splashRadius) {
+                              let splashCenterX, splashCenterY;
+                              if (troop.range < 30) { // Melee (Valkyrie)
+                                  splashCenterX = troop._x;
+                                  splashCenterY = troop._y;
+                              } else {
+                                  splashCenterX = finalTarget._x;
+                                  splashCenterY = finalTarget._y;
+                                  if (troop.cardName === 'BabyDragon') triggerSpellVisual('fireball_quiet', splashCenterX, splashCenterY);
+                              }
+                              
+                              const enemyFaction = troop.faction === 'player' ? 'ai' : 'player';
+                              const targets = [...activeTroops, ...Object.values(towerObjects)].filter(unit => !unit.isDead && unit.faction === enemyFaction);
+                              
+                              targets.forEach(t => {
+                                  const dist = Math.sqrt((t._x - splashCenterX)**2 + (t._y - splashCenterY)**2);
+                                  if (dist <= troop.splashRadius) {
+                                      takeDamage(t, troop.damage);
+                                  }
+                              });
+                              
+                          } else {
+                              // Single Target
+                              if (finalTarget && !finalTarget.isDead) {
+                                  takeDamage(finalTarget, troop.damage);
+                              }
+                          }
+                      }, damageDelay);
+                  }
+              }
+          }
+          if (troop.attackCooldown > 0) troop.attackCooldown--;
         }
 
+        // TOWER LOGIC
         for (const towerId in towerObjects) {
           const tower = towerObjects[towerId];
           if (tower.isDead) continue;
+          
           const targetFaction = tower.faction === 'player' ? 'ai' : 'player';
+          
           if (tower.currentTarget) {
              const dist = getDistance(tower, tower.currentTarget);
              if (tower.currentTarget.isDead || dist > tower.range) tower.currentTarget = null;
           }
+
           if (!tower.currentTarget) {
             let closestDistance = tower.range;
             let newTarget = null;
             for (const troop of activeTroops) {
               if (troop.faction !== targetFaction || troop.isDead) continue;
               if (troop.isFlying && tower.attackType === 'ground') continue;
+              
               const distance = getDistance(tower, troop);
               if (distance <= closestDistance) { newTarget = troop; closestDistance = distance; }
             }
             if (newTarget) tower.currentTarget = newTarget;
           }
+
           if (tower.currentTarget) {
             tower.attackCooldown--;
             if (tower.attackCooldown <= 0) {
@@ -1521,6 +1693,6 @@ window.onload = function() {
         requestAnimationFrame(gameLoop);
       }
     };
-</script>
+  </script>
 </body>
 </html>
