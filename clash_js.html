@@ -121,12 +121,12 @@
       cursor: pointer;
     }
     
-    /* --- FIX: Added !important to ensure this works --- */
+    /* --- UTILITY: !important ensures the screen hides correctly --- */
     .hidden {
       display: none !important;
     }
 
-    /* --- YOUR EXISTING CSS --- */
+    /* --- GAME CSS --- */
     #game-container {
       position: relative;
       width: 100%;
@@ -843,21 +843,31 @@
         cardTray.innerHTML = '';
         selectedDeck.forEach(name => {
           const card = createCardElement(name);
+          
           card.addEventListener('dragstart', (e) => {
             if (!gameRunning) return;
-            if (!towerObjects['enemy-p1'].isDead) {
-              noDeployLeft.classList.add('visible');
+            
+            // --- NEW: ONLY SHOW RED ZONES IF IT IS A TROOP (NOT A SPELL) ---
+            const cardName = e.target.dataset.name;
+            const data = CARD_DATA[cardName];
+            
+            if (data.type !== 'spell') {
+              if (!towerObjects['enemy-p1'].isDead) {
+                noDeployLeft.classList.add('visible');
+              }
+              if (!towerObjects['enemy-p2'].isDead) {
+                noDeployRight.classList.add('visible');
+              }
+              noDeployKing.classList.add('visible');
             }
-            if (!towerObjects['enemy-p2'].isDead) {
-              noDeployRight.classList.add('visible');
-            }
-            noDeployKing.classList.add('visible');
+
             draggedCardData = {
-              name: e.target.dataset.name,
+              name: cardName,
               cost: parseInt(e.target.dataset.cost, 10),
             };
             e.dataTransfer.setData('text/plain', name);
           });
+
           card.addEventListener('dragend', (e) => {
             noDeployLeft.classList.remove('visible');
             noDeployRight.classList.remove('visible');
@@ -883,17 +893,26 @@
       }
       // --- Drag and Drop Logic ---
       battlefield.addEventListener('dragover', (e) => e.preventDefault());
+      
       // --- Battlefield Drop Logic ---
       battlefield.addEventListener('drop', (e) => {
         e.preventDefault();
+        
+        // Hide red zones
         noDeployLeft.classList.remove('visible');
         noDeployRight.classList.remove('visible');
         noDeployKing.classList.remove('visible');
+        
         if (!gameRunning || !draggedCardData) return;
+
+        // Get card data immediately
+        const data = CARD_DATA[draggedCardData.name];
+
         if (currentElixir >= draggedCardData.cost) {
           const rect = battlefield.getBoundingClientRect();
           const x = e.clientX - rect.left;
           const y = e.clientY - rect.top;
+          
           let isOverTower = false;
           Object.values(towerObjects).forEach((tower) => {
             if (!tower.isDead) {
@@ -906,15 +925,19 @@
               }
             }
           });
-          if (isOverTower) {
-            console.warn('Cannot deploy directly on a Tower!');
+          
+          // --- ALLOW SPELLS TO LAND ON TOWERS ---
+          if (isOverTower && data.type !== 'spell') {
+            console.warn('Cannot deploy troops directly on a Tower!');
             draggedCardData = null;
             return;
           }
-          const data = CARD_DATA[draggedCardData.name];
+
           const isLeftLane = x < ARENA_WIDTH / 2;
           const isEnemyTerritory = y < RIVER_Y;
           let canDeploy = true;
+
+          // Troop deployment rules (Spells ignore this)
           if (data.type === 'troop' && isEnemyTerritory) {
             if (isLeftLane && !towerObjects['enemy-p1'].isDead) {
               canDeploy = false;
@@ -922,6 +945,7 @@
               canDeploy = false;
             }
           }
+
           if (canDeploy) {
             currentElixir -= draggedCardData.cost;
             updateElixirDisplay();
@@ -940,6 +964,7 @@
         }
         draggedCardData = null;
       });
+
       // --- Apply Spell ---
       function applySpell(spellName, x, y) {
         const data = CARD_DATA[spellName];
