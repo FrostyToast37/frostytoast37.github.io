@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clash JS</title>
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clash JS</title>
+<style>
     /* --- NEW Main Menu Styles --- */
     body {
       background-color: #333;
@@ -14,15 +14,14 @@
       align-items: center;
       height: 100vh;
       overflow: hidden;
-      margin: 0; /* Ensure no default margin */
+      margin: 0;
     }
-    /* This container will hold our "pages" */
     #app-container {
       width: 400px;
       height: 700px;
       position: relative;
     }
-    #main-menu-page, #game-page {
+    #main-menu-page, #game-page, #deck-page {
       position: absolute;
       top: 0;
       left: 0;
@@ -40,7 +39,7 @@
       text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
       border: 4px solid #4a3c2a;
       border-radius: 10px;
-      box-sizing: border-box; /* Include border in size */
+      box-sizing: border-box;
     }
     #main-menu-page h1 {
       font-size: 48px;
@@ -58,8 +57,8 @@
       cursor: pointer;
       box-shadow: 0 4px 8px rgba(0,0,0,0.3);
       transition: transform 0.1s, box-shadow 0.1s;
-      width: 200px; /* Give buttons a uniform width */
-      margin-bottom: 20px; /* Space out buttons */
+      width: 200px;
+      margin-bottom: 20px;
     }
     .main-menu-button:hover {
       transform: scale(1.05);
@@ -68,25 +67,80 @@
     .main-menu-button:active {
       transform: scale(0.98);
     }
-    /* Utility class to hide "pages" */
-    .hidden {
-      display: none;
+    /* Deck Page Styles */
+    #deck-page {
+      background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(20,40,60,0.95));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #fff;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;
     }
+    #deck-page h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+    #deck-cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .deck-card {
+      width: 65px;
+      height: 90px;
+      background: white;
+      border: 3px solid #fdd835;
+      border-radius: 8px;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0;
+      box-sizing: border-box;
+      font-weight: bold;
+      text-align: center;
+      overflow: hidden;
+      margin: 5px;
+    }
+    .deck-card.selected {
+      border-color: #00ff00;
+    }
+    #save-deck-button {
+      margin-top: 20px;
+      background: linear-gradient(#ffcc00, #e6b800);
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+    
+    /* --- FIX: Added !important to ensure this works --- */
+    .hidden {
+      display: none !important;
+    }
+
     /* --- YOUR EXISTING CSS --- */
     #game-container {
       position: relative;
-      width: 100%; /* Changed from 400px to 100% to fit container */
-      height: 100%; /* Changed from 700px to 100% to fit container */
-      background: #5a8c3d; /* Arena grass */
+      width: 100%;
+      height: 100%;
+      background: #5a8c3d;
       border: 4px solid #4a3c2a;
       border-radius: 10px;
       overflow: hidden;
-      box-sizing: border-box; /* Add this */
+      box-sizing: border-box;
     }
     /* --- Battlefield Layout --- */
     #battlefield {
       width: 100%;
-      height: calc(100% - 150px); /* Leave room for elixir/cards */
+      height: calc(100% - 150px);
       position: relative;
     }
     #river {
@@ -396,14 +450,20 @@
     #play-again-button:active {
       transform: scale(0.98);
     }
-  </style>
+</style>
 </head>
 <body>
+
   <div id="app-container">
     <div id="main-menu-page">
       <h1>Clash JS</h1>
       <button id="main-menu-play-button" class="main-menu-button">Play</button>
       <button id="main-menu-deck-button" class="main-menu-button">Deck</button>
+    </div>
+    <div id="deck-page" class="hidden">
+      <h2>Select Your Deck (8 Cards)</h2>
+      <div id="deck-cards-container"></div>
+      <button id="save-deck-button">Save Deck</button>
     </div>
     <div id="game-page" class="hidden">
       <div id="game-container">
@@ -450,50 +510,23 @@
         </div>
      
         <div id="card-tray">
-          <div class="card" draggable="true" data-troop="Knight" data-cost="3">
-            <span class="card-name">Knight</span>
-            <span class="card-cost">3</span>
-          </div>
-          <div class="card" draggable="true" data-troop="Archer" data-cost="3">
-            <span class="card-name">Archers</span>
-            <span class="card-cost">3</span>
-          </div>
-          <div class="card" draggable="true" data-troop="Giant" data-cost="5">
-            <span class="card-name">Giant</span>
-            <span class="card-cost">5</span>
-          </div>
-          <div class="card" draggable="true" data-troop="Musketeer" data-cost="4">
-            <span class="card-name">Musketeer</span>
-            <span class="card-cost">4</span>
-          </div>
-          <div class="card" draggable="true" data-troop="MiniPekka" data-cost="4">
-            <span class="card-name">Mini P.E.K.K.A</span>
-            <span class="card-cost">4</span>
-          </div>
-          <div class="card" draggable="true" data-troop="Goblins" data-cost="2">
-            <span class="card-name">Goblins</span>
-            <span class="card-cost">2</span>
-          </div>
-          <div class="card" draggable="true" data-troop="Valkyrie" data-cost="4">
-            <span class="card-name">Valkyrie</span>
-            <span class="card-cost">4</span>
-          </div>
-          <div class="card" draggable="true" data-troop="BabyDragon" data-cost="4">
-            <span class="card-name">Baby Dragon</span>
-            <span class="card-cost">4</span>
-          </div>
         </div>
       </div>
     </div>
-  </div> <script>
+  </div>
+
+<script>
     // We will put ALL logic inside window.onload
     // to ensure every single element is ready.
     window.onload = function() {
       // --- NEW MAIN MENU LOGIC ---
       const mainMenuPage = document.getElementById('main-menu-page');
       const gamePage = document.getElementById('game-page');
+      const deckPage = document.getElementById('deck-page');
       const mainMenuPlayButton = document.getElementById('main-menu-play-button');
       const mainMenuDeckButton = document.getElementById('main-menu-deck-button');
+      const saveDeckButton = document.getElementById('save-deck-button');
+      
       if (mainMenuPlayButton) {
         mainMenuPlayButton.addEventListener('click', () => {
           mainMenuPage.classList.add('hidden');
@@ -502,23 +535,27 @@
       }
       if (mainMenuDeckButton) {
         mainMenuDeckButton.addEventListener('click', () => {
-          mainMenuDeckButton.textContent = 'Coming Soon!';
-          setTimeout(() => {
-            mainMenuDeckButton.textContent = 'Deck';
-          }, 2000);
+          mainMenuPage.classList.add('hidden');
+          deckPage.classList.remove('hidden');
         });
       }
+      if (saveDeckButton) {
+        saveDeckButton.addEventListener('click', () => {
+          localStorage.setItem('selectedDeck', JSON.stringify(selectedDeck));
+          deckPage.classList.add('hidden');
+          mainMenuPage.classList.remove('hidden');
+        });
+      }
+      
       // --- YOUR EXISTING MENU LOGIC ---
       const gameMenu = document.getElementById('game-menu');
       const playButton = document.getElementById('play-button'); // This is the IN-GAME play button
       const gameOverMenu = document.getElementById('game-over-menu');
       const playAgainButton = document.getElementById('play-again-button');
      
-      // --- (THIS IS THE NEW, MOVED LISTENER) ---
       if (playButton) {
         playButton.addEventListener('click', startGame);
       } else {
-        // If this alert pops up, the ID "play-button" is wrong in the HTML.
         alert("CRITICAL ERROR: The in-game 'play-button' could not be found!");
       }
       if (gameOverMenu && playAgainButton) {
@@ -528,18 +565,17 @@
       }
       // --- YOUR EXISTING GAME SCRIPT ---
       const battlefield = document.getElementById('battlefield');
-      const cards = document.querySelectorAll('.card');
+      const cardTray = document.getElementById('card-tray');
       const elixirBar = document.getElementById('elixir-bar');
       const elixirCount = document.getElementById('elixir-count');
       const statOverlay = document.getElementById('stat-overlay');
       const noDeployLeft = document.getElementById('no-deploy-zone-left');
       const noDeployRight = document.getElementById('no-deploy-zone-right');
       const noDeployKing = document.getElementById('no-deploy-zone-king');
-      // const menuTitle = gameMenu.querySelector('h1'); // unused
-      // const menuSubtitle = gameMenu.querySelector('p'); // unused
-      // --- Troop Database ---
-      const TROOP_DATA = {
+      // --- Card Database ---
+      const CARD_DATA = {
         Knight: {
+          type: 'troop',
           cost: 3,
           imageUrl: 'https://i.postimg.cc/qM5Cfg8Z/download.jpg',
           speed: 0.6,
@@ -549,8 +585,11 @@
           range: 10,
           targetType: 'any',
           attackType: 'ground',
+          count: 1,
+          isFlying: false,
         },
         Archer: {
+          type: 'troop',
           cost: 3,
           imageUrl: 'https://i.postimg.cc/1XWV33bS/download-(1).jpg',
           speed: 0.5,
@@ -560,8 +599,11 @@
           range: 100,
           targetType: 'any',
           attackType: 'airAndGround',
+          count: 1,
+          isFlying: false,
         },
         Giant: {
+          type: 'troop',
           cost: 5,
           imageUrl: 'https://i.postimg.cc/3xkmW28w/download-(2).jpg',
           speed: 0.3,
@@ -571,8 +613,11 @@
           range: 10,
           targetType: 'buildings',
           attackType: 'ground',
+          count: 1,
+          isFlying: false,
         },
         Musketeer: {
+          type: 'troop',
           cost: 4,
           imageUrl: 'https://i.postimg.cc/TP4R1WPX/download-(8).jpg',
           speed: 0.5,
@@ -582,8 +627,11 @@
           range: 120,
           targetType: 'any',
           attackType: 'airAndGround',
+          count: 1,
+          isFlying: false,
         },
         MiniPekka: {
+          type: 'troop',
           cost: 4,
           imageUrl: 'https://i.postimg.cc/d3JG0X1j/download-(4).jpg',
           speed: 0.7,
@@ -593,8 +641,11 @@
           range: 10,
           targetType: 'any',
           attackType: 'ground',
+          count: 1,
+          isFlying: false,
         },
         Goblins: {
+          type: 'troop',
           cost: 2,
           imageUrl: 'https://i.postimg.cc/XYPKgQHf/download-(5).jpg',
           speed: 0.9,
@@ -604,8 +655,11 @@
           range: 10,
           targetType: 'any',
           attackType: 'ground',
+          count: 1,
+          isFlying: false,
         },
         Valkyrie: {
+          type: 'troop',
           cost: 4,
           imageUrl: 'https://i.postimg.cc/9FWBX4w5/download-(6).jpg',
           speed: 0.6,
@@ -615,8 +669,11 @@
           range: 10,
           targetType: 'any',
           attackType: 'ground',
+          count: 1,
+          isFlying: false,
         },
         BabyDragon: {
+          type: 'troop',
           cost: 4,
           imageUrl: 'https://i.postimg.cc/KjGHB0jc/download-(7).jpg',
           speed: 0.5,
@@ -626,9 +683,81 @@
           range: 80,
           targetType: 'any',
           attackType: 'airAndGround',
+          count: 1,
           isFlying: true,
         },
+        Minions: {
+          type: 'troop',
+          cost: 3,
+          imageUrl: 'https://i.postimg.cc/bvfQphyq/download-(9).jpg', // Placeholder URL
+          speed: 0.8,
+          health: 90,
+          damage: 40,
+          attackSpeed: 50,
+          range: 20,
+          targetType: 'any',
+          attackType: 'airAndGround',
+          count: 3,
+          isFlying: true,
+        },
+        Fireball: {
+          type: 'spell',
+          cost: 4,
+          imageUrl: 'https://i.postimg.cc/8Psdb4Xk/download-(10).jpg', // Placeholder URL
+          damage: 200,
+          radius: 80,
+          targetAir: true,
+          targetGround: true,
+        },
+        Arrows: {
+          type: 'spell',
+          cost: 3,
+          imageUrl: 'https://i.postimg.cc/C5rGgn1m/download-(11).jpg', // Placeholder URL
+          damage: 100,
+          radius: 120,
+          targetAir: true,
+          targetGround: true,
+        },
+        Lightning: {
+          type: 'spell',
+          cost: 6,
+          imageUrl: 'https://i.postimg.cc/8CLm6CKF/download-(12).jpg', // Placeholder URL
+          damage: 300,
+          radius: 100,
+          maxTargets: 3,
+          targetAir: true,
+          targetGround: true,
+        },
       };
+      const allCardNames = Object.keys(CARD_DATA);
+      let selectedDeck = ['Knight', 'Archer', 'Giant', 'Musketeer', 'MiniPekka', 'Goblins', 'Valkyrie', 'BabyDragon']; // Default
+      // Load saved deck if exists
+      const savedDeck = localStorage.getItem('selectedDeck');
+      if (savedDeck) {
+        selectedDeck = JSON.parse(savedDeck);
+      }
+      // --- Populate Deck Selection ---
+      function populateDeckSelection() {
+        const container = document.getElementById('deck-cards-container');
+        container.innerHTML = '';
+        allCardNames.forEach(name => {
+          const card = createCardElement(name, true);
+          if (selectedDeck.includes(name)) {
+            card.classList.add('selected');
+          }
+          card.addEventListener('click', () => {
+            if (card.classList.contains('selected')) {
+              card.classList.remove('selected');
+              selectedDeck = selectedDeck.filter(n => n !== name);
+            } else if (selectedDeck.length < 8) {
+              card.classList.add('selected');
+              selectedDeck.push(name);
+            }
+          });
+          container.appendChild(card);
+        });
+      }
+      populateDeckSelection();
       // --- Game State ---
       let currentElixir = 5;
       let aiElixir = 5;
@@ -644,6 +773,8 @@
         'Goblins',
         'Musketeer',
         'BabyDragon',
+        'Minions',
+        'Arrows'
       ];
       let gameRunning = false;
       let elixirInterval = null;
@@ -684,44 +815,73 @@
         const dy = ay - by;
         return Math.sqrt(dx * dx + dy * dy);
       }
+      // --- Create Card Element ---
+      function createCardElement(name, forDeck = false) {
+        const data = CARD_DATA[name];
+        if (!data) return;
+        const card = document.createElement('div');
+        card.classList.add(forDeck ? 'deck-card' : 'card');
+        card.dataset.name = name;
+        card.dataset.cost = data.cost;
+        card.draggable = !forDeck;
+        const nameSpan = document.createElement('span');
+        nameSpan.classList.add('card-name');
+        nameSpan.textContent = name;
+        const costSpan = document.createElement('span');
+        costSpan.classList.add('card-cost');
+        costSpan.textContent = data.cost;
+        const img = document.createElement('img');
+        img.src = data.imageUrl;
+        img.classList.add('card-image');
+        card.appendChild(img);
+        card.appendChild(nameSpan);
+        card.appendChild(costSpan);
+        return card;
+      }
+      // --- Populate Card Tray ---
+      function populateCardTray() {
+        cardTray.innerHTML = '';
+        selectedDeck.forEach(name => {
+          const card = createCardElement(name);
+          card.addEventListener('dragstart', (e) => {
+            if (!gameRunning) return;
+            if (!towerObjects['enemy-p1'].isDead) {
+              noDeployLeft.classList.add('visible');
+            }
+            if (!towerObjects['enemy-p2'].isDead) {
+              noDeployRight.classList.add('visible');
+            }
+            noDeployKing.classList.add('visible');
+            draggedCardData = {
+              name: e.target.dataset.name,
+              cost: parseInt(e.target.dataset.cost, 10),
+            };
+            e.dataTransfer.setData('text/plain', name);
+          });
+          card.addEventListener('dragend', (e) => {
+            noDeployLeft.classList.remove('visible');
+            noDeployRight.classList.remove('visible');
+            noDeployKing.classList.remove('visible');
+          });
+          card.addEventListener('mouseover', (e) => {
+            const cardName = e.currentTarget.dataset.name;
+            const data = CARD_DATA[cardName];
+            if (!data) return;
+            statOverlay.innerHTML = `
+              <h3>${cardName}</h3>
+              <p><b>Health:</b> ${data.health || 'N/A'}</p>
+              <p><b>Damage:</b> ${data.damage || 'N/A'}</p>
+              <p><b>Speed:</b> ${getSpeedCategory(data.speed) || 'N/A'}</p>
+            `;
+            statOverlay.classList.add('visible');
+          });
+          card.addEventListener('mouseout', (e) => {
+            statOverlay.classList.remove('visible');
+          });
+          cardTray.appendChild(card);
+        });
+      }
       // --- Drag and Drop Logic ---
-      cards.forEach((card) => {
-        card.addEventListener('dragstart', (e) => {
-          if (!gameRunning) return;
-          if (!towerObjects['enemy-p1'].isDead) {
-            noDeployLeft.classList.add('visible');
-          }
-          if (!towerObjects['enemy-p2'].isDead) {
-            noDeployRight.classList.add('visible');
-          }
-          noDeployKing.classList.add('visible');
-          draggedCardData = {
-            troop: e.target.dataset.troop,
-            cost: parseInt(e.target.dataset.cost, 10),
-          };
-          e.dataTransfer.setData('text/plain', e.target.dataset.troop);
-        });
-        card.addEventListener('dragend', (e) => {
-          noDeployLeft.classList.remove('visible');
-          noDeployRight.classList.remove('visible');
-          noDeployKing.classList.remove('visible');
-        });
-        card.addEventListener('mouseover', (e) => {
-          const troopName = e.currentTarget.dataset.troop;
-          const data = TROOP_DATA[troopName];
-          if (!data) return;
-          statOverlay.innerHTML = `
-            <h3>${troopName}</h3>
-            <p><b>Health:</b> ${data.health}</p>
-            <p><b>Damage:</b> ${data.damage}</p>
-            <p><b>Speed:</b> ${getSpeedCategory(data.speed)}</p>
-          `;
-          statOverlay.classList.add('visible');
-        });
-        card.addEventListener('mouseout', (e) => {
-          statOverlay.classList.remove('visible');
-        });
-      });
       battlefield.addEventListener('dragover', (e) => e.preventDefault());
       // --- Battlefield Drop Logic ---
       battlefield.addEventListener('drop', (e) => {
@@ -751,10 +911,11 @@
             draggedCardData = null;
             return;
           }
+          const data = CARD_DATA[draggedCardData.name];
           const isLeftLane = x < ARENA_WIDTH / 2;
           const isEnemyTerritory = y < RIVER_Y;
           let canDeploy = true;
-          if (isEnemyTerritory) {
+          if (data.type === 'troop' && isEnemyTerritory) {
             if (isLeftLane && !towerObjects['enemy-p1'].isDead) {
               canDeploy = false;
             } else if (!isLeftLane && !towerObjects['enemy-p2'].isDead) {
@@ -764,7 +925,11 @@
           if (canDeploy) {
             currentElixir -= draggedCardData.cost;
             updateElixirDisplay();
-            deployTroop(draggedCardData.troop, x, y, 'player');
+            if (data.type === 'troop') {
+              deployTroop(draggedCardData.name, x, y, 'player');
+            } else if (data.type === 'spell') {
+              applySpell(draggedCardData.name, x, y);
+            }
           } else {
             console.warn(
               'Cannot deploy there! Take the Princess Tower on this lane first.',
@@ -775,6 +940,48 @@
         }
         draggedCardData = null;
       });
+      // --- Apply Spell ---
+      function applySpell(spellName, x, y) {
+        const data = CARD_DATA[spellName];
+        if (!data) return;
+        const targets = [...activeTroops, ...Object.values(towerObjects)].filter(unit => !unit.isDead);
+        const inRange = targets.filter(unit => getDistance({ _x: x, _y: y }, unit) <= data.radius 
+          && ((data.targetGround && !unit.isFlying) || (data.targetAir && unit.isFlying) || (!unit.isFlying && !('isFlying' in unit))));
+        if (spellName === 'Lightning') {
+          inRange.sort((a, b) => b.currentHealth - a.currentHealth);
+          const hitTargets = inRange.slice(0, data.maxTargets);
+          hitTargets.forEach(target => {
+            target.currentHealth -= data.damage;
+            updateHealthBar(target);
+            checkDeath(target);
+          });
+        } else {
+          inRange.forEach(target => {
+            target.currentHealth -= data.damage;
+            updateHealthBar(target);
+            checkDeath(target);
+          });
+        }
+      }
+      function updateHealthBar(unit) {
+        const healthPercent = (unit.currentHealth / unit.maxHealth) * 100;
+        unit.healthBar.style.width = `${Math.max(0, healthPercent)}%`;
+      }
+      function checkDeath(unit) {
+        if (unit.currentHealth <= 0 && !unit.isDead) {
+          unit.isDead = true;
+          if (unit.element) {
+            unit.element.style.display = 'none';
+          }
+          if (unit.healthBarContainer) {
+            unit.healthBarContainer.style.display = 'none';
+          }
+          if (unit.id && unit.id.includes('-king')) {
+            const message = unit.faction === 'ai' ? 'You Win!' : 'You Lose!';
+            endGame(message);
+          }
+        }
+      }
       // --- Initialize Towers ---
       function initializeTowers() {
         const towerElements = [
@@ -785,6 +992,7 @@
             x: ENEMY_TOWER_LEFT_X,
             y: ENEMY_TOWER_Y,
             maxHealth: 1400,
+            currentHealth: 1400,
             damage: 50,
             range: 150,
             attackSpeed: 60,
@@ -797,6 +1005,7 @@
             x: ENEMY_TOWER_RIGHT_X,
             y: ENEMY_TOWER_Y,
             maxHealth: 1400,
+            currentHealth: 1400,
             damage: 50,
             range: 150,
             attackSpeed: 60,
@@ -809,6 +1018,7 @@
             x: ENEMY_KING_X,
             y: ENEMY_KING_Y,
             maxHealth: 2400,
+            currentHealth: 2400,
             damage: 60,
             range: 130,
             attackSpeed: 70,
@@ -821,6 +1031,7 @@
             x: PLAYER_TOWER_LEFT_X,
             y: PLAYER_TOWER_Y,
             maxHealth: 1400,
+            currentHealth: 1400,
             damage: 50,
             range: 150,
             attackSpeed: 60,
@@ -833,6 +1044,7 @@
             x: PLAYER_TOWER_RIGHT_X,
             y: PLAYER_TOWER_Y,
             maxHealth: 1400,
+            currentHealth: 1400,
             damage: 50,
             range: 150,
             attackSpeed: 60,
@@ -845,6 +1057,7 @@
             x: PLAYER_KING_X,
             y: PLAYER_KING_Y,
             maxHealth: 2400,
+            currentHealth: 2400,
             damage: 60,
             range: 130,
             attackSpeed: 70,
@@ -862,7 +1075,6 @@
           battlefield.appendChild(healthBarContainer);
           towerObjects[towerData.id] = {
             ...towerData,
-            currentHealth: towerData.maxHealth,
             _x: towerData.x + 30, // Center X
             _y: towerData.y + 40, // Center Y
             healthBar: healthBarCurrent,
@@ -873,77 +1085,65 @@
           };
         });
       }
-      // --- Initialize Card Images ---
-      function initializeCards() {
-        cards.forEach((card) => {
-          const troopName = card.dataset.troop;
-          if (!troopName) return;
-          const data = TROOP_DATA[troopName];
-          if (!data) return;
-          const existingImage = card.querySelector('.card-image');
-          if (existingImage) return;
-          const img = document.createElement('img');
-          img.src = data.imageUrl;
-          img.classList.add('card-image');
-          card.prepend(img);
-        });
-      }
       // --- Deploy Troop Function ---
-      function deployTroop(troopName, x, y, faction) {
-        const troopData = TROOP_DATA[troopName];
-        if (!troopData) return;
-        const troopElement = document.createElement('img');
-        troopElement.classList.add('troop');
-        troopElement.src = troopData.imageUrl;
-        let startX = x - 20;
-        let startY = y - 20;
-        troopElement.style.left = `${startX}px`;
-        troopElement.style.top = `${startY}px`;
-        const healthBarContainer = document.createElement('div');
-        healthBarContainer.className = 'troop-health-bar';
-        healthBarContainer.style.left = `${startX + 5}px`;
-        healthBarContainer.style.top = `${startY - 8}px`;
-        const healthBarCurrent = document.createElement('div');
-        healthBarCurrent.className = `troop-health-bar-current ${faction}`;
-        healthBarContainer.appendChild(healthBarCurrent);
-        let defaultTargetTower, finalTarget;
-        const enemyFaction = faction === 'player' ? 'ai' : 'player';
-        if (faction === 'player') {
-          finalTarget = towerObjects['enemy-king'];
-          defaultTargetTower =
-            x < ARENA_WIDTH / 2
-              ? towerObjects['enemy-p1']
-              : towerObjects['enemy-p2'];
-        } else {
-          // Faction is 'ai'
-          finalTarget = towerObjects['player-king'];
-          defaultTargetTower =
-            x < ARENA_WIDTH / 2
-              ? towerObjects['player-p1']
-              : towerObjects['player-p2'];
+      function deployTroop(cardName, x, y, faction) {
+        const data = CARD_DATA[cardName];
+        if (!data) return;
+        for (let i = 0; i < data.count; i++) {
+          const offsetX = (i - Math.floor(data.count / 2)) * 10;
+          const offsetY = i % 2 * 10;
+          const troopElement = document.createElement('img');
+          troopElement.classList.add('troop');
+          troopElement.src = data.imageUrl;
+          let startX = x - 20 + offsetX;
+          let startY = y - 20 + offsetY;
+          troopElement.style.left = `${startX}px`;
+          troopElement.style.top = `${startY}px`;
+          const healthBarContainer = document.createElement('div');
+          healthBarContainer.className = 'troop-health-bar';
+          healthBarContainer.style.left = `${startX + 5}px`;
+          healthBarContainer.style.top = `${startY - 8}px`;
+          const healthBarCurrent = document.createElement('div');
+          healthBarCurrent.className = `troop-health-bar-current ${faction}`;
+          healthBarContainer.appendChild(healthBarCurrent);
+          let defaultTargetTower, finalTarget;
+          const enemyFaction = faction === 'player' ? 'ai' : 'player';
+          if (faction === 'player') {
+            finalTarget = towerObjects['enemy-king'];
+            defaultTargetTower =
+              x < ARENA_WIDTH / 2
+                ? towerObjects['enemy-p1']
+                : towerObjects['enemy-p2'];
+          } else {
+            finalTarget = towerObjects['player-king'];
+            defaultTargetTower =
+              x < ARENA_WIDTH / 2
+                ? towerObjects['player-p1']
+                : towerObjects['player-p2'];
+          }
+          battlefield.appendChild(troopElement);
+          battlefield.appendChild(healthBarContainer);
+          const troop = {
+            ...data,
+            cardName: cardName,
+            element: troopElement,
+            faction: faction,
+            x: startX,
+            y: startY,
+            _x: startX + 20,
+            _y: startY + 20,
+            attackCooldown: 0,
+            maxHealth: data.health,
+            currentHealth: data.health,
+            healthBar: healthBarCurrent,
+            healthBarContainer: healthBarContainer,
+            isDead: false,
+            currentTarget: null,
+            defaultTargetTower: defaultTargetTower,
+            finalTarget: finalTarget,
+          };
+          activeTroops.push(troop);
         }
-        battlefield.appendChild(troopElement);
-        battlefield.appendChild(healthBarContainer);
-        const troop = {
-          ...troopData,
-          troopName: troopName,
-          element: troopElement,
-          faction: faction,
-          x: startX,
-          y: startY,
-          _x: startX + 20,
-          _y: startY + 20,
-          attackCooldown: 0,
-          maxHealth: troopData.health,
-          currentHealth: troopData.health,
-          healthBar: healthBarCurrent,
-          healthBarContainer: healthBarContainer,
-          isDead: false,
-          currentTarget: null,
-          defaultTargetTower: defaultTargetTower,
-          finalTarget: finalTarget,
-        };
-        activeTroops.push(troop);
       }
       // --- Find New Target Function ---
       function findNewTarget(troop) {
@@ -1048,6 +1248,7 @@
         gameRunning = true;
         gameMenu.style.display = 'none';
         updateElixirDisplay();
+        populateCardTray();
         initializeTowers();
         elixirInterval = setInterval(() => {
           if (!gameRunning) return;
@@ -1064,12 +1265,19 @@
         aiInterval = setInterval(() => {
           if (!gameRunning) return;
           const cardName = aiDeck[Math.floor(Math.random() * aiDeck.length)];
-          const cardCost = TROOP_DATA[cardName].cost;
-          if (aiElixir >= cardCost) {
-            aiElixir -= cardCost;
+          const data = CARD_DATA[cardName];
+          if (aiElixir >= data.cost) {
+            aiElixir -= data.cost;
             let deployX = Math.random() > 0.5 ? 100 : 300;
             let deployY = 120; // Deploy at the back
-            deployTroop(cardName, deployX, deployY, 'ai');
+            if (data.type === 'troop') {
+              deployTroop(cardName, deployX, deployY, 'ai');
+            } else if (data.type === 'spell') {
+              // AI casts spell at random player side
+              let spellX = Math.random() > 0.5 ? 100 : 300;
+              let spellY = 400;
+              applySpell(cardName, spellX, spellY);
+            }
           }
         }, 3000);
         gameLoop();
@@ -1090,7 +1298,6 @@
         // 2. Troop Logic
         for (const troop of activeTroops) {
           if (
-            troop.targetType === 'any' ||
             !troop.currentTarget ||
             troop.currentTarget.isDead
           ) {
@@ -1139,28 +1346,16 @@
               troop.attackCooldown = troop.attackSpeed;
               let currentDamage = troop.damage;
               if (
-                troop.troopName === 'Valkyrie' &&
+                troop.cardName === 'Valkyrie' &&
                 troop.currentHealth < troop.maxHealth / 2
               ) {
                 currentDamage *= 1.5;
               }
               finalTarget.currentHealth -= currentDamage;
-              const healthPercent =
-                (finalTarget.currentHealth / finalTarget.maxHealth) * 100;
-              finalTarget.healthBar.style.width = `${Math.max(0, healthPercent)}%`;
-              if (finalTarget.currentHealth <= 0 && !finalTarget.isDead) {
-                finalTarget.isDead = true;
-                if (finalTarget.element) {
-                  finalTarget.element.style.display = 'none';
-                  finalTarget.healthBarContainer.style.display = 'none';
-                }
+              updateHealthBar(finalTarget);
+              checkDeath(finalTarget);
+              if (finalTarget.isDead) {
                 troop.currentTarget = null;
-                if (finalTarget.id && finalTarget.id.includes('-king')) {
-                  const message =
-                    troop.faction === 'player' ? 'You Win!' : 'You Lose!';
-                  endGame(message);
-                  return;
-                }
               }
             }
           }
@@ -1200,36 +1395,20 @@
               tower.attackCooldown = tower.attackSpeed;
               const target = tower.currentTarget;
               target.currentHealth -= tower.damage;
-              const healthPercent = (target.currentHealth / target.maxHealth) * 100;
-              target.healthBar.style.width = `${Math.max(0, healthPercent)}%`;
-              if (target.currentHealth <= 0) {
-                target.isDead = true;
-                if (target.element) {
-                  target.element.style.display = 'none';
-                  target.healthBarContainer.style.display = 'none';
-                }
+              updateHealthBar(target);
+              checkDeath(target);
+              if (target.isDead) {
                 tower.currentTarget = null;
               }
             }
-          } else {
-            tower.attackCooldown = 0;
           }
         }
-        // Loop
-        if (gameRunning) {
-          try {
-            requestAnimationFrame(gameLoop);
-          } catch (e) {
-            console.error('Critical error in gameLoop, stopping game.', e);
-            endGame('Critical Error!');
-          }
-        }
-      }
-      // --- Initialize Page ---
-      updateElixirDisplay();
-      initializeCards();
-      // --- (The listener was moved up higher) ---
-    }; // --- END OF window.onload WRAPPER ---
-  </script>
+        
+      } // End Game Loop function
+      
+      setInterval(gameLoop, 1000 / 60);
+
+    }; // End window.onload
+</script>
 </body>
 </html>
