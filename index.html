@@ -18,6 +18,7 @@
     <button onclick="openMC()">Fun?</button>
     <button onclick="openOOS()">OOS?</button>
     <button onclick="openAI()">Game?</button>
+    <button onclick="openClash()">Clash?</button>
     </div>
     
     
@@ -148,6 +149,17 @@
             iframe.style.border = "none";
             iframe.src = url
             win.document.body.appendChild(iframe)
+        }
+        function openClash() {
+            var win = window.open()
+            var url = "https://frostytoast37.github.io/clash_js"
+            var iframe = win.document.createElement('iframe')
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            iframe.src = url
+            win.document.body.appendChild(iframe)
+
         }
     </script>
 </body>
