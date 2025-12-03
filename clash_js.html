@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Clash v1.1.2</title>
+<title>AI Clash v1.5</title>
 <style>
     /* --- MAIN MENU & UI STYLES --- */
     body {
@@ -365,7 +365,6 @@
     .troop-health-bar-current.player { background-color: #4CAF50; }
     .troop-health-bar-current.ai { background-color: #f44336; }
 
-    /* The Flash Effect Class */
     .hit-flash {
       background-color: #ffffff !important;
       box-shadow: 0 0 5px #fff;
@@ -379,7 +378,6 @@
       transform-origin: center;
     }
     
-    /* Spell Effects */
     .spell-effect {
       position: absolute;
       pointer-events: none;
@@ -426,7 +424,7 @@
       width: 0; height: 0;
       border-left: 3px solid transparent;
       border-right: 3px solid transparent;
-      border-top: 6px solid #fff; /* White tip to see it better */
+      border-top: 6px solid #fff;
     }
     @keyframes dropArrow {
       0% { transform: translateY(0); opacity: 0; }
@@ -645,13 +643,25 @@
         Valkyrie: { type: 'troop', cost: 4, imageUrl: 'https://i.postimg.cc/9FWBX4w5/download-(6).jpg', speed: 0.6, health: 700, damage: 100, attackSpeed: 80, range: 10, targetType: 'any', attackType: 'ground', count: 1, isFlying: false },
         BabyDragon: { type: 'troop', cost: 4, imageUrl: 'https://i.postimg.cc/KjGHB0jc/download-(7).jpg', speed: 0.5, health: 600, damage: 60, attackSpeed: 70, range: 80, targetType: 'any', attackType: 'airAndGround', count: 1, isFlying: true, projectileType: 'fireball_small' },
         Minions: { type: 'troop', cost: 3, imageUrl: 'https://i.postimg.cc/bvfQphyq/download-(9).jpg', speed: 0.8, health: 90, damage: 40, attackSpeed: 50, range: 20, targetType: 'any', attackType: 'airAndGround', count: 3, isFlying: true, projectileType: 'dark_elixir' },
+        
+        // --- BUFFED CANNON: More Health, Faster Attack, Longer Range ---
+        Cannon: { type: 'building', cost: 3, imageUrl: 'https://i.postimg.cc/pT1W2d53/download-1.jpg', speed: 0, health: 450, damage: 70, attackSpeed: 40, range: 115, targetType: 'any', attackType: 'ground', count: 1, isFlying: false, projectileType: 'cannonball' },
+        
+        // --- NERFED HUT: Slower Spawn Rate (2.5s) ---
+        GoblinHut: { type: 'building', cost: 5, imageUrl: 'https://i.postimg.cc/26y7064Q/download-2.jpg', speed: 0, health: 800, damage: 0, attackSpeed: 0, range: 0, targetType: 'none', attackType: 'none', count: 1, isFlying: false, spawnUnit: 'SpearGoblins', spawnRate: 2500 },
+        
+        SpearGoblins: { type: 'troop', cost: 2, imageUrl: 'https://i.postimg.cc/0j1tL2y2/download-3.jpg', speed: 0.85, health: 52, damage: 24, attackSpeed: 50, range: 100, targetType: 'any', attackType: 'airAndGround', count: 3, isFlying: false, projectileType: 'spear' },
+        
+        // --- NERFED SKELETONS: Lower Health ---
+        SkeletonArmy: { type: 'troop', cost: 3, imageUrl: 'https://i.postimg.cc/Rh4v644q/download-4.jpg', speed: 0.9, health: 20, damage: 32, attackSpeed: 40, range: 10, targetType: 'any', attackType: 'ground', count: 25, isFlying: false },
+        
         Fireball: { type: 'spell', cost: 4, imageUrl: 'https://i.postimg.cc/8Psdb4Xk/download-(10).jpg', damage: 200, radius: 80, targetAir: true, targetGround: true, spellEffect: 'fireball' },
         Arrows: { type: 'spell', cost: 3, imageUrl: 'https://i.postimg.cc/C5rGgn1m/download-(11).jpg', damage: 100, radius: 120, targetAir: true, targetGround: true, spellEffect: 'arrows' },
         Lightning: { type: 'spell', cost: 6, imageUrl: 'https://i.postimg.cc/8CLm6CKF/download-(12).jpg', damage: 300, radius: 100, maxTargets: 3, targetAir: true, targetGround: true, spellEffect: 'lightning' },
       };
 
       const allCardNames = Object.keys(CARD_DATA);
-      let selectedDeck = ['Knight', 'Archer', 'Giant', 'Musketeer', 'MiniPekka', 'Goblins', 'Valkyrie', 'BabyDragon'];
+      let selectedDeck = ['Knight', 'Archer', 'Giant', 'Cannon', 'SpearGoblins', 'SkeletonArmy', 'GoblinHut', 'BabyDragon'];
       const savedDeck = localStorage.getItem('selectedDeck');
       if (savedDeck) selectedDeck = JSON.parse(savedDeck);
 
@@ -683,7 +693,7 @@
       let draggedCardData = null;
       let activeTroops = [];
       let towerObjects = {};
-      const aiDeck = ['Knight', 'Archer', 'Giant', 'Goblins', 'Musketeer', 'BabyDragon', 'Minions', 'Arrows'];
+      const aiDeck = ['Knight', 'Archer', 'Giant', 'SkeletonArmy', 'Musketeer', 'BabyDragon', 'Minions', 'Arrows'];
       let gameRunning = false;
       let elixirInterval = null;
       let aiInterval = null;
@@ -709,6 +719,7 @@
       }
 
       function getSpeedCategory(speed) {
+        if (speed === 0) return 'Stationary';
         if (speed < 0.4) return 'Slow';
         if (speed < 0.6) return 'Medium';
         if (speed < 0.8) return 'Fast';
@@ -800,14 +811,15 @@
           const isLeftLane = x < ARENA_WIDTH / 2;
           const isEnemyTerritory = y < RIVER_Y;
           let canDeploy = true;
-          if (data.type === 'troop' && isEnemyTerritory) {
+          // Buildings behave like troops for deployment zones
+          if ((data.type === 'troop' || data.type === 'building') && isEnemyTerritory) {
             if (isLeftLane && !towerObjects['enemy-p1'].isDead) canDeploy = false;
             else if (!isLeftLane && !towerObjects['enemy-p2'].isDead) canDeploy = false;
           }
           if (canDeploy) {
             currentElixir -= draggedCardData.cost;
             updateElixirDisplay();
-            if (data.type === 'troop') deployTroop(draggedCardData.name, x, y, 'player');
+            if (data.type === 'troop' || data.type === 'building') deployTroop(draggedCardData.name, x, y, 'player');
             else if (data.type === 'spell') applySpell(draggedCardData.name, x, y);
           } else { console.warn('Cannot deploy there!'); }
         } else { console.warn('Not enough elixir!'); }
@@ -837,11 +849,9 @@
         
         if (type === 'fireball') {
           visual.classList.add('fireball-explosion');
-          // Add Shake on Fireball
           triggerShake();
         } else if (type === 'arrows') {
           visual.classList.add('arrows-area');
-          // 50 Arrows
           for(let i=0; i<50; i++) {
             const arrow = document.createElement('div');
             arrow.className = 'mini-arrow';
@@ -855,7 +865,6 @@
         } else if (type === 'lightning') {
           visual.classList.add('lightning-bolt');
           visual.style.top = `${y - 200}px`; 
-          // Flash and Shake for Lightning
           triggerFlash();
           triggerShake();
         }
@@ -874,6 +883,11 @@
         if (type === 'arrow') {
             width = 15; height = 3; color = '#8B4513';
             projectile.style.borderRadius = '0 50% 50% 0';
+        } else if (type === 'spear') {
+            width = 18; height = 2; color = '#D2691E'; // Thinner, lighter brown for spears
+        } else if (type === 'cannonball') {
+            width = 10; height = 10; color = '#111';
+            isRound = true;
         } else if (type === 'fireball_small') {
             width = 12; height = 12; color = 'orange';
             isRound = true;
@@ -881,13 +895,11 @@
             width = 6; height = 6; color = '#222';
             isRound = true;
         } else if (type === 'dark_elixir') {
-            // Minion Projectile Upgrade
             width = 14; height = 14; 
             projectile.style.background = 'radial-gradient(circle, #D8BFD8 0%, #4B0082 100%)';
             projectile.style.boxShadow = '0 0 6px #8A2BE2';
             isRound = true;
         } else {
-            // Default
             projectile.style.background = 'black';
         }
 
@@ -943,7 +955,6 @@
             checkDeath(target);
           });
         } else {
-          // Delay damage slightly for visuals
           setTimeout(() => {
               inRange.forEach(target => {
                 target.currentHealth -= data.damage;
@@ -957,8 +968,6 @@
       function updateHealthBar(unit) {
         const healthPercent = (unit.currentHealth / unit.maxHealth) * 100;
         unit.healthBar.style.width = `${Math.max(0, healthPercent)}%`;
-        
-        // --- FLASH EFFECT ---
         unit.healthBar.classList.add('hit-flash');
         setTimeout(() => {
             unit.healthBar.classList.remove('hit-flash');
@@ -996,17 +1005,32 @@
         });
       }
 
-      function deployTroop(cardName, x, y, faction) {
+      function deployTroop(cardName, x, y, faction, countOverride = null) {
         const data = CARD_DATA[cardName];
         if (!data) return;
-        for (let i = 0; i < data.count; i++) {
-          const offsetX = (i - Math.floor(data.count / 2)) * 10;
-          const offsetY = i % 2 * 10;
+        
+        // Use override if provided (for huts spawning 1 unit), otherwise use card default
+        const count = countOverride !== null ? countOverride : data.count;
+
+        for (let i = 0; i < count; i++) {
+          // Add random jitter for swarms so they don't stack perfectly
+          const jitterX = (Math.random() - 0.5) * 20; 
+          const jitterY = (Math.random() - 0.5) * 20;
+          
+          let startX = x - 20 + jitterX;
+          let startY = y - 20 + jitterY;
+          
+          // Formations for small counts (keeps existing logic somewhat)
+          if (count < 5 && count > 1) {
+             const offsetX = (i - Math.floor(count / 2)) * 10;
+             const offsetY = i % 2 * 10;
+             startX = x - 20 + offsetX;
+             startY = y - 20 + offsetY;
+          }
+
           const troopElement = document.createElement('img');
           troopElement.classList.add('troop');
           troopElement.src = data.imageUrl;
-          let startX = x - 20 + offsetX;
-          let startY = y - 20 + offsetY;
           troopElement.style.left = `${startX}px`;
           troopElement.style.top = `${startY}px`;
           const healthBarContainer = document.createElement('div');
@@ -1029,7 +1053,9 @@
           const troop = {
             ...data, cardName: cardName, element: troopElement, faction: faction, x: startX, y: startY, _x: startX + 20, _y: startY + 20,
             attackCooldown: 0, maxHealth: data.health, currentHealth: data.health, healthBar: healthBarCurrent, healthBarContainer: healthBarContainer,
-            isDead: false, currentTarget: null, defaultTargetTower: defaultTargetTower, finalTarget: finalTarget
+            isDead: false, currentTarget: null, defaultTargetTower: defaultTargetTower, finalTarget: finalTarget,
+            // Spawner specific properties
+            lastSpawnTime: Date.now() 
           };
           activeTroops.push(troop);
         }
@@ -1040,8 +1066,16 @@
         const enemyPrefix = troop.faction === 'player' ? 'enemy' : 'player';
         let closestTarget = null;
         let minDistance = 9999;
+        
+        // Building-only targeters (Giant) ignore troops
         if (troop.targetType === 'buildings') {
           let targets = [towerObjects[`${enemyPrefix}-p1`], towerObjects[`${enemyPrefix}-p2`], towerObjects[`${enemyPrefix}-king`]];
+          // Also check for enemy buildings (Cannon, Hut) in activeTroops
+          for (const t of activeTroops) {
+              if (t.faction === enemyFaction && !t.isDead && t.type === 'building') {
+                  targets.push(t);
+              }
+          }
           for (const tower of targets) {
             if (tower && !tower.isDead) {
               const dist = getDistance(troop, tower);
@@ -1051,6 +1085,8 @@
           troop.currentTarget = closestTarget;
           return;
         }
+
+        // Standard troops
         for (const t of activeTroops) {
           if (t.faction === enemyFaction && !t.isDead) {
             if (t.isFlying && troop.attackType === 'ground') continue;
@@ -1110,7 +1146,7 @@
           if (aiElixir >= data.cost) {
             aiElixir -= data.cost;
             let deployX = Math.random() > 0.5 ? 100 : 300;
-            if (data.type === 'troop') deployTroop(cardName, deployX, 120, 'ai');
+            if (data.type === 'troop' || data.type === 'building') deployTroop(cardName, deployX, 120, 'ai');
             else if (data.type === 'spell') applySpell(cardName, Math.random() > 0.5 ? 100 : 300, 400);
           }
         }, 3000);
@@ -1130,15 +1166,29 @@
         }
 
         for (const troop of activeTroops) {
+          
+          // --- SPAWNER LOGIC (Goblin Hut) ---
+          if (troop.spawnUnit && !troop.isDead) {
+              const now = Date.now();
+              if (now - troop.lastSpawnTime > troop.spawnRate) {
+                  // Spawn 1 unit at hut location
+                  deployTroop(troop.spawnUnit, troop.x, troop.y, troop.faction, 1);
+                  troop.lastSpawnTime = now;
+              }
+          }
+
           if (!troop.currentTarget || troop.currentTarget.isDead) {
             findNewTarget(troop);
-            if (!troop.currentTarget) continue;
           }
-          const finalTarget = troop.currentTarget;
-          if (!finalTarget) continue;
-          const distance = getDistance(troop, finalTarget);
           
-          if (distance > troop.range) {
+          // Even if no target, stationary buildings don't move.
+          // If we have a target, check range.
+          const finalTarget = troop.currentTarget;
+          let distance = 9999;
+          if (finalTarget) distance = getDistance(troop, finalTarget);
+          
+          // MOVE only if distance > range AND speed > 0
+          if (finalTarget && distance > troop.range && troop.speed > 0) {
             let moveTarget = finalTarget;
             const needsToCross = (troop.faction === 'player' && finalTarget._y < RIVER_Y && troop._y > RIVER_Y) ||
                                  (troop.faction === 'ai' && finalTarget._y > RIVER_Y && troop._y < RIVER_Y);
@@ -1160,7 +1210,8 @@
               troop.healthBarContainer.style.left = `${troop.x + 5}px`;
               troop.healthBarContainer.style.top = `${troop.y - 8}px`;
             }
-          } else {
+          } else if (finalTarget && distance <= troop.range) {
+            // ATTACK
             troop.attackCooldown--;
             if (troop.attackCooldown <= 0) {
               troop.attackCooldown = troop.attackSpeed;
