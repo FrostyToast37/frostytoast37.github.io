@@ -1,0 +1,15 @@
+body {
+  font-family: monospace;
+}
+
+form {
+  background-color: lightgray;
+  display: flex; 
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.submit_button {
+  background-color: #14f170;
+  color: white;
+}
