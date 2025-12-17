@@ -16,4 +16,5 @@ loginForm.addEventListener("submit", function (event){
   let tempUser = usernameInput.value;
   let tempPass = passwordInput.value;
 
+  let tempJSON = fetch("/logins.json")
 })
