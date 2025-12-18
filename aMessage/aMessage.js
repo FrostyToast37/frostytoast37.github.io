@@ -3,7 +3,22 @@ const loginForm = document.getElementById("login_form");
 const usernameInput = document.getElementById("username_input");
 const passwordInput = document.getElementById("password_input");
 const outputDiv = document.getElementById("output_div");
-let tempJSON  = fetch("/logins.json");
+
+async function loadJSON() {
+  try {
+    // get file
+    const logins = await fetch("/logins.json");
+
+    // parse
+    const parsedJSON = await logins.json();
+    const accountList = parsedJSON.AccountInfo;
+
+    return parsedJSON;
+
+  } catch (error) {
+    console.error("Error loading file:", error);
+  }
+}
 
 class AccountInfo {
   constructor(password, username) {
@@ -12,7 +27,7 @@ class AccountInfo {
   }
 }
 
-let accountList = JSON.parse(tempJSON)
+loadJSON();
 
 loginForm.addEventListener("submit", function (event){
   event.preventDefault();
