@@ -44,4 +44,4 @@ loginForm.addEventListener("submit", function (event){
     } else {outputFlag = "That Username doesn't exist";}
   }
   outputDiv.innerHTML = outputFlag;
-})
+});
