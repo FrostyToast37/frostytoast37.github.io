@@ -12,9 +12,9 @@ app.listen(3000);
 
 //connect to sql database
 let con = mysql.createConnection({
-  host: "localhost",
-  user: "yourusername",
-  password: "yourpassword",
+  host: "db",
+  user: "root",
+  password: "wpzW6MI8BsLCO4krkx1te3nLWk5CpQwYXGqVcJyxY8yZuNlyvxySXbjjGxEVm2o3YaBQO6Ir",
   database: "mydb"
 });
 

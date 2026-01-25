@@ -1,9 +1,9 @@
 let mysql = require("mysql")
 
 let con = mysql.createConnection({
-  host: "localhost",
-  user: "yourusername",
-  password: "yourpassword",
+  host: "db",
+  user: "root",
+  password: "wpzW6MI8BsLCO4krkx1te3nLWk5CpQwYXGqVcJyxY8yZuNlyvxySXbjjGxEVm2o3YaBQO6Ir",
 });
 
 con.connect(function(err) {
@@ -16,9 +16,9 @@ con.connect(function(err) {
 });
 
 let con2 = mysql.createConnection({
-  host: "localhost",
-  user: "yourusername",
-  password: "yourpassword",
+  host: "db",
+  user: "root",
+  password: "wpzW6MI8BsLCO4krkx1te3nLWk5CpQwYXGqVcJyxY8yZuNlyvxySXbjjGxEVm2o3YaBQO6Ir",
   database: "mydb"
 });
 
