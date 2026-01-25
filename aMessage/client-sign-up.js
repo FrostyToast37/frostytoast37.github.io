@@ -6,7 +6,7 @@ const outputDiv = document.getElementById("output_div");
 
 async function signup(createdUser, createdPassword) {
   try {
-    const res = await fetch("/register", {
+    const res = await fetch("https://frostytoast37.cookiechaos.xyz:3000/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -6,6 +6,9 @@ let bcrypt = require("bcrypt");
 
 //express needs to know to use json
 app.use(express.json());
+//express needs to listen on port whatever
+app.listen(3000);
+
 
 //connect to sql database
 let con = mysql.createConnection({
