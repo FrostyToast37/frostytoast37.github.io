@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Clash v1.2.0 - Living Buildings</title>
+
+  <style>
+    /* --- MAIN MENU & UI STYLES --- */
+    body {
+      background-color: #333;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      margin: 0;
+    }
+    #app-container {
+      width: 400px;
+      height: 700px;
+      position: relative;
+    }
+    #main-menu-page, #game-page, #deck-page {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    #main-menu-page {
+      background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(20,40,60,0.95));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+      border: 4px solid #4a3c2a;
+      border-radius: 10px;
+      box-sizing: border-box;
+      z-index: 1000;
+    }
+    #main-menu-page h1 {
+      font-size: 48px;
+      margin: 0 0 40px 0;
+      font-weight: bold;
+    }
+    .main-menu-button {
+      background: linear-gradient(#ffcc00, #e6b800);
+      color: #000;
+      border: none;
+      padding: 15px 40px;
+      font-size: 22px;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: transform 0.1s, box-shadow 0.1s;
+      width: 200px;
+      margin-bottom: 20px;
+    }
+    .main-menu-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+    }
+    .main-menu-button:active {
+      transform: scale(0.98);
+    }
+    /* Deck Page Styles */
+    #deck-page {
+      background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(20,40,60,0.95));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #fff;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      z-index: 1000;
+    }
+    #deck-page h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+    #deck-cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .deck-card {
+      width: 65px;
+      height: 90px;
+      background: white;
+      border: 3px solid #fdd835;
+      border-radius: 8px;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0;
+      box-sizing: border-box;
+      font-weight: bold;
+      text-align: center;
+      overflow: hidden;
+      margin: 5px;
+    }
+    .deck-card.selected {
+      border-color: #00ff00;
+    }
+    #save-deck-button {
+      margin-top: 20px;
+      background: linear-gradient(#ffcc00, #e6b800);
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+    .hidden {
+      display: none !important;
+    }
+
+    /* --- GAME CSS --- */
+    #game-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #5a8c3d;
+      border: 4px solid #4a3c2a;
+      border-radius: 10px;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+    #battlefield {
+      width: 100%;
+      height: calc(100% - 150px);
+      position: relative;
+      overflow: hidden;
+    }
+    /* Screen Shake Animation */
+    .shake-effect {
+      animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+    }
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-2px, 0, 0); }
+      20%, 80% { transform: translate3d(4px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+      40%, 60% { transform: translate3d(6px, 0, 0); }
+    }
+
+    /* Valkyrie Spin Animation */
+    @keyframes spin-attack {
+        0% { transform: rotate(0deg) scale(1.1); }
+        100% { transform: rotate(360deg) scale(1); }
+    }
+    .spin-animation {
+        animation: spin-attack 0.3s linear;
+    }
+
+    /* Building Pop/Inflate Animation */
+    @keyframes inflate-pop {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+    .inflate-animation {
+        animation: inflate-pop 0.2s ease-out;
+    }
+
+    /* Sleeping Zzz Animation */
+    .sleeping-icon {
+        position: absolute;
+        top: -20px;
+        right: -10px;
+        font-size: 20px;
+        color: white;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px black;
+        opacity: 0;
+        pointer-events: none;
+        animation: sleep-float 2s infinite;
+        z-index: 15;
+    }
+    @keyframes sleep-float {
+        0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
+        50% { opacity: 1; }
+        100% { transform: translate(10px, -20px) scale(1.2); opacity: 0; }
+    }
+
+    /* Full Screen Flash for Lightning */
+    #flash-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: white;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 200;
+      transition: opacity 0.1s;
+    }
+    #flash-overlay.active {
+      opacity: 0.6;
+    }
+    
+    /* Double Elixir Text Overlay */
+    #notification-overlay {
+        position: absolute;
+        top: 30%;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        pointer-events: none;
+        z-index: 300;
+        opacity: 0;
+        transition: opacity 0.5s;
+    }
+    #notification-overlay.visible {
+        opacity: 1;
+    }
+    #notification-text {
+        font-size: 36px;
+        font-weight: bold;
+        color: #e040fb;
+        text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        background: rgba(0,0,0,0.5);
+        padding: 10px;
+        display: inline-block;
+        border-radius: 10px;
+        border: 2px solid #e040fb;
+    }
+
+    #river {
+      position: absolute;
+      width: 100%;
+      height: 50px;
+      background: #4a9dbe;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1;
+    }
+    .bridge {
+      position: absolute;
+      width: 60px;
+      height: 50px;
+      background: #a17b4d;
+      border-left: 5px solid #735836;
+      border-right: 5px solid #735836;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+    }
+    #bridge-left { left: 40px; }
+    #bridge-right { right: 40px; }
+    
+    .tower {
+      position: absolute;
+      width: 60px;
+      height: 80px;
+      background: #c9c9c9;
+      border: 4px solid #777;
+      border-radius: 5px 5px 0 0;
+      z-index: 3;
+      display: flex;
+      justify-content: center;
+      padding-top: 10px;
+      box-sizing: border-box;
+    }
+    .tower::after {
+      content: '';
+      position: absolute;
+      top: -12px;
+      width: 70px;
+      height: 20px;
+      background: #a33e3e;
+      border: 4px solid #777;
+      border-radius: 5px;
+    }
+    .player-king { bottom: 20px; left: 50%; transform: translateX(-50%); }
+    .player-princess { bottom: 60px; }
+    #player-p1 { left: 40px; }
+    #player-p2 { right: 40px; }
+    .enemy-king { top: 20px; left: 50%; transform: translateX(-50%); }
+    .enemy-princess { top: 60px; }
+    #enemy-p1 { left: 40px; }
+    #enemy-p2 { right: 40px; }
+
+    #timer-display {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.6);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 15px;
+        font-weight: bold;
+        font-size: 18px;
+        border: 2px solid #aaa;
+        z-index: 200;
+    }
+    .double-elixir-mode {
+        color: #e040fb !important;
+        border-color: #e040fb !important;
+        animation: pulse-border 1s infinite;
+    }
+    @keyframes pulse-border {
+        0% { box-shadow: 0 0 5px #e040fb; }
+        50% { box-shadow: 0 0 15px #e040fb; }
+        100% { box-shadow: 0 0 5px #e040fb; }
+    }
+
+    #elixir-bar-container {
+      position: absolute;
+      bottom: 110px;
+      width: 80%;
+      left: 10%;
+      height: 20px;
+      background: #222;
+      border-radius: 10px;
+      border: 2px solid #555;
+      overflow: hidden;
+      z-index: 50;
+    }
+    #elixir-bar {
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(to right, #e040fb, #aa00ff);
+      transition: width 0.2s linear;
+    }
+    #elixir-count {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-weight: bold;
+      line-height: 20px;
+      text-shadow: 1px 1px 2px black;
+    }
+    #card-tray {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      background: #4a3c2a;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 5px;
+      box-sizing: border-box;
+      z-index: 50;
+    }
+    .card {
+      width: 65px;
+      height: 90px;
+      background: white;
+      border: 3px solid #fdd835;
+      border-radius: 8px;
+      cursor: grab;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0;
+      box-sizing: border-box;
+      font-weight: bold;
+      text-align: center;
+      overflow: hidden;
+    }
+    .card:active {
+      cursor: grabbing;
+      border-color: #ff0000;
+    }
+    .card-cost {
+      position: absolute;
+      top: 2px;
+      left: 4px;
+      font-size: 14px;
+      font-weight: bold;
+      background: rgba(170, 0, 255, 0.8);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      text-align: center;
+      color: white;
+      z-index: 2;
+    }
+    .card-image {
+      position: absolute;
+      top: -5px;
+      left: -15%;
+      width: 130%;
+      height: auto;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .card-name {
+      font-size: 10px;
+      z-index: 2;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      width: 100%;
+      padding: 2px 0;
+      box-sizing: border-box;
+    }
+    .troop {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      z-index: 10;
+      pointer-events: none;
+    }
+    
+    /* HEALTH BARS & FLASHING */
+    .health-bar-container {
+      position: absolute;
+      width: 50px;
+      height: 6px;
+      background-color: #333;
+      border: 1px solid black;
+      border-radius: 3px;
+      z-index: 11;
+      transition: transform 0.1s;
+    }
+    .health-bar-current {
+      height: 100%;
+      width: 100%;
+      background-color: #f44336;
+      border-radius: 2px;
+      transition: background-color 0.1s;
+    }
+    .health-bar-current.player { background-color: #4CAF50; }
+    
+    .troop-health-bar {
+      position: absolute;
+      width: 30px;
+      height: 4px;
+      background-color: #333;
+      border: 1px solid black;
+      border-radius: 2px;
+      z-index: 11;
+    }
+    .troop-health-bar-current {
+      height: 100%;
+      width: 100%;
+      border-radius: 1px;
+      transition: background-color 0.1s;
+    }
+    .troop-health-bar-current.player { background-color: #4CAF50; }
+    .troop-health-bar-current.ai { background-color: #f44336; }
+
+    .hit-flash {
+      background-color: #ffffff !important;
+      box-shadow: 0 0 5px #fff;
+    }
+
+    /* DEPLOY TIMER VISUAL */
+    .deploy-timer-container {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      z-index: 20;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .deploy-clock {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      border-top-color: #333; /* Spinner effect */
+      animation: spin 1s linear infinite;
+      background: rgba(0,0,0,0.5);
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* --- ENHANCED ANIMATIONS --- */
+    .projectile {
+      position: absolute;
+      z-index: 100;
+      pointer-events: none;
+      transform-origin: center;
+    }
+    
+    .spell-effect {
+      position: absolute;
+      pointer-events: none;
+      z-index: 90;
+      transform: translate(-50%, -50%);
+    }
+
+    /* FIREBALL */
+    .fireball-explosion {
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, #fff 0%, #ffeb3b 20%, #ff5722 50%, transparent 80%);
+      border-radius: 50%;
+      animation: explode 0.4s ease-out forwards;
+      box-shadow: 0 0 50px rgba(255, 87, 34, 0.8);
+      z-index: 120;
+    }
+    @keyframes explode {
+      0% { transform: translate(-50%, -50%) scale(0.1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0; }
+    }
+
+    /* ARROWS RAIN */
+    .arrows-area {
+      width: 240px;
+      height: 240px;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      animation: fadeOut 0.8s ease-out forwards;
+      overflow: visible;
+    }
+    .mini-arrow {
+      position: absolute;
+      width: 2px;
+      height: 20px;
+      background: #5d4037;
+      top: -80px;
+      animation: dropArrow 0.4s linear forwards;
+    }
+    .mini-arrow:after {
+      content: '';
+      position: absolute;
+      bottom: -3px; left: -2px;
+      width: 0; height: 0;
+      border-left: 3px solid transparent;
+      border-right: 3px solid transparent;
+      border-top: 6px solid #fff;
+    }
+    @keyframes dropArrow {
+      0% { transform: translateY(0); opacity: 0; }
+      20% { opacity: 1; }
+      100% { transform: translateY(150px); opacity: 0; }
+    }
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+    
+    /* LIGHTNING */
+    .lightning-bolt {
+      width: 15px;
+      height: 400px;
+      background: #fff;
+      box-shadow: 0 0 20px #00ffff, 0 0 40px #0000ff;
+      transform-origin: bottom center;
+      animation: lightningStrike 0.2s linear forwards;
+      z-index: 120;
+    }
+    @keyframes lightningStrike {
+      0% { opacity: 0; height: 0; }
+      10% { opacity: 1; height: 400px; }
+      40% { opacity: 1; width: 25px; } 
+      100% { opacity: 0; width: 0px; }
+    }
+
+    #stat-overlay {
+      position: absolute;
+      bottom: 105px;
+      left: 10px;
+      width: calc(100% - 20px);
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid #fdd835;
+      border-radius: 8px;
+      padding: 10px;
+      color: white;
+      z-index: 20;
+      display: none;
+      box-sizing: border-box;
+      pointer-events: none;
+    }
+    #stat-overlay.visible { display: block; }
+    #stat-overlay h3 { margin: 0 0 5px 0; color: #fdd835; font-size: 16px; }
+    #stat-overlay p { margin: 4px 0; font-size: 12px; }
+
+    .no-deploy-zone {
+      position: absolute;
+      top: 0;
+      height: 245px;
+      background: rgba(255, 0, 0, 0.4);
+      z-index: 5;
+      display: none;
+      pointer-events: none;
+    }
+    #no-deploy-zone-left { left: 0; width: 50%; }
+    #no-deploy-zone-right { left: 50%; width: 50%; }
+    .no-deploy-zone.visible { display: block; }
+    #no-deploy-zone-king { top: 20px; left: 170px; width: 60px; height: 80px; }
+
+    #game-menu, #game-over-menu {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(20,40,60,0.95));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .menu-content { text-align: center; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+    .menu-content h1 { font-size: 32px; margin: 0 0 10px 0; font-weight: bold; }
+    .menu-content p { font-size: 18px; margin: 0 0 20px 0; }
+    #play-button, #play-again-button {
+      background: linear-gradient(#ffcc00, #e6b800);
+      color: #000;
+      border: none;
+      padding: 15px 40px;
+      font-size: 22px;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    #play-button:hover, #play-again-button:hover { transform: scale(1.05); box-shadow: 0 6px 12px rgba(0,0,0,0.4); }
+    #play-button:active, #play-again-button:active { transform: scale(0.98); }
+  </style>
+
+  
+</head>
+<body>
+  <div id="app-container">
+    <div id="main-menu-page">
+      <h1>AI Clash</h1>
+      <button id="main-menu-play-button" class="main-menu-button">Play</button>
+      <button id="main-menu-deck-button" class="main-menu-button">Deck</button>
+    </div>
+    <div id="deck-page" class="hidden">
+      <h2>Select Your Deck (8 Cards)</h2>
+      <div id="deck-cards-container"></div>
+      <button id="save-deck-button">Save Deck</button>
+    </div>
+    <div id="game-page" class="hidden">
+      <div id="game-container">
+        <div id="flash-overlay"></div>
+        <div id="notification-overlay">
+            <span id="notification-text">DOUBLE ELIXIR!</span>
+        </div>
+
+        <div id="game-menu">
+          <div class="menu-content">
+            <h1>AI Clash</h1>
+            <p>Defeat the enemy King to win!</p>
+            <button id="play-button">Play</button>
+          </div>
+        </div>
+     
+        <div id="game-over-menu" style="display: none;">
+          <div class="menu-content">
+            <h1 id="result-title">Victory!</h1>
+            <p id="result-text">Enemy King Destroyed!</p>
+            <button id="play-again-button">Play Again</button>
+          </div>
+        </div>
+     
+        <div id="battlefield">
+          <div id="timer-display">2:00</div>
+          <div class="no-deploy-zone" id="no-deploy-zone-left"></div>
+          <div class="no-deploy-zone" id="no-deploy-zone-right"></div>
+          <div class="no-deploy-zone" id="no-deploy-zone-king"></div>
+       
+          <div class="tower enemy-king" id="enemy-king"></div>
+          <div class="tower enemy-princess" id="enemy-p1"></div>
+          <div class="tower enemy-princess" id="enemy-p2"></div>
+       
+          <div id="river"></div>
+          <div class="bridge" id="bridge-left"></div>
+          <div class="bridge" id="bridge-right"></div>
+       
+          <div class="tower player-king" id="player-king"></div>
+          <div class="tower player-princess" id="player-p1"></div>
+          <div class="tower player-princess" id="player-p2"></div>
+        </div>
+     
+        <div id="elixir-bar-container">
+          <div id="elixir-bar"></div>
+          <span id="elixir-count">5</span>
+        </div>
+     
+        <div id="stat-overlay">
+        </div>
+     
+        <div id="card-tray">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+      // --- MENU LOGIC ---
+      const mainMenuPage = document.getElementById('main-menu-page');
+      const gamePage = document.getElementById('game-page');
+      const deckPage = document.getElementById('deck-page');
+      const mainMenuPlayButton = document.getElementById('main-menu-play-button');
+      const mainMenuDeckButton = document.getElementById('main-menu-deck-button');
+      const saveDeckButton = document.getElementById('save-deck-button');
+      
+      if (mainMenuPlayButton) {
+        mainMenuPlayButton.addEventListener('click', () => {
+          mainMenuPage.classList.add('hidden');
+          gamePage.classList.remove('hidden');
+        });
+      }
+      if (mainMenuDeckButton) {
+        mainMenuDeckButton.addEventListener('click', () => {
+          mainMenuPage.classList.add('hidden');
+          deckPage.classList.remove('hidden');
+        });
+      }
+      if (saveDeckButton) {
+        saveDeckButton.addEventListener('click', () => {
+          localStorage.setItem('selectedDeck', JSON.stringify(selectedDeck));
+          deckPage.classList.add('hidden');
+          mainMenuPage.classList.remove('hidden');
+        });
+      }
+      
+      const gameMenu = document.getElementById('game-menu');
+      const playButton = document.getElementById('play-button');
+      const gameOverMenu = document.getElementById('game-over-menu');
+      const playAgainButton = document.getElementById('play-again-button');
+     
+      if (playButton) playButton.addEventListener('click', startGame);
+      if (gameOverMenu && playAgainButton) {
+        playAgainButton.addEventListener('click', () => location.reload());
+      }
+
+      // --- GAME VARIABLES ---
+      const battlefield = document.getElementById('battlefield');
+      const cardTray = document.getElementById('card-tray');
+      const elixirBar = document.getElementById('elixir-bar');
+      const elixirCount = document.getElementById('elixir-count');
+      const statOverlay = document.getElementById('stat-overlay');
+      const flashOverlay = document.getElementById('flash-overlay');
+      const notificationOverlay = document.getElementById('notification-overlay');
+      const timerDisplay = document.getElementById('timer-display');
+      const noDeployLeft = document.getElementById('no-deploy-zone-left');
+      const noDeployRight = document.getElementById('no-deploy-zone-right');
+      const noDeployKing = document.getElementById('no-deploy-zone-king');
+
+      // --- CARD DATA v1.2.0 (UPDATED RANGES & HUT) ---
+      const CARD_DATA = {
+        Knight: { type: 'troop', cost: 3, imageUrl: 'https://files.catbox.moe/hnfezw.jpeg', speed: 0.6, health: 660, damage: 75, attackSpeed: 70, range: 10, targetType: 'any', attackType: 'ground', count: 1, isFlying: false, deployTime: 1000 },
+        Archer: { type: 'troop', cost: 3, imageUrl: 'https://files.catbox.moe/pfsr7g.jpeg', speed: 0.5, health: 120, damage: 40, attackSpeed: 60, range: 100, targetType: 'any', attackType: 'airAndGround', count: 2, isFlying: false, projectileType: 'arrow', deployTime: 1000 },
+        Giant: { type: 'troop', cost: 5, imageUrl: 'https://files.catbox.moe/0rj22k.jpeg', speed: 0.3, health: 1500, damage: 100, attackSpeed: 90, range: 10, targetType: 'buildings', attackType: 'ground', count: 1, isFlying: false, deployTime: 2000 },
+        Musketeer: { type: 'troop', cost: 4, imageUrl: 'https://files.catbox.moe/57j9go.jpeg', speed: 0.5, health: 300, damage: 90, attackSpeed: 60, range: 120, targetType: 'any', attackType: 'airAndGround', count: 1, isFlying: false, projectileType: 'bullet', deployTime: 1000 },
+        MiniPekka: { type: 'troop', cost: 4, imageUrl: 'https://files.catbox.moe/xrbj1f.jpeg', speed: 0.7, health: 500, damage: 250, attackSpeed: 100, range: 10, targetType: 'any', attackType: 'ground', count: 1, isFlying: false, deployTime: 1000 },
+        Goblins: { type: 'troop', cost: 2, imageUrl: 'https://files.catbox.moe/3g1tem.jpeg', speed: 0.9, health: 80, damage: 45, attackSpeed: 40, range: 10, targetType: 'any', attackType: 'ground', count: 4, isFlying: false, deployTime: 1000 },
+        
+        Valkyrie: { type: 'troop', cost: 4, imageUrl: 'https://files.catbox.moe/h95ikv.jpeg', speed: 0.6, health: 700, damage: 100, attackSpeed: 80, range: 25, targetType: 'any', attackType: 'ground', count: 1, isFlying: false, splashRadius: 35, deployTime: 1000 },
+        BabyDragon: { type: 'troop', cost: 4, imageUrl: 'https://files.catbox.moe/11kvlg.jpeg', speed: 0.65, health: 600, damage: 100, splashRadius: 40, attackSpeed: 90, range: 80, targetType: 'any', attackType: 'airAndGround', count: 1, isFlying: true, projectileType: 'fireball_small', deployTime: 1000 },
+        Minions: { type: 'troop', cost: 3, imageUrl: 'https://files.catbox.moe/d5ia95.jpeg', speed: 0.8, health: 90, damage: 40, attackSpeed: 50, range: 20, targetType: 'any', attackType: 'airAndGround', count: 3, isFlying: true, projectileType: 'dark_elixir', deployTime: 1000 },
+        
+        // CANNON: Range Increased 115 -> 150
+        Cannon: { type: 'building', cost: 3, imageUrl: 'https://files.catbox.moe/68t9ia.jpeg', speed: 0, health: 450, damage: 70, attackSpeed: 40, range: 150, targetType: 'any', attackType: 'ground', count: 1, isFlying: false, projectileType: 'cannonball', deployTime: 1000 },
+        
+        // GOBLIN HUT: Added Range 150 (for threat detection)
+        GoblinHut: { type: 'building', cost: 5, imageUrl: 'https://files.catbox.moe/itzz2p.jpeg', speed: 0, health: 800, damage: 0, attackSpeed: 0, range: 150, targetType: 'none', attackType: 'none', count: 1, isFlying: false, spawnUnit: 'SpearGoblins', spawnRate: 2500, deployTime: 1000 },
+        
+        SpearGoblins: { type: 'troop', cost: 2, imageUrl: 'https://files.catbox.moe/5z9j4s.jpeg', speed: 0.85, health: 52, damage: 24, attackSpeed: 50, range: 100, targetType: 'any', attackType: 'airAndGround', count: 3, isFlying: false, projectileType: 'spear', deployTime: 1000 },
+        SkeletonArmy: { type: 'troop', cost: 3, imageUrl: 'https://files.catbox.moe/fmnouf.jpeg', speed: 0.6, health: 20, damage: 18, attackSpeed: 40, range: 10, targetType: 'any', attackType: 'ground', count: 20, isFlying: false, deployTime: 1000 },
+        
+        Fireball: { type: 'spell', cost: 4, imageUrl: 'https://files.catbox.moe/upkxto.jpeg', damage: 200, radius: 80, targetAir: true, targetGround: true, spellEffect: 'fireball' },
+        Arrows: { type: 'spell', cost: 3, imageUrl: 'https://files.catbox.moe/puvtx4.jpeg', damage: 100, radius: 120, targetAir: true, targetGround: true, spellEffect: 'arrows' },
+        Lightning: { type: 'spell', cost: 6, imageUrl: 'https://files.catbox.moe/sa26g6.jpeg', damage: 300, radius: 100, maxTargets: 3, targetAir: true, targetGround: true, spellEffect: 'lightning' }
+      };
+
+      const aiDeck = ['Giant', 'Musketeer', 'MiniPekka', 'Arrows', 'Knight', 'Archer', 'Goblins', 'Fireball'];
+      let selectedDeck = ['Knight', 'Archer', 'Giant', 'Musketeer', 'MiniPekka', 'Goblins', 'Fireball', 'Arrows'];
+      
+      const savedDeck = localStorage.getItem('selectedDeck');
+      if (savedDeck) {
+        try {
+          selectedDeck = JSON.parse(savedDeck);
+        } catch(e) { console.error("Error loading deck", e); }
+      }
+
+      const ARENA_WIDTH = 400;
+      const ARENA_HEIGHT = 700;
+      let gameRunning = false;
+      let activeTroops = [];
+      let currentElixir = 5;
+      const maxElixir = 10;
+      let aiElixir = 5;
+      let elixirRegenRate = 2000;
+      let gameTimerInterval;
+      let gameTimeRemaining = 120; // 2 minutes
+      let elixirInterval;
+      let aiInterval;
+      let draggedCardData = null;
+      let towerObjects = {};
+      let isDoubleElixir = false;
+
+      const RIVER_Y = 245;
+      const BRIDGE_LEFT_X = 70;
+      const BRIDGE_RIGHT_X = 330;
+      const PLAYER_TOWER_LEFT_X = 40;
+      const PLAYER_TOWER_RIGHT_X = 300;
+      const PLAYER_TOWER_Y = 400;
+      const PLAYER_KING_X = 170;
+      const PLAYER_KING_Y = 460;
+      const ENEMY_TOWER_LEFT_X = 40;
+      const ENEMY_TOWER_RIGHT_X = 300;
+      const ENEMY_TOWER_Y = 60;
+      const ENEMY_KING_X = 170;
+      const ENEMY_KING_Y = 20;
+
+      function updateElixirDisplay() {
+        elixirCount.textContent = Math.floor(currentElixir);
+        elixirBar.style.width = `${(currentElixir / maxElixir) * 100}%`;
+      }
+
+      function getSpeedCategory(speed) {
+        if (speed === 0) return 'Stationary';
+        if (speed < 0.4) return 'Slow';
+        if (speed < 0.6) return 'Medium';
+        if (speed < 0.8) return 'Fast';
+        return 'Very Fast';
+      }
+
+      function getDistance(unitA, unitB) {
+        const ax = unitA._x || unitA.x;
+        const ay = unitA._y || unitA.y;
+        const bx = unitB._x || unitB.x;
+        const by = unitB._y || unitB.y;
+        return Math.sqrt((ax - bx)**2 + (ay - by)**2);
+      }
+
+      function createCardElement(name, forDeck = false) {
+        const data = CARD_DATA[name];
+        if (!data) return;
+        const card = document.createElement('div');
+        card.classList.add(forDeck ? 'deck-card' : 'card');
+        card.dataset.name = name;
+        card.dataset.cost = data.cost;
+        card.draggable = !forDeck;
+
+        const nameSpan = document.createElement('span');
+        nameSpan.classList.add('card-name');
+        nameSpan.textContent = name;
+        
+        const costSpan = document.createElement('span');
+        costSpan.classList.add('card-cost');
+        costSpan.textContent = data.cost;
+        
+        const img = document.createElement('img');
+        img.src = data.imageUrl;
+        img.classList.add('card-image');
+        
+        card.appendChild(img);
+        card.appendChild(nameSpan);
+        card.appendChild(costSpan);
+        
+        return card;
+      }
+
+      function populateCardTray() {
+        cardTray.innerHTML = '';
+        selectedDeck.forEach(name => {
+          const card = createCardElement(name);
+          card.addEventListener('dragstart', (e) => {
+             if (!gameRunning) return;
+             const cardName = e.currentTarget.dataset.name;
+             const data = CARD_DATA[cardName];
+             if (currentElixir < data.cost) {
+               e.preventDefault();
+               return;
+             }
+             draggedCardData = { name: cardName, ...data };
+             e.dataTransfer.setData('text/plain', cardName);
+             e.dataTransfer.effectAllowed = "move";
+             
+             // Show Stat Overlay
+             statOverlay.innerHTML = `
+                <h3>${cardName}</h3>
+                <p>HP: ${data.health} | Dmg: ${data.damage}</p>
+                <p>Spd: ${getSpeedCategory(data.speed)} | Tgt: ${data.targetType}</p>
+             `;
+             statOverlay.classList.add('visible');
+             
+             // Show No-Deploy Zones
+             noDeployLeft.classList.add('visible');
+             noDeployRight.classList.add('visible');
+             noDeployKing.classList.add('visible');
+          });
+          card.addEventListener('dragend', () => {
+             draggedCardData = null;
+             statOverlay.classList.remove('visible');
+             noDeployLeft.classList.remove('visible');
+             noDeployRight.classList.remove('visible');
+             noDeployKing.classList.remove('visible');
+          });
+          cardTray.appendChild(card);
+        });
+      }
+
+      // Populate Deck Page
+      function populateDeckPage() {
+        const container = document.getElementById('deck-cards-container');
+        container.innerHTML = '';
+        Object.keys(CARD_DATA).forEach(name => {
+            const card = createCardElement(name, true);
+            if (selectedDeck.includes(name)) card.classList.add('selected');
+            card.addEventListener('click', () => {
+                if (selectedDeck.includes(name)) {
+                    if (selectedDeck.length > 8) { // Allow removing if we have extra (shouldn't happen but safe)
+                         selectedDeck = selectedDeck.filter(n => n !== name);
+                         card.classList.remove('selected');
+                    } else if (selectedDeck.length === 8) {
+                        selectedDeck = selectedDeck.filter(n => n !== name);
+                        card.classList.remove('selected');
+                    }
+                } else {
+                    if (selectedDeck.length < 8) {
+                        selectedDeck.push(name);
+                        card.classList.add('selected');
+                    } else {
+                        alert("Deck full! Remove a card first.");
+                    }
+                }
+            });
+            container.appendChild(card);
+        });
+      }
+      populateDeckPage();
+
+      battlefield.addEventListener('dragover', (e) => {
+        e.preventDefault();
+      });
+
+      battlefield.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (!draggedCardData) return;
+        const rect = battlefield.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        if (currentElixir >= draggedCardData.cost) {
+            // Check Placement Validity (Simplified: Cannot place on towers)
+            const data = draggedCardData;
+            
+            // Basic collision with towers to prevent stacking exactly on top
+            let collides = false;
+            Object.values(towerObjects).forEach(t => {
+                if (Math.abs(x - t._x) < 30 && Math.abs(y - t._y) < 30) collides = true;
+            });
+            if (collides) {
+                console.warn('Cannot deploy troops on a Tower!');
+                draggedCardData = null;
+                return;
+            }
+
+            const isLeftLane = x < ARENA_WIDTH / 2;
+            const isEnemyTerritory = y < RIVER_Y;
+            
+            let canDeploy = true;
+            if ((data.type === 'troop' || data.type === 'building') && isEnemyTerritory) {
+                if (isLeftLane && !towerObjects['enemy-p1'].isDead) canDeploy = false;
+                else if (!isLeftLane && !towerObjects['enemy-p2'].isDead) canDeploy = false;
+            }
+            
+            if (canDeploy) {
+                currentElixir -= draggedCardData.cost;
+                updateElixirDisplay();
+                if (data.type === 'troop' || data.type === 'building') deployTroop(draggedCardData.name, x, y, 'player');
+                else if (data.type === 'spell') applySpell(draggedCardData.name, x, y, 'player');
+            } else {
+                console.warn('Cannot deploy there!');
+            }
+        } else {
+            console.warn('Not enough elixir!');
+        }
+        draggedCardData = null;
+      });
+
+      // --- ANIMATION HELPERS ---
+      function triggerShake() {
+        battlefield.classList.remove('shake-effect');
+        void battlefield.offsetWidth; 
+        battlefield.classList.add('shake-effect');
+      }
+      
+      function triggerFlash() {
+        flashOverlay.classList.add('active');
+        setTimeout(() => { flashOverlay.classList.remove('active'); }, 150);
+      }
+
+      function triggerSpellVisual(type, x, y) {
+        const visual = document.createElement('div');
+        visual.className = 'spell-effect';
+        visual.style.left = `${x}px`;
+        visual.style.top = `${y}px`;
+        
+        if (type === 'fireball') {
+            visual.classList.add('fireball-explosion');
+            triggerShake();
+        } else if (type === 'fireball_quiet') {
+             // No shake version for Baby Dragon
+             visual.classList.add('fireball-explosion');
+        } else if (type === 'arrows') {
+            visual.classList.add('arrows-area');
+            for(let i=0; i<50; i++) {
+                const arrow = document.createElement('div');
+                arrow.className = 'mini-arrow';
+                const rx = (Math.random() - 0.5) * 160;
+                const ry = (Math.random() - 0.5) * 160;
+                arrow.style.left = `${120 + rx}px`;
+                arrow.style.top = `${120 + ry}px`;
+                arrow.style.animationDelay = `${Math.random() * 0.4}s`;
+                visual.appendChild(arrow);
+            }
+        } else if (type === 'lightning') {
+             triggerFlash();
+             visual.classList.add('lightning-bolt');
+             visual.style.height = '400px'; 
+             visual.style.top = `${y - 400}px`;
+        }
+        
+        battlefield.appendChild(visual);
+        setTimeout(() => visual.remove(), 1000);
+      }
+
+      function triggerProjectile(startUnit, targetUnit, type) {
+        if (!startUnit || !targetUnit) return;
+        const projectile = document.createElement('div');
+        projectile.className = 'projectile';
+        
+        let color = 'black';
+        let width = 6;
+        let height = 6;
+        let isRound = true;
+        
+        if (type === 'arrow') {
+            color = '#8d6e63'; width = 4; height = 12; isRound = false;
+        } else if (type === 'spear') {
+            color = '#a1887f'; width = 3; height = 14; isRound = false;
+        } else if (type === 'fireball_small') {
+            color = '#ff5722'; width = 10; height = 10;
+            projectile.style.boxShadow = '0 0 4px #ff5722';
+        } else if (type === 'cannonball') {
+             color = '#222'; width = 10; height = 10;
+        } else if (type === 'dark_elixir') {
+             width = 14; height = 14;
+             projectile.style.background = 'radial-gradient(circle, #D8BFD8 0%, #4B0082 100%)';
+             projectile.style.boxShadow = '0 0 6px #8A2BE2';
+             isRound = true;
+        } else {
+             projectile.style.background = 'black';
+        }
+        
+        if (isRound) projectile.style.borderRadius = '50%';
+        if (!type.includes('dark_elixir')) projectile.style.background = color;
+        
+        projectile.style.width = `${width}px`;
+        projectile.style.height = `${height}px`;
+        
+        const startX = startUnit._x;
+        const startY = startUnit._y;
+        const targetX = targetUnit._x;
+        const targetY = targetUnit._y;
+        
+        const angle = Math.atan2(targetY - startY, targetX - startX) * (180 / Math.PI);
+        projectile.style.transform = `rotate(${angle}deg)`;
+        
+        battlefield.appendChild(projectile);
+
+        const animation = projectile.animate([
+            { left: `${startX}px`, top: `${startY}px` },
+            { left: `${targetX}px`, top: `${targetY}px` }
+        ], { duration: 300, easing: 'linear' });
+
+        animation.onfinish = () => {
+            projectile.remove();
+        };
+      }
+
+      function applySpell(spellName, x, y, faction) {
+        const data = CARD_DATA[spellName];
+        if (!data) return;
+        
+        if (spellName === 'Fireball' || spellName === 'Arrows') {
+            triggerSpellVisual(data.spellEffect, x, y);
+        }
+
+        // TARGETING FIX: ONLY HIT ENEMIES
+        const enemyFaction = faction === 'player' ? 'ai' : 'player';
+        
+        // Filter targets that are NOT dead AND belong to the ENEMY faction
+        const targets = [...activeTroops, ...Object.values(towerObjects)].filter(unit => !unit.isDead && unit.faction === enemyFaction);
+        
+        const inRange = targets.filter(unit => getDistance({ _x: x, _y: y }, unit) <= data.radius && 
+          ((data.targetGround && !unit.isFlying) || (data.targetAir && unit.isFlying) || (!unit.isFlying && !('isFlying' in unit))));
+
+        if (spellName === 'Lightning') {
+             inRange.sort((a, b) => b.currentHealth - a.currentHealth);
+             const hitTargets = inRange.slice(0, data.maxTargets);
+             hitTargets.forEach(target => {
+                 triggerSpellVisual('lightning', target._x, target._y);
+                 takeDamage(target, data.damage);
+             });
+        } else {
+             setTimeout(() => {
+                 inRange.forEach(target => {
+                     takeDamage(target, data.damage);
+                 });
+             }, 250);
+        }
+      }
+
+      function takeDamage(unit, amount) {
+        if (unit.isDead) return;
+        unit.currentHealth -= amount;
+        
+        // Flash Effect
+        unit.element.classList.add('hit-flash');
+        setTimeout(() => unit.element.classList.remove('hit-flash'), 100);
+
+        if (unit.currentHealth <= 0) {
+            unit.currentHealth = 0;
+            unit.isDead = true;
+            unit.element.style.display = 'none';
+            if (unit.healthBarContainer) unit.healthBarContainer.style.display = 'none';
+            
+            // Tower Destruction Logic
+            if (unit.id && unit.id.includes('king')) {
+                endGame(unit.faction === 'ai' ? 'You Win!' : 'You Lose!');
+            }
+        }
+        
+        // Update Health Bar
+        if (unit.healthBar) {
+            const percent = (unit.currentHealth / unit.maxHealth) * 100;
+            unit.healthBar.style.width = `${percent}%`;
+        }
+      }
+
+      function initializeTowers() {
+        // Clear old tower data
+        towerObjects = {};
+        
+        const towerElements = [
+          { id: 'enemy-p1', faction: 'ai', element: document.getElementById('enemy-p1'), x: ENEMY_TOWER_LEFT_X, y: ENEMY_TOWER_Y, maxHealth: 1400, currentHealth: 1400, damage: 50, range: 150, attackSpeed: 35, attackType: 'airAndGround' },
+          { id: 'enemy-p2', faction: 'ai', element: document.getElementById('enemy-p2'), x: ENEMY_TOWER_RIGHT_X, y: ENEMY_TOWER_Y, maxHealth: 1400, currentHealth: 1400, damage: 50, range: 150, attackSpeed: 35, attackType: 'airAndGround' },
+          { id: 'enemy-king', faction: 'ai', element: document.getElementById('enemy-king'), x: ENEMY_KING_X, y: ENEMY_KING_Y, maxHealth: 2400, currentHealth: 2400, damage: 60, range: 130, attackSpeed: 45, attackType: 'airAndGround' },
+          { id: 'player-p1', faction: 'player', element: document.getElementById('player-p1'), x: PLAYER_TOWER_LEFT_X, y: PLAYER_TOWER_Y, maxHealth: 1400, currentHealth: 1400, damage: 50, range: 150, attackSpeed: 35, attackType: 'airAndGround' },
+          { id: 'player-p2', faction: 'player', element: document.getElementById('player-p2'), x: PLAYER_TOWER_RIGHT_X, y: PLAYER_TOWER_Y, maxHealth: 1400, currentHealth: 1400, damage: 50, range: 150, attackSpeed: 35, attackType: 'airAndGround' },
+          { id: 'player-king', faction: 'player', element: document.getElementById('player-king'), x: PLAYER_KING_X, y: PLAYER_KING_Y, maxHealth: 2400, currentHealth: 2400, damage: 60, range: 130, attackSpeed: 45, attackType: 'airAndGround' },
+        ];
+
+        towerElements.forEach((towerData) => {
+           const healthBarContainer = document.createElement('div');
+           healthBarContainer.className = 'health-bar-container';
+           healthBarContainer.style.left = `${towerData.x + 5}px`;
+           healthBarContainer.style.top = `${towerData.y - 15}px`;
+           
+           const healthBarCurrent = document.createElement('div');
+           healthBarCurrent.className = `health-bar-current ${towerData.faction}`;
+           healthBarContainer.appendChild(healthBarCurrent);
+           battlefield.appendChild(healthBarContainer);
+           
+           towerObjects[towerData.id] = { ...towerData, _x: towerData.x + 30, _y: towerData.y + 40, healthBar: healthBarCurrent, healthBarContainer: healthBarContainer, isDead: false, currentTarget: null, attackCooldown: 0 };
+           towerData.element.style.display = 'flex'; // Reset display if hidden
+        });
+      }
+
+      function deployTroop(cardName, x, y, faction, countOverride = null) {
+        const data = CARD_DATA[cardName];
+        if (!data) return;
+
+        const count = countOverride || data.count;
+        
+        for (let i = 0; i < count; i++) {
+          let startX = x + (Math.random() * 20 - 10);
+          let startY = y + (Math.random() * 20 - 10);
+          
+          const troopElement = document.createElement('img');
+          troopElement.src = data.imageUrl;
+          troopElement.className = 'troop';
+          troopElement.style.left = `${startX}px`;
+          troopElement.style.top = `${startY}px`;
+          
+          const healthBarContainer = document.createElement('div');
+          healthBarContainer.className = 'troop-health-bar';
+          const healthBarCurrent = document.createElement('div');
+          healthBarCurrent.className = `troop-health-bar-current ${faction}`;
+          healthBarContainer.appendChild(healthBarCurrent);
+
+          // Deploy Timer Visual
+          const deployTimerContainer = document.createElement('div');
+          deployTimerContainer.className = 'deploy-timer-container';
+          deployTimerContainer.style.left = `${startX + 10}px`;
+          deployTimerContainer.style.top = `${startY - 25}px`;
+          const deployClock = document.createElement('div');
+          deployClock.className = 'deploy-clock';
+          deployTimerContainer.appendChild(deployClock);
+
+          let defaultTargetTower, finalTarget;
+          if (faction === 'player') {
+             finalTarget = towerObjects['enemy-king'];
+             defaultTargetTower = x < ARENA_WIDTH / 2 ? towerObjects['enemy-p1'] : towerObjects['enemy-p2'];
+          } else {
+             finalTarget = towerObjects['player-king'];
+             defaultTargetTower = x < ARENA_WIDTH / 2 ? towerObjects['player-p1'] : towerObjects['player-p2'];
+          }
+
+          battlefield.appendChild(troopElement);
+          battlefield.appendChild(healthBarContainer);
+          battlefield.appendChild(deployTimerContainer);
+
+          const troop = {
+            ...data,
+            cardName: cardName,
+            element: troopElement,
+            faction: faction,
+            x: startX,
+            y: startY,
+            _x: startX + 20,
+            _y: startY + 20,
+            attackCooldown: 0,
+            maxHealth: data.health,
+            currentHealth: data.health,
+            healthBar: healthBarCurrent,
+            healthBarContainer: healthBarContainer,
+            isDead: false,
+            currentTarget: null,
+            defaultTargetTower: defaultTargetTower,
+            finalTarget: finalTarget,
+            lastSpawnTime: Date.now(),
+            // DEPLOY LOGIC
+            currentDeployTimer: data.deployTime || 1000,
+            deployTimerElement: deployTimerContainer,
+            // RETARGETING
+            retargetDelay: Math.floor(Math.random() * 20) // Randomize initial check to reduce CPU spike
+          };
+          
+          // ADD SLEEPING ICON FOR HUT
+          if (cardName === 'GoblinHut') {
+              const zzz = document.createElement('div');
+              zzz.className = 'sleeping-icon';
+              zzz.textContent = 'Zzz';
+              troopElement.appendChild(zzz); // Actually this won't work on img. Need wrapper or separate append.
+              
+              // We append to battlefield but track position
+              zzz.style.left = `${startX + 20}px`;
+              zzz.style.top = `${startY - 10}px`;
+              battlefield.appendChild(zzz);
+              troop.sleepingIcon = zzz;
+          }
+
+          activeTroops.push(troop);
+        }
+      }
+
+      // --- NEW TARGETING LOGIC v1.1.5 ---
+      function getBestTarget(troop) {
+          const enemyFaction = troop.faction === 'player' ? 'ai' : 'player';
+          const enemyPrefix = troop.faction === 'player' ? 'enemy' : 'player';
+          let closestTarget = null;
+          let minDistance = 9999;
+          
+          // 1. Check if we attack buildings only
+          if (troop.targetType === 'buildings') {
+              let targets = [towerObjects[`${enemyPrefix}-p1`], towerObjects[`${enemyPrefix}-p2`], towerObjects[`${enemyPrefix}-king`]];
+              // Add enemy buildings
+              for (const t of activeTroops) {
+                  if (t.faction === enemyFaction && !t.isDead && t.type === 'building') {
+                      targets.push(t);
+                  }
+              }
+
+              for (const tower of targets) {
+                  if (tower && !tower.isDead) {
+                      const dist = getDistance(troop, tower);
+                      if (dist < minDistance) {
+                          minDistance = dist;
+                          closestTarget = tower;
+                      }
+                  }
+              }
+              return { target: closestTarget, distance: minDistance };
+          }
+          
+          // 2. Check Troops
+          for (const t of activeTroops) {
+              if (t.faction === enemyFaction && !t.isDead) {
+                  if (t.isFlying && troop.attackType === 'ground') continue;
+                  
+                  const dist = getDistance(troop, t);
+                  if (dist < minDistance && dist <= troop.range) {
+                      minDistance = dist;
+                      closestTarget = t;
+                  } else if (!closestTarget && dist < minDistance) { // Track closest even if out of range for aggro
+                       minDistance = dist;
+                       closestTarget = t;
+                  }
+              }
+          }
+          
+          // 3. If no troop in range, check towers
+          if (!closestTarget || minDistance > troop.range) {
+              const towers = [towerObjects[`${enemyPrefix}-p1`], towerObjects[`${enemyPrefix}-p2`], towerObjects[`${enemyPrefix}-king`]];
+              for (const t of towers) {
+                  if (!t.isDead) {
+                      const dist = getDistance(troop, t);
+                      if (dist < minDistance) {
+                          minDistance = dist;
+                          closestTarget = t;
+                      }
+                  }
+              }
+          }
+          
+          return { target: closestTarget, distance: minDistance };
+      }
+
+      function checkForBetterTarget(troop) {
+         if (troop.type === 'building') return; // Buildings don't move/retarget like troops
+         const currentDistance = troop.currentTarget ? getDistance(troop, troop.currentTarget) : 9999;
+         const result = getBestTarget(troop);
+         
+         // THRESHOLD LOGIC: Only switch if the new target is >10px closer
+         if (result.target && result.target !== troop.currentTarget) {
+             if (result.distance < currentDistance - 10) {
+                 troop.currentTarget = result.target;
+             }
+         }
+      }
+
+      function findNewTarget(troop) {
+          const result = getBestTarget(troop);
+          if (result.target) troop.currentTarget = result.target;
+      }
+
+      function resetGame() {
+        gameRunning = false;
+        clearInterval(elixirInterval);
+        clearInterval(aiInterval);
+        clearInterval(gameTimerInterval);
+        elixirInterval = null;
+        aiInterval = null;
+        gameTimerInterval = null;
+        
+        activeTroops.forEach(troop => {
+           troop.element.remove();
+           troop.healthBarContainer.remove();
+           if(troop.deployTimerElement) troop.deployTimerElement.remove();
+           if(troop.sleepingIcon) troop.sleepingIcon.remove();
+        });
+        activeTroops = [];
+        
+        Object.values(towerObjects).forEach(tower => {
+           if (tower.healthBarContainer) tower.healthBarContainer.remove();
+        });
+        towerObjects = {};
+        
+        currentElixir = 5;
+        aiElixir = 5;
+        gameTimeRemaining = 120;
+        isDoubleElixir = false;
+        timerDisplay.textContent = "2:00";
+        timerDisplay.classList.remove('double-elixir-mode');
+        notificationOverlay.classList.remove('visible');
+      }
+
+      function endGame(message) {
+        gameRunning = false;
+        resetGame(); // Clears intervals and units
+        const resultTitle = document.getElementById('result-title');
+        const resultText = document.getElementById('result-text');
+        document.getElementById('game-over-menu').style.display = 'flex';
+        resultTitle.textContent = message === 'You Win!' ? 'Victory!' : message === 'Time Up!' ? 'Draw' : 'Defeat!';
+        resultText.textContent = message;
+      }
+
+      function startElixirAndAI() {
+        clearInterval(elixirInterval);
+        elixirInterval = setInterval(() => {
+          if (!gameRunning) return;
+          if (currentElixir < maxElixir) {
+            currentElixir += 1;
+            if (currentElixir > maxElixir) currentElixir = maxElixir;
+            updateElixirDisplay();
+          }
+          if (aiElixir < maxElixir) {
+            aiElixir += 1;
+            if (aiElixir > maxElixir) aiElixir = maxElixir;
+          }
+        }, elixirRegenRate);
+
+        // AI Logic
+        clearInterval(aiInterval);
+        aiInterval = setInterval(() => {
+          if (!gameRunning) return;
+          const cardName = aiDeck[Math.floor(Math.random() * aiDeck.length)];
+          const data = CARD_DATA[cardName];
+          if (aiElixir >= data.cost) {
+            aiElixir -= data.cost;
+            let deployX = Math.random() > 0.5 ? 100 : 300;
+            if (data.type === 'troop' || data.type === 'building') deployTroop(cardName, deployX, 100, 'ai');
+            else if (data.type === 'spell') applySpell(cardName, deployX, 350, 'ai');
+          }
+        }, 2000);
+      }
+
+      function updateTimer() {
+          if (!gameRunning) return;
+          gameTimeRemaining--;
+          
+          let minutes = Math.floor(gameTimeRemaining / 60);
+          let seconds = gameTimeRemaining % 60;
+          timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+          if (gameTimeRemaining === 60 && !isDoubleElixir) {
+              isDoubleElixir = true;
+              elixirRegenRate = 1000;
+              startElixirAndAI(); 
+              timerDisplay.classList.add('double-elixir-mode');
+              notificationOverlay.classList.add('visible');
+              setTimeout(() => { notificationOverlay.classList.remove('visible'); }, 2000);
+          }
+
+          if (gameTimeRemaining <= 0) {
+              endGame("Time Up!");
+          }
+      }
+
+      function startGame() {
+        gameRunning = true;
+        gameMenu.style.display = 'none';
+        updateElixirDisplay();
+        populateCardTray();
+        initializeTowers();
+        elixirRegenRate = 2000;
+        gameTimeRemaining = 120;
+        isDoubleElixir = false;
+        timerDisplay.textContent = "2:00";
+        startElixirAndAI();
+        gameTimerInterval = setInterval(updateTimer, 1000);
+        gameLoop();
+      }
+
+      function gameLoop() {
+        if (!gameRunning) return;
+
+        for (let i = activeTroops.length - 1; i >= 0; i--) {
+          const troop = activeTroops[i];
+          if (troop.isDead) {
+            troop.element.remove();
+            troop.healthBarContainer.remove();
+            if(troop.deployTimerElement) troop.deployTimerElement.remove();
+            if(troop.sleepingIcon) troop.sleepingIcon.remove();
+            activeTroops.splice(i, 1);
+          }
+        }
+
+        for (const troop of activeTroops) {
+          // --- BUILDING LIFETIME DECAY ---
+          if (troop.type === 'building') {
+              // 40 second lifetime = 40 * 60 frames = 2400 frames
+              // decay per frame = maxHealth / 2400
+              const decayAmount = troop.maxHealth / 2400; 
+              takeDamage(troop, decayAmount);
+          }
+
+          // --- DEPLOY TIMER CHECK ---
+          if (troop.currentDeployTimer > 0) {
+             troop.currentDeployTimer -= 16;
+             if (troop.currentDeployTimer <= 0) {
+                 if (troop.deployTimerElement) {
+                     troop.deployTimerElement.remove();
+                     troop.deployTimerElement = null;
+                 }
+             } else {
+                 continue;
+             }
+          }
+
+          // --- SPAWNER LOGIC (GOBLIN HUT UPDATED) ---
+          if (troop.spawnUnit && !troop.isDead) {
+            let shouldSpawn = true;
+            
+            // If it's a Goblin Hut, check for threats
+            if (troop.cardName === 'GoblinHut') {
+                const enemyFaction = troop.faction === 'player' ? 'ai' : 'player';
+                let threatFound = false;
+                
+                // Check all active troops for enemies in range
+                for (const t of activeTroops) {
+                    if (t.faction === enemyFaction && !t.isDead) {
+                        if (getDistance(troop, t) <= troop.range) {
+                            threatFound = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if (threatFound) {
+                    shouldSpawn = true;
+                    // Wake up
+                    if (troop.sleepingIcon) troop.sleepingIcon.style.opacity = 0;
+                } else {
+                    shouldSpawn = false;
+                    // Sleep
+                    if (troop.sleepingIcon) troop.sleepingIcon.style.opacity = 1;
+                }
+            }
+
+            if (shouldSpawn) {
+                const now = Date.now();
+                if (now - troop.lastSpawnTime > troop.spawnRate) {
+                    deployTroop(troop.spawnUnit, troop.x, troop.y, troop.faction, 1);
+                    troop.lastSpawnTime = now;
+                    
+                    // Pop Animation
+                    troop.element.classList.add('inflate-animation');
+                    setTimeout(() => troop.element.classList.remove('inflate-animation'), 200);
+                }
+            }
+          }
+
+          // --- RETARGETING CHECK (v1.1.5) ---
+          if (!troop.currentTarget || troop.currentTarget.isDead) {
+             findNewTarget(troop);
+          } else {
+             // Dynamic Retargeting: Check every 15 frames (~0.25s)
+             if (!troop.retargetDelay) troop.retargetDelay = 0;
+             troop.retargetDelay--;
+             if (troop.retargetDelay <= 0) {
+                 troop.retargetDelay = 15;
+                 checkForBetterTarget(troop);
+             }
+          }
+
+          const finalTarget = troop.currentTarget;
+          let targetX = finalTarget ? finalTarget._x : troop.x; // Default stay put if no target
+          let targetY = finalTarget ? finalTarget._y : troop.y;
+
+          // --- MOVEMENT LOGIC ---
+          if (troop.type === 'building' || !finalTarget) {
+              // Buildings don't move. Troops with no target stand still.
+          } else {
+              const distance = getDistance(troop, finalTarget);
+
+              if (distance > troop.range) {
+                  const angle = Math.atan2(targetY - troop.y, targetX - troop.x);
+                  const moveX = Math.cos(angle) * troop.speed;
+                  const moveY = Math.sin(angle) * troop.speed;
+                  
+                  // Bridge Funneling
+                  if (!troop.isFlying && Math.abs(troop.y - RIVER_Y) < 50) {
+                     // Simple logic: if near river, move towards nearest bridge center
+                     const distLeft = Math.abs(troop.x - BRIDGE_LEFT_X);
+                     const distRight = Math.abs(troop.x - BRIDGE_RIGHT_X);
+                     const bridgeX = distLeft < distRight ? BRIDGE_LEFT_X : BRIDGE_RIGHT_X;
+                     // Overwrite X movement to steer to bridge
+                     if (Math.abs(troop.x - bridgeX) > 10) {
+                        troop.x += (bridgeX - troop.x) * 0.05; 
+                     }
+                  }
+
+                  troop.x += moveX;
+                  troop.y += moveY;
+              }
+          }
+          
+          troop._x = troop.x + 20;
+          troop._y = troop.y + 20;
+          troop.element.style.left = `${troop.x}px`;
+          troop.element.style.top = `${troop.y}px`;
+          troop.healthBarContainer.style.left = `${troop.x - 5}px`;
+          troop.healthBarContainer.style.top = `${troop.y - 10}px`;
+          if (troop.sleepingIcon) {
+              troop.sleepingIcon.style.left = `${troop.x + 20}px`;
+              troop.sleepingIcon.style.top = `${troop.y - 10}px`;
+          }
+
+          // --- ATTACK LOGIC ---
+          if (finalTarget && !finalTarget.isDead) {
+              const distance = getDistance(troop, finalTarget);
+              if (distance <= troop.range) {
+                  if (troop.attackCooldown <= 0) {
+                      troop.attackCooldown = troop.attackSpeed;
+                      
+                      // Valkyrie Spin Visual
+                      if (troop.cardName === 'Valkyrie') {
+                          troop.element.classList.add('spin-animation');
+                          setTimeout(() => troop.element.classList.remove('spin-animation'), 300);
+                      }
+                      
+                      if (troop.projectileType) {
+                          triggerProjectile(troop, finalTarget, troop.projectileType);
+                      }
+                      
+                      let damageDelay = troop.projectileType ? 300 : 0;
+                      
+                      setTimeout(() => {
+                          // --- SPLASH DAMAGE LOGIC ---
+                          if (troop.splashRadius) {
+                              let splashCenterX, splashCenterY;
+                              if (troop.range < 30) { // Melee (Valkyrie)
+                                  splashCenterX = troop._x;
+                                  splashCenterY = troop._y;
+                              } else {
+                                  splashCenterX = finalTarget._x;
+                                  splashCenterY = finalTarget._y;
+                                  if (troop.cardName === 'BabyDragon') triggerSpellVisual('fireball_quiet', splashCenterX, splashCenterY);
+                              }
+                              
+                              const enemyFaction = troop.faction === 'player' ? 'ai' : 'player';
+                              const targets = [...activeTroops, ...Object.values(towerObjects)].filter(unit => !unit.isDead && unit.faction === enemyFaction);
+                              
+                              targets.forEach(t => {
+                                  const dist = Math.sqrt((t._x - splashCenterX)**2 + (t._y - splashCenterY)**2);
+                                  if (dist <= troop.splashRadius) {
+                                      takeDamage(t, troop.damage);
+                                  }
+                              });
+                              
+                          } else {
+                              // Single Target
+                              if (finalTarget && !finalTarget.isDead) {
+                                  takeDamage(finalTarget, troop.damage);
+                              }
+                          }
+                      }, damageDelay);
+                  }
+              }
+          }
+          if (troop.attackCooldown > 0) troop.attackCooldown--;
+        }
+
+        // TOWER LOGIC
+        for (const towerId in towerObjects) {
+          const tower = towerObjects[towerId];
+          if (tower.isDead) continue;
+          
+          const targetFaction = tower.faction === 'player' ? 'ai' : 'player';
+          
+          if (tower.currentTarget) {
+             const dist = getDistance(tower, tower.currentTarget);
+             if (tower.currentTarget.isDead || dist > tower.range) tower.currentTarget = null;
+          }
+
+          if (!tower.currentTarget) {
+            let closestDistance = tower.range;
+            let newTarget = null;
+            for (const troop of activeTroops) {
+              if (troop.faction !== targetFaction || troop.isDead) continue;
+              if (troop.isFlying && tower.attackType === 'ground') continue;
+              
+              const distance = getDistance(tower, troop);
+              if (distance <= closestDistance) { newTarget = troop; closestDistance = distance; }
+            }
+            if (newTarget) tower.currentTarget = newTarget;
+          }
+
+          if (tower.currentTarget) {
+            tower.attackCooldown--;
+            if (tower.attackCooldown <= 0) {
+              tower.attackCooldown = tower.attackSpeed;
+              const target = tower.currentTarget;
+              triggerProjectile(tower, target, 'arrow'); 
+              setTimeout(() => {
+                 if (target && !target.isDead) {
+                     takeDamage(target, tower.damage);
+                 }
+              }, 300);
+              if (target.isDead) tower.currentTarget = null;
+            }
+          }
+        }
+        
+        requestAnimationFrame(gameLoop);
+      }
+    };
+  </script>
+</body>
+</html>

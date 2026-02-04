@@ -1,0 +1,29 @@
+body {
+  font-family: monospace;
+}
+
+form {
+  background-color: lightgray;
+  display: flex; 
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.submit_button {
+  margin: 5px;
+  background-color: #14f170;
+  color: white;
+}
+label {
+  margin: 5px;
+  padding: 5px;
+}
+input {
+  margin: 5px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+input:focus {
+  outline-color: #14f170;
+}

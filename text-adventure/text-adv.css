@@ -1,0 +1,68 @@
+body {
+  background-color: black;
+  color: #16F529;
+  font-size: 16px;
+  font-family: monospace;
+}
+
+#prompt_input {
+  font-family: inherit;
+  border: none;
+  background-color: black;
+  color: #16F529;
+  font-size: 16px;
+  flex: 1; 
+  width: auto; 
+}
+
+input:focus {
+  outline: none;
+}
+
+.prompt {
+  display: flex;
+}
+
+.prompt form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  padding: none;
+  margin-top: -16px;
+  border: none;
+}
+
+#prompt_label {
+  margin-right: 0.5em;
+  white-space: nowrap;
+}
+
+#output {
+  font-size: 16px;
+}
+
+pre {
+  display: inline;
+}
+
+#output p {
+  margin-top: none;
+  margin-bottom: none;
+}
+
+#instructions {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  background-color: black;
+  padding: 10px;
+  box-shadow:0 8px 16px 0 rgba(0,0,0,1);
+}
+
+#instructions span {
+  display: inline-block;
+  width: 25%;
+}
