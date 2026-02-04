@@ -16,5 +16,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 20622 # Change this if you use a custom SSH port
           script: |
-            cd /var/www
+            cd /var/www/frostytoast37.github.io
             git pull origin main
