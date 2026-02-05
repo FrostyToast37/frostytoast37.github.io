@@ -1,0 +1,1 @@
+tableDiv = document.getElementById("table")
