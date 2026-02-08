@@ -3,24 +3,32 @@ const fs = require("fs");
 const express = require("express"); const app = express();
 let mysql = require("mysql");
 let bcrypt = require("bcrypt");
+const PORT = 3000;
 
 //express needs to know to use json
 app.use(express.json());
 //express needs to listen on port whatever
-app.listen(3000);
+
+app.listen(PORT, "127.0.0.1", () => {
+  console.log(`API listening on port ${PORT}`);
+});
+
 
 
 //connect to sql database
 let con = mysql.createConnection({
-  host: "db",
+  host: "localhost",
   user: "root",
   password: "wpzW6MI8BsLCO4krkx1te3nLWk5CpQwYXGqVcJyxY8yZuNlyvxySXbjjGxEVm2o3YaBQO6Ir",
   database: "mydb"
 });
 
 con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!");
+  if (err) {
+    console.error("MySQL connection failed:", err.message);
+    return;
+  }
+  console.log("Connected to MySQL");
 });
 
 
