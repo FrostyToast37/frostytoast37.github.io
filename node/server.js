@@ -1,7 +1,7 @@
 //imports
 const fs = require("fs");
 const express = require("express"); const app = express();
-let mysql = require("mysql");
+let mysql = require("mysql2");
 let bcrypt = require("bcrypt");
 const PORT = 3000;
 
