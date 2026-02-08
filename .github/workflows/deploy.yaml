@@ -1,0 +1,20 @@
+name: Deploy to NAS
+
+on:
+  push:
+    branches: [ main ] # Only triggers when you push to main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.NAS_HOST }}
+          username: ${{ secrets.NAS_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 20622 # Change this if you use a custom SSH port
+          script: |
+            cd /var/www/frostytoast37.github.io
+            git pull origin main
