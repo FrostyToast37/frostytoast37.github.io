@@ -18,8 +18,8 @@ app.listen(PORT, "127.0.0.1", () => {
 //connect to sql database
 let con = mysql.createConnection({
   host: "localhost",
-  user: "root",
-  password: "wpzW6MI8BsLCO4krkx1te3nLWk5CpQwYXGqVcJyxY8yZuNlyvxySXbjjGxEVm2o3YaBQO6Ir",
+  user: "newt",
+  password: "@lVAiR^Gr0$nDUt1%BHY",
   database: "mydb"
 });
 
