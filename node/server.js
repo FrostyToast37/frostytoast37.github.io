@@ -20,7 +20,7 @@ let con = mysql.createConnection({
   host: "localhost",
   user: "newt",
   password: "@lVAiR^Gr0$nDUt1%BHY",
-  database: "newt"
+  database: "newtdb"
 });
 
 con.connect(function(err) {
