@@ -23,3 +23,4 @@ class Element {
 }
 
 const elementsList = loadJSON().map(jsonItem => new Element(jsonItem));
+
