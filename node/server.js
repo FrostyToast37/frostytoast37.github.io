@@ -3,6 +3,11 @@ const fs = require("fs");
 const express = require("express"); const app = express();
 let mysql = require("mysql2");
 let bcrypt = require("bcrypt");
+
+
+
+//EXPRESS----------------------------------------------------------------------------------------------------------------
+//consts
 const PORT = 3000;
 
 //express needs to know to use json
@@ -14,6 +19,8 @@ app.listen(PORT, "127.0.0.1", () => {
 });
 
 
+//MYSQL------------------------------------------------------------------------------------------------------------------
+//consts
 
 //connect to sql database
 let con = mysql.createConnection({
@@ -31,12 +38,10 @@ con.connect(function(err) {
   console.log("Connected to MySQL");
 });
 
-
-app.post("/register", (req, res) => {
-  const { user, password } = req.body;
-
+//funcs
+function insertIntoSQL(inputUser, inputPassword) {
   let sql = "INSERT INTO customers (user, password) VALUES (?, ?)";
-  con.query(sql, [user, password], function (err, result) {
+  con.query(sql, [inputUser, inputPassword], function (err, result) {
     if (err) {
       console.error(err);
       return res.status(500).json({
@@ -47,5 +52,25 @@ app.post("/register", (req, res) => {
     console.log("1 record inserted");
     res.json({ success: true });
   });
+}
+
+//BCRYPT------------------------------------------------------------------------------------------------------------------
+//consts
+const saltRounds = 10;
+
+//encryption
+bcrypt.hash(password, saltRounds, function(err, hash) {
+  //returns salted and hashed password
+  return hash;
+});
+
+//FETCH AND STORE PASSWORDS---------------------------------------------------------------------------------------------------------
+//consts
+
+//fetch request
+app.post("/register", (req, res) => {
+  const { user, password } = req.body;
+
+  insertIntoSQL(user, password);
 });
 
