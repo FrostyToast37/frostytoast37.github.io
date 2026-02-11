@@ -59,11 +59,15 @@ function insertIntoSQL(inputUser, inputPassword) {
 const saltRounds = 10;
 
 //encryption
-bcrypt.hash(password, saltRounds, function(err, hash) {
-  //returns salted and hashed password
-  return hash;
-});
-
+function encrypt(inputPassword){
+  bcrypt.hash(inputPassword, saltRounds, function(err, hash) {
+    //returns salted and hashed password
+    if(err){
+      console.log(err);
+    }
+    return hash;
+  });
+}
 //FETCH AND STORE PASSWORDS---------------------------------------------------------------------------------------------------------
 //consts
 
@@ -71,6 +75,6 @@ bcrypt.hash(password, saltRounds, function(err, hash) {
 app.post("/register", (req, res) => {
   const { user, password } = req.body;
 
-  insertIntoSQL(user, password);
+  insertIntoSQL(user, encrypt(password));
 });
 
