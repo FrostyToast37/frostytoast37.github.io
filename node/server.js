@@ -40,7 +40,7 @@ con.connect(function(err) {
 
 //funcs
 function insertIntoSQL(inputUser, inputPassword) {
-  let sql = "INSERT INTO customers (user, password) VALUES (?, ?)";
+  let sql = "INSERT INTO logins (user, password) VALUES (?, ?)";
   con.query(sql, [inputUser, inputPassword], function (err, result) {
     if (err) {
       console.error(err);
@@ -48,9 +48,27 @@ function insertIntoSQL(inputUser, inputPassword) {
         success: false,
         message: "Database error"
       });
+    } else {
+      console.log("1 record inserted");
+      res.json({ success: true });
     }
-    console.log("1 record inserted");
-    res.json({ success: true });
+  });
+}
+
+function pullFromSQL(inputUser){
+  let sql = "SELECT hash FROM logins WHERE user = ?";
+  con.query(sql, [inputUser], function (err, result) {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Database error"
+      });
+    } else {
+      console.log("1 record inserted");
+      res.json({ success: true });
+    }
+    return result;
   });
 }
 
@@ -66,6 +84,13 @@ function encrypt(inputPassword){
       console.log(err);
     }
     return hash;
+  });
+}
+
+function check(user, inputPassword){
+
+  bcrypt.compare(inputPassword, hash, function(err, result) {
+    return result;
   });
 }
 //FETCH AND STORE PASSWORDS---------------------------------------------------------------------------------------------------------

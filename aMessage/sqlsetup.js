@@ -25,7 +25,7 @@ let con2 = mysql.createConnection({
 con2.connect(function(err) {
     if (err) throw err;
     console.log("Connected!");
-    con2.query("CREATE TABLE mytable", function (err, result) {
+    con2.query("CREATE TABLE logins", function (err, result) {
         if (err) throw err;
         console.log("Table created");
     });

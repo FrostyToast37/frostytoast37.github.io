@@ -1,3 +1,4 @@
+/*
 
 const loginForm = document.getElementById("login_form");
 const usernameInput = document.getElementById("username_input");
@@ -45,3 +46,5 @@ loginForm.addEventListener("submit", function (event){
   }
   outputDiv.innerHTML = outputFlag;
 });
+
+*/
