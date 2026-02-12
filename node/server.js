@@ -38,10 +38,19 @@ app.post("/register", async (req, res) => {
 
     //
 app.post("/datacheck", async(req, res) => {
-  const { username, password } = req.body;
+  try {
+      const { username, password } = req.body;
 
-  const hash = await pullFromSQL(username);
-  await check(hash,password);
+      const hash = await pullFromSQL(username);
+      const result = await check(hash,password);
+      res.send(result);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
+  }
 });
 
 
@@ -67,36 +76,23 @@ con.connect(function(err) {
 
 //funcs
 async function insertIntoSQL(inputUser, inputPassword) {
-  let sql = "INSERT INTO logins (username, password) VALUES (?, ?)";
-  await con.query(sql, [inputUser, inputPassword], function (err, result) {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({
-        success: false,
-        message: "Database error"
-      });
-    } else {
-      console.log("1 record inserted");
-      res.json({ success: true });
-    }
-  });
+  try {
+    let sql = "INSERT INTO logins (username, password) VALUES (?, ?)";
+    await con.query(sql, [inputUser, inputPassword]);
+    console.log("1 record inserted");  
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 async function pullFromSQL(inputUser){
-  let sql = "SELECT hash FROM logins WHERE username = ?";
-  await con.query(sql, [inputUser], function (err, result) {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({
-        success: false,
-        message: "Database error"
-      });
-    } else {
-      console.log("1 record inserted");
-      res.json({ success: true });
-    }
-    return result;
-  });
+  try {
+    let sql = "SELECT hash FROM logins WHERE username = ?";
+    await con.query(sql, [inputUser])
+    console.log("Hash found");
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 //BCRYPT------------------------------------------------------------------------------------------------------------------
@@ -105,21 +101,11 @@ const saltRounds = 10;
 
 //encryption
 async function encrypt(inputPassword){
-  await bcrypt.hash(inputPassword, saltRounds, function(err, hash) {
-    //returns salted and hashed password
-    return hash;
-  });
+  //returns salted and hashed password
+  await bcrypt.hash(inputPassword, saltRounds);
 }
 
 async function check(hash, inputPassword){
-  await bcrypt.compare(inputPassword, hash, function(err, result) {
-    if(err) {
-      console.error(err);
-      return res.status(500).json({
-        success: false,
-        message: "Database error"
-      });
-    }
-    return result;
-  });
+  //returns boolean true or false for the password match to the stored hash
+  await bcrypt.compare(inputPassword, hash);
 }
