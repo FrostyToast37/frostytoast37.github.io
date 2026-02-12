@@ -1,22 +1,49 @@
 //imports
 const fs = require("fs");
-const express = require("express"); const app = express();
-let mysql = require("mysql2");
+const express = require("express"); 
+let mysql = require("mysql2/promise");
 let bcrypt = require("bcrypt");
 
 
 
 //EXPRESS----------------------------------------------------------------------------------------------------------------
-//consts
+  //consts
 const PORT = 3000;
+const app = express();
 
-//express needs to know to use json
+  //express needs to know to use json
 app.use(express.json());
-//express needs to listen on port whatever
+  //express needs to listen on port whatever
 
 app.listen(PORT, "127.0.0.1", () => {
   console.log(`API listening on port ${PORT}`);
 });
+
+  //FETCH REQUESTS
+    //get username and password and put them into the sql database "newtdb" under the table "logins" in columns called "username" and "password"
+app.post("/register", async (req, res) => {
+  try{
+    const { username, password } = req.body;
+    const hash = await encrypt(password);
+    await insertIntoSQL(username, hash);
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
+  }
+});
+
+    //
+app.post("/datacheck", async(req, res) => {
+  const { username, password } = req.body;
+
+  const hash = await pullFromSQL(username);
+  await check(hash,password);
+});
+
 
 
 //MYSQL------------------------------------------------------------------------------------------------------------------
@@ -39,9 +66,9 @@ con.connect(function(err) {
 });
 
 //funcs
-function insertIntoSQL(inputUser, inputPassword) {
-  let sql = "INSERT INTO logins (user, password) VALUES (?, ?)";
-  con.query(sql, [inputUser, inputPassword], function (err, result) {
+async function insertIntoSQL(inputUser, inputPassword) {
+  let sql = "INSERT INTO logins (username, password) VALUES (?, ?)";
+  await con.query(sql, [inputUser, inputPassword], function (err, result) {
     if (err) {
       console.error(err);
       return res.status(500).json({
@@ -55,9 +82,9 @@ function insertIntoSQL(inputUser, inputPassword) {
   });
 }
 
-function pullFromSQL(inputUser){
-  let sql = "SELECT hash FROM logins WHERE user = ?";
-  con.query(sql, [inputUser], function (err, result) {
+async function pullFromSQL(inputUser){
+  let sql = "SELECT hash FROM logins WHERE username = ?";
+  await con.query(sql, [inputUser], function (err, result) {
     if (err) {
       console.error(err);
       return res.status(500).json({
@@ -77,29 +104,22 @@ function pullFromSQL(inputUser){
 const saltRounds = 10;
 
 //encryption
-function encrypt(inputPassword){
-  bcrypt.hash(inputPassword, saltRounds, function(err, hash) {
+async function encrypt(inputPassword){
+  await bcrypt.hash(inputPassword, saltRounds, function(err, hash) {
     //returns salted and hashed password
-    if(err){
-      console.log(err);
-    }
     return hash;
   });
 }
 
-function check(user, inputPassword){
-
-  bcrypt.compare(inputPassword, hash, function(err, result) {
+async function check(hash, inputPassword){
+  await bcrypt.compare(inputPassword, hash, function(err, result) {
+    if(err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Database error"
+      });
+    }
     return result;
   });
 }
-//FETCH AND STORE PASSWORDS---------------------------------------------------------------------------------------------------------
-//consts
-
-//fetch request
-app.post("/register", (req, res) => {
-  const { user, password } = req.body;
-
-  insertIntoSQL(user, encrypt(password));
-});
-
