@@ -26,6 +26,10 @@ app.post("/register", async (req, res) => {
     const { username, password } = req.body;
     const hash = await encrypt(password);
     await insertIntoSQL(username, hash);
+    res.sendStatus(200).json({
+      success: true,
+      message: "Password input"
+    });
 
   } catch (err) {
     console.error(err);
@@ -40,10 +44,10 @@ app.post("/register", async (req, res) => {
 app.post("/datacheck", async(req, res) => {
   try {
       const { username, password } = req.body;
-
       const hash = await pullFromSQL(username);
       const result = await check(hash,password);
       res.send(result);
+      
   } catch (err) {
     console.error(err);
     return res.status(500).json({
@@ -88,8 +92,10 @@ async function insertIntoSQL(inputUser, inputPassword) {
 async function pullFromSQL(inputUser){
   try {
     let sql = "SELECT hash FROM logins WHERE username = ?";
-    await con.query(sql, [inputUser])
+    const hash = await con.query(sql, [inputUser]);
     console.log("Hash found");
+    return hash;
+    
   } catch (err) {
     console.error(err);
   }
@@ -102,10 +108,10 @@ const saltRounds = 10;
 //encryption
 async function encrypt(inputPassword){
   //returns salted and hashed password
-  await bcrypt.hash(inputPassword, saltRounds);
+  return await bcrypt.hash(inputPassword, saltRounds);
 }
 
 async function check(hash, inputPassword){
   //returns boolean true or false for the password match to the stored hash
-  await bcrypt.compare(inputPassword, hash);
+  return await bcrypt.compare(inputPassword, hash);
 }
