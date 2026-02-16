@@ -26,7 +26,7 @@ app.post("/register", async (req, res) => {
     const { username, password } = req.body;
     const hash = await encrypt(password);
     await insertIntoSQL(username, hash);
-    res.sendStatus(200).json({
+    res.status(200).json({
       success: true,
       message: "Password input"
     });
@@ -45,7 +45,7 @@ app.post("/datacheck", async(req, res) => {
   try {
       const { username, password } = req.body;
       const hash = await pullFromSQL(username);
-      const result = await check(hash,password);
+      if(hash) {var result = await check(hash,password)}
       res.send(result);
       
   } catch (err) {
@@ -62,42 +62,57 @@ app.post("/datacheck", async(req, res) => {
 //MYSQL------------------------------------------------------------------------------------------------------------------
 //consts
 
-//connect to sql database
-let con = mysql.createConnection({
-  host: "localhost",
-  user: "newt",
-  password: "@lVAiR^Gr0$nDUt1%BHY",
-  database: "newtdb"
-});
 
-con.connect(function(err) {
-  if (err) {
+//connect to sql database
+let con;
+
+async function connect() {
+  try {
+    con = await mysql.createConnection({
+      host: "localhost",
+      user: "newt",
+      password: "@lVAiR^Gr0$nDUt1%BHY",
+      database: "newtdb"
+    });
+    console.log("Connected to MySQL");
+
+  } catch (err) {
     console.error("MySQL connection failed:", err.message);
-    return;
   }
-  console.log("Connected to MySQL");
-});
+}
+
+connect();
+
 
 //funcs
-async function insertIntoSQL(inputUser, inputPassword) {
+async function insertIntoSQL(inputUser, inputHash) {
   try {
-    let sql = "INSERT INTO logins (username, password) VALUES (?, ?)";
-    await con.query(sql, [inputUser, inputPassword]);
+    let sql = "INSERT INTO logins (username, hash) VALUES (?, ?)";
+    await con.query(sql, [inputUser, inputHash]);
     console.log("1 record inserted");  
+    
   } catch (err) {
     console.error(err);
+    throw err; 
   }
 }
 
 async function pullFromSQL(inputUser){
   try {
     let sql = "SELECT hash FROM logins WHERE username = ?";
-    const hash = await con.query(sql, [inputUser]);
+    const [rows] = await con.query(sql, [inputUser]);
     console.log("Hash found");
+    if(rows.length > 0) {
+      var hash = rows[0].hash;
+    } else {
+      console.log("No user found");
+    }
+
     return hash;
-    
+
   } catch (err) {
     console.error(err);
+    throw err;
   }
 }
 
