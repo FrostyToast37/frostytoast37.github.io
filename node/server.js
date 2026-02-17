@@ -43,10 +43,14 @@ app.post("/register", async (req, res) => {
     //
 app.post("/datacheck", async(req, res) => {
   try {
-      const { username, password } = req.body;
-      const hash = await pullFromSQL(username);
-      if(hash) {var result = await check(hash,password)}
-      res.send(result);
+    const { username, password } = req.body;
+    const hash = await pullFromSQL(username);
+    if(hash) {var result = await check(hash,password)}
+    res.status(200).json({
+      success: true,
+      message: "Logged In" 
+    })
+    res.send(result);
       
   } catch (err) {
     console.error(err);

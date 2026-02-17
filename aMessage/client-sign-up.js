@@ -6,11 +6,11 @@ const outputDiv = document.getElementById("output_div");
 
 async function signup(createdUser, createdPassword) {
   try {
-    const res = await fetch("https://frostytoast37.cookiechaos.xyz:3000/register", {
+    const res = await fetch("http://localhost:3000/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        user: createdUser,
+        username: createdUser,
         password: createdPassword
       })
     });
