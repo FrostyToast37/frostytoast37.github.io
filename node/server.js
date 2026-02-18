@@ -12,15 +12,31 @@ let session = require("express-session");
 const PORT = 3000;
 const app = express();
 
-  //express needs to know to use json
+  //express middleware configs
+app.use(session({
+  secret: "secret-session-key",
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: true, 
+    httpOnly: true, 
+    sameSite: "lax", 
+    maxAge: 1000 * 60 * 60 * 24 //expires in 24 hours
+  }
+  
+}))
 app.use(express.json());
-  //express needs to listen on port whatever
+  //express needs to listen on port whatever, this starts the server
 
 app.listen(PORT, "127.0.0.1", () => {
   console.log(`API listening on port ${PORT}`);
 });
 
-  //FETCH REQUESTS
+  
+  //ROUTE HANDLERS
+
+
+
     //get username and password and put them into the sql database "newtdb" under the table "logins" in columns called "username" and "password"
 app.post("/register", async (req, res) => {
   try{
@@ -41,7 +57,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
-    //
+    //checks the sent password against the username and hash stored in newtdb
 app.post("/datacheck", async(req, res) => {
   try {
     const { username, password } = req.body;
@@ -49,14 +65,15 @@ app.post("/datacheck", async(req, res) => {
     if(hash) {var result = await check(hash,password)}
     res.status(200).json({
       success: true,
+      result: result,
       message: "Logged In" 
     })
-    res.send(result);
       
   } catch (err) {
     console.error(err);
     return res.status(500).json({
       success: false,
+      result: null,
       message: "Server error"
     });
   }
