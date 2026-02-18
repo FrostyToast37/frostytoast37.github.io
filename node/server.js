@@ -62,18 +62,29 @@ app.post("/datacheck", async(req, res) => {
   try {
     const { username, password } = req.body;
     const hash = await pullFromSQL(username);
-    if(hash) {var result = await check(hash,password)}
-    res.status(200).json({
-      success: true,
-      result: result,
-      message: "Logged In" 
-    })
-      
+    
+
+    if(!hash) {
+      return res.status(401).json({
+        success: false,
+        message: "User doesn't exist"
+      })
+    }
+    const result = await check(hash,password);
+    if (result) {
+      req.session.user = username; 
+      req.session.loggedIn = true;
+
+      res.status(200).json({
+        success: true,
+        message: "Logged In" 
+      })
+    }
+
   } catch (err) {
     console.error(err);
     return res.status(500).json({
       success: false,
-      result: null,
       message: "Server error"
     });
   }
