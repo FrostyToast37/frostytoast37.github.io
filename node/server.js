@@ -1,3 +1,7 @@
+//to-do:
+//fix-sql-injection-attack: maybe somehow sanitize on the client side?
+//fix-XSS-on-text-adventure
+
 //imports
 const fs = require("fs");
 const express = require("express"); 
@@ -25,9 +29,10 @@ app.use(session({
     sameSite: "lax", 
     maxAge: 1000 * 60 * 60 * 24 //expires in 24 hours
   }
-  
-}))
+}));
 app.use(express.json());
+
+
   //express needs to listen on port whatever, this starts the server
 
 app.listen(PORT, "127.0.0.1", () => {
@@ -74,9 +79,14 @@ app.post("/datacheck", async(req, res) => {
     }
     const result = await check(hash,password);
     if (result) {
-      req.session.user = username; 
-      req.session.loggedIn = true;
+      //log in to the session
+      req.session.authenticated = true;
+      req.session.user = {
+        username,
+        password
+      }
 
+      //send back to client that everything is working
       res.status(200).json({
         success: true,
         message: "Logged In" 
