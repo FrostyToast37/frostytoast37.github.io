@@ -9,12 +9,14 @@ let session = require("express-session");
 
 //EXPRESS----------------------------------------------------------------------------------------------------------------
   //consts
+const SECRET = "T*^Vevx59bf8i09n7h8f67IUtBF8g7u9*&^dtfc53rc86f4%%#cJV"
 const PORT = 3000;
 const app = express();
 
   //express middleware configs
 app.use(session({
-  secret: "secret-session-key",
+  proxy: true,
+  secret: SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {

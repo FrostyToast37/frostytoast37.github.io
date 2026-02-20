@@ -47,7 +47,7 @@ class Player {
 
       await sleep(1500);
       await deadTextAnimation();
-      await sleep(500)
+      await sleep(500);
       this.deathReset();
 
       outputLog = "";
