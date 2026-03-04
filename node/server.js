@@ -1,5 +1,4 @@
 //to-do:
-//fix-sql-injection-attack: maybe somehow sanitize on the client side?
 //fix-XSS-on-text-adventure
 
 //imports
@@ -18,13 +17,16 @@ const PORT = process.env.PORT;
 const app = express();
 
   //express middleware configs
+
+app.set('trust proxy', 1)
+
 app.use(session({
   proxy: true,
   secret: SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
-//    secure: true, 
+    secure: true, 
     httpOnly: true, 
     sameSite: "lax", 
     maxAge: 1000 * 60 * 60 * 24 //expires in 24 hours
