@@ -115,9 +115,13 @@ function ensureAuthentication(req, res, next) {
   }
 }
 
-app.post("/homepage", ensureAuthentication, async(req, res) =>{
+app.get("/main", ensureAuthentication, async(req, res) =>{
   try {
-    
+    res.sendFile(path.join(__dirname,"main.html"));
+    // res.status(200).json({
+    //   success: true,
+    //   message: "Successful login"
+    // })
   } catch (err) {
     console.error(err);
     return res.status(500).json({
