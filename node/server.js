@@ -47,7 +47,7 @@ app.listen(PORT, "127.0.0.1", () => {
 
 
     //get username and password and put them into the sql database "newtdb" under the table "logins" in columns called "username" and "password"
-app.post("/sign-up", async (req, res) => {
+app.post("/signUp", async (req, res) => {
   try{
     const { username, password } = req.body;
     const hash = await encrypt(password);
