@@ -93,7 +93,9 @@ app.post("/login", async(req, res) => {
       res.status(200).json({
         success: true,
         message: "Logged In" 
+      
       })
+      res.redirect(303, "/main");
     }
 
   } catch (err) {
