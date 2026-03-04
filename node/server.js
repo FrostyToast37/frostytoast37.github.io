@@ -45,7 +45,7 @@ app.listen(PORT, "127.0.0.1", () => {
 
 
     //get username and password and put them into the sql database "newtdb" under the table "logins" in columns called "username" and "password"
-app.post("/register", async (req, res) => {
+app.post("/sign-up", async (req, res) => {
   try{
     const { username, password } = req.body;
     const hash = await encrypt(password);
@@ -65,7 +65,8 @@ app.post("/register", async (req, res) => {
 });
 
     //checks the sent password against the username and hash stored in newtdb
-app.post("/datacheck", async(req, res) => {
+
+app.post("/login", async(req, res) => {
   try {
     const { username, password } = req.body;
     const hash = await pullFromSQL(username);
@@ -102,6 +103,25 @@ app.post("/datacheck", async(req, res) => {
   }
 });
 
+function ensureAuthentication(req, res, next) {
+  if (req.session.authenticated) {
+    return next();
+  } else {
+    res.status(403).json({ msg: "You're not authorized to view this page" });
+  }
+}
+
+app.post("/homepage", ensureAuthentication, async(req, res) =>{
+  try {
+    
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
+  }
+})
 
 
 //MYSQL------------------------------------------------------------------------------------------------------------------

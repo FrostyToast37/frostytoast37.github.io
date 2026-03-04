@@ -5,7 +5,7 @@ const outputDiv = document.getElementById("output_div");
 
 async function login(user, password) {
   try {
-    const res = await fetch("http://localhost:3000/datacheck", {
+    const res = await fetch("http://localhost:3000/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
