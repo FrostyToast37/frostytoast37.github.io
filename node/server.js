@@ -13,8 +13,8 @@ let session = require("express-session");
 
 //EXPRESS----------------------------------------------------------------------------------------------------------------
   //consts
-const SECRET = "T*^Vevx59bf8i09n7h8f67IUtBF8g7u9*&^dtfc53rc86f4%%#cJV"
-const PORT = 3000;
+const SECRET = process.env.SESSION_SECRET
+const PORT = process.env.PORT;
 const app = express();
 
   //express middleware configs
@@ -24,7 +24,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: true, 
+//    secure: true, 
     httpOnly: true, 
     sameSite: "lax", 
     maxAge: 1000 * 60 * 60 * 24 //expires in 24 hours
@@ -114,9 +114,9 @@ let con;
 async function connect() {
   try {
     con = await mysql.createConnection({
-      host: "localhost",
-      user: "newt",
-      password: "@lVAiR^Gr0$nDUt1%BHY",
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
       database: "newtdb"
     });
     console.log("Connected to MySQL");
