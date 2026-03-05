@@ -160,7 +160,7 @@ await connect();
 //funcs
 async function insertIntoSQL(inputUser, inputHash) {
   try {
-    let sql = "INSERT INTO logins (username, hash) VALUES (?, ?)";
+    let sql = "INSERT INTO logins (username, password) VALUES (?, ?)";
     await con.query(sql, [inputUser, inputHash]);
     console.log("1 record inserted");  
     
@@ -172,11 +172,11 @@ async function insertIntoSQL(inputUser, inputHash) {
 
 async function pullFromSQL(inputUser){
   try {
-    let sql = "SELECT hash FROM logins WHERE username = ?";
+    let sql = "SELECT password FROM logins WHERE username = ?";
     const [rows] = await con.query(sql, [inputUser]);
     console.log("Hash found");
     if(rows.length > 0) {
-      var hash = rows[0].hash;
+      var hash = rows[0].password;
     } else {
       console.log("No user found");
     }
