@@ -3,6 +3,7 @@
 
 //imports
 const fs = require("fs");
+const path = require("path");
 const express = require("express"); 
 let mysql = require("mysql2/promise");
 let bcrypt = require("bcrypt");
