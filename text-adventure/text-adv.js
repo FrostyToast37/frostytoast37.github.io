@@ -6,9 +6,18 @@ let devPass = "PASSWORD123";
 let devtools = false;
 let gameState = "playing";
 
+//utils
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+function escapeHTML(str) {
+  const p = document.createElement('p');
+  p.textContent = str;
+  return p.innerHTML;
+}
+
+//Others
 
 async function deadTextAnimation() {
   let text = document.getElementById("output").textContent;
@@ -394,7 +403,8 @@ document.getElementById("prompt_input").addEventListener("keypress",
           let match = userInput.match(/^\/run (.+)$/i);
           try {
             // Code that might throw an error
-            rawOutput = eval(match[1]);
+            //rawOutput = eval(match[1]); //comment out in production
+            rawOutput = "yeah sorry man I disabled this for safety";
           } catch (error) {
             // Code that runs if an error happens
             rawOutput = error.message;
@@ -448,7 +458,8 @@ document.getElementById("prompt_input").addEventListener("keypress",
       //output 
       if (!playerDied) {
         output = rawOutput;
-        outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + userInput + "<br>" + output;
+        let safeInput = escapeHTML(userInput); //sanitize for xss
+        outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + safeInput + "<br>" + output;
         document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
         document.body.scrollTop = document.body.scrollHeight;
       }
