@@ -35,16 +35,8 @@ app.use(session({
 }));
 app.use(express.json());
 
-
-  //express needs to listen on port whatever, this starts the server
-
-app.listen(PORT, "127.0.0.1", () => {
-  console.log(`API listening on port ${PORT}`);
-});
-
   
   //ROUTE HANDLERS
-
 
 
     //get username and password and put them into the sql database "newtdb" under the table "logins" in columns called "username" and "password"
@@ -131,6 +123,13 @@ app.get("/main", ensureAuthentication, async(req, res) =>{
     });
   }
 })
+
+
+  //express needs to listen on port whatever, this starts the server
+
+app.listen(PORT, "127.0.0.1", () => {
+  console.log(`API listening on port ${PORT}`);
+});
 
 
 //MYSQL------------------------------------------------------------------------------------------------------------------
