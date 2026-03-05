@@ -163,7 +163,7 @@ async function insertIntoSQL(inputUser, inputHash) {
     let sql = "INSERT INTO logins (username, password) VALUES (?, ?)";
     await con.query(sql, [inputUser, inputHash]);
     console.log("1 record inserted");  
-    
+     
   } catch (err) {
     console.error(err);
     throw err; 
