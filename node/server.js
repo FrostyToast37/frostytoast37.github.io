@@ -95,7 +95,7 @@ app.post("/login", async(req, res) => {
         message: "Logged In" 
       
       })
-      res.redirect(303, "/main");
+      // res.redirect(303, "/main");
     }
 
   } catch (err) {

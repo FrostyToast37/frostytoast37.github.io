@@ -1,4 +1,4 @@
-const signUpForm = document.getElementById("sign-up-form");
+const signUpForm = document.getElementById("sign_up_form");
 const usernameInput = document.getElementById("username_input");
 const passwordInput = document.getElementById("password_input");
 const outputDiv = document.getElementById("output_div");
@@ -19,6 +19,8 @@ async function signup(createdUser, createdPassword) {
 
     if (!data.success) {
       throw new Error(data.message || "Registration Failed :(");
+    } else if (data.success) {
+    window.location.href = "/main";
     }
     outputDiv.textContent = "Registration Success!"
   } catch (err) {
