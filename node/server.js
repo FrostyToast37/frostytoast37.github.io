@@ -154,7 +154,7 @@ async function connect() {
   }
 }
 
-connect();
+await connect();
 
 
 //funcs

@@ -1,4 +1,4 @@
-let mysql = require("mysql2");
+/*let mysql = require("mysql2");
 
 
 let con = mysql.createConnection({
@@ -20,4 +20,4 @@ con.connect(function(err) {
 });
 
 
-//
+*/
