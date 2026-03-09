@@ -15,6 +15,10 @@ async function signup(createdUser, createdPassword) {
       })
     });
 
+    const clone = res.clone(); // Clone the response so you can read it twice
+    const debugText = await clone.text(); 
+    outputDiv.textContent = ("FULL SERVER RESPONSE:", debugText);
+
 
     const data = await res.json();
 
