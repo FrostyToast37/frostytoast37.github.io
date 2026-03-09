@@ -43,8 +43,22 @@ app.use(express.json());
 app.post("/signUp", async (req, res) => {
   try{
     const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ success: false, message: "Missing credentials" });
+    }
+
+
     const hash = await encrypt(password);
-    await insertIntoSQL(username, hash);
+    
+    
+    if (!await insertIntoSQL(username, hash)) {
+      res.status(409).json({
+        sucess: false,
+        message: "Username Taken"
+      })
+    }
+    
     res.status(200).json({
       success: true,
       message: "Password input"
@@ -160,9 +174,19 @@ connect();
 //funcs
 async function insertIntoSQL(inputUser, inputHash) {
   try {
-    let sql = "INSERT INTO logins (username, password) VALUES (?, ?)";
+    let sql = "SELECT EXISTS(SELECT 1 FROM users WHERE username = ?) AS exists";
+    const [rows] = await con.query(sql, [inputUser]);
+
+    if (rows[0].exists === 1) {
+      console.log("Username already taken.");
+      return false;
+    }
+    
+    sql = "INSERT INTO logins (username, password) VALUES (?, ?)";
     await con.query(sql, [inputUser, inputHash]);
     console.log("1 record inserted");  
+
+    return true;
      
   } catch (err) {
     console.error(err);

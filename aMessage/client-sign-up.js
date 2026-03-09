@@ -15,6 +15,7 @@ async function signup(createdUser, createdPassword) {
       })
     });
 
+
     const data = await res.json();
 
     if (!data.success) {
