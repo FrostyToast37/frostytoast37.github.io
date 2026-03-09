@@ -17,7 +17,6 @@ async function signup(createdUser, createdPassword) {
 
     const clone = res.clone(); // Clone the response so you can read it twice
     const debugText = await clone.text(); 
-    outputDiv.textContent = ("FULL SERVER RESPONSE:", debugText);
 
 
     const data = await res.json();
@@ -30,6 +29,7 @@ async function signup(createdUser, createdPassword) {
     outputDiv.textContent = "Registration Success!"
   } catch (err) {
     outputDiv.textContent = err.message;
+    outputDiv.textContent += ("\nFULL SERVER RESPONSE:", debugText);
   }
 }
 
