@@ -28,3 +28,6 @@ var mapRoom_d = "The room is filled wall to wall with maps. Maps of the universe
 var secretRoom3_d = "You slide past the map to the east and enter a secret room. This room contains absolutely nothing except for a small chair with a book on top. A single torch is fitted into the wall on one side.";
 var mainStairsZ2_d = "If you look back down the stairwell, only darkness is visible. There is a singular window directly across the spiral staircase and you can see the forest surrounding you out of it. There are hallways leading to your east and west.";
 var X3Y4Z2h_d = "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the west and the stairwell is to the east.";
+var X2Y4Z2h_d = "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the east and west, and there is a room to your south.";
+var X1Y4Z2h_d = "The hallway looks the same as every other: medieval architecture and glowing ethereal torches, except, for one thing... The hallway continues to the east and there are rooms to your north and west. Then it hits you! The torch on the west wall looks a little dull.";
+
