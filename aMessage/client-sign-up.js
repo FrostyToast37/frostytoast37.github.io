@@ -3,8 +3,8 @@ const usernameInput = document.getElementById("username_input");
 const passwordInput = document.getElementById("password_input");
 const outputDiv = document.getElementById("output_div");
 
-
 async function signup(createdUser, createdPassword) {
+let debugText;
   try {
     const res = await fetch("/signUp", {
       method: "POST",
@@ -16,7 +16,7 @@ async function signup(createdUser, createdPassword) {
     });
 
     const clone = res.clone(); // Clone the response so you can read it twice
-    const debugText = await clone.text(); 
+    debugText = await clone.text(); 
 
 
     const data = await res.json();
