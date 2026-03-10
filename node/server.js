@@ -174,10 +174,10 @@ connect();
 //funcs
 async function insertIntoSQL(inputUser, inputHash) {
   try {
-    let sql = "SELECT EXISTS(SELECT 1 FROM logins WHERE username = ?) AS exists";
+    let sql = "SELECT EXISTS(SELECT 1 FROM logins WHERE username = ?) AS existsFlag";
     const [rows] = await con.query(sql, [inputUser]);
 
-    if (rows[0].exists === 1) {
+    if (rows[0].existsFlag === 1) {
       console.log("Username already taken.");
       return false;
     }
