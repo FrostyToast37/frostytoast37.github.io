@@ -30,4 +30,4 @@ var mainStairsZ2_d = "If you look back down the stairwell, only darkness is visi
 var X3Y4Z2h_d = "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the west and the stairwell is to the east.";
 var X2Y4Z2h_d = "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the east and west, and there is a room to your south.";
 var X1Y4Z2h_d = "The hallway looks the same as every other: medieval architecture and glowing ethereal torches, except, for one thing... The hallway continues to the east and there are rooms to your north and west. Then it hits you! The torch on the west wall looks a little dull.";
-
+var lab_d = "The smell of chemicals greets your nose as you enter the laboratory. A white room with oldAs you enter, you see active experiments occurring, but before you get a good look, the emergency doors slide shut, blocking your view. Do you go back north?"
