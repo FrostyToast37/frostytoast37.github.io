@@ -68,7 +68,7 @@ app.post("/signUp", async (req, res) => {
     console.error(err);
     return res.status(500).json({
       success: false,
-      message: "Server error:" + err
+      message: "Server error:" + err.message
     });
   }
 });
