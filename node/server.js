@@ -130,13 +130,14 @@ app.get("/main", ensureAuthentication, async(req, res) =>{
     console.error(err);
     return res.status(500).json({
       success: false,
-      message: "Server error"
+      message: "Server error" + err.message
     });
   }
 })
 
 
   //express needs to listen on port whatever, this starts the server
+  //MAKE SURE THIS STAYS AT THE BOTTOM OF THE EXPRESS SECTION
 
 app.listen(PORT, "127.0.0.1", () => {
   console.log(`API listening on port ${PORT}`);
@@ -145,19 +146,21 @@ app.listen(PORT, "127.0.0.1", () => {
 
 //MYSQL------------------------------------------------------------------------------------------------------------------
 //consts
-
-
 //connect to sql database
+let pool;
+function connect() {
+    pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: "newtdb",
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+  });
+}
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: "newtdb",
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+connect();
 
 
 //funcs
