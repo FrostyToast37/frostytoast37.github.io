@@ -53,13 +53,13 @@ app.post("/signUp", async (req, res) => {
     
     
     if (!await insertIntoSQL(username, hash)) {
-      res.status(409).json({
-        sucess: false,
+      return res.status(409).json({
+        success: false,
         message: "Username Taken"
       })
     }
     
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Password input"
     });
@@ -97,7 +97,7 @@ app.post("/login", async(req, res) => {
       }
 
       //send back to client that everything is working
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
         message: "Logged In" 
       
@@ -174,7 +174,7 @@ connect();
 //funcs
 async function insertIntoSQL(inputUser, inputHash) {
   try {
-    let sql = "SELECT EXISTS(SELECT 1 FROM users WHERE username = ?) AS exists";
+    let sql = "SELECT EXISTS(SELECT 1 FROM logins WHERE username = ?) AS exists";
     const [rows] = await con.query(sql, [inputUser]);
 
     if (rows[0].exists === 1) {
@@ -196,13 +196,15 @@ async function insertIntoSQL(inputUser, inputHash) {
 
 async function pullFromSQL(inputUser){
   try {
+    let hash;
     let sql = "SELECT password FROM logins WHERE username = ?";
     const [rows] = await con.query(sql, [inputUser]);
     console.log("Hash found");
     if(rows.length > 0) {
-      var hash = rows[0].password;
+      hash = rows[0].password;
     } else {
       console.log("No user found");
+      return null;
     }
 
     return hash;
