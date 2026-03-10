@@ -61,13 +61,13 @@ app.post("/signUp", async (req, res) => {
       message: "Password input"
     });
 
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      success: false,
-      message: "Server error:" + err.message
-    });
-  }
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Server error:" + err.message
+      });
+    }
 });
 
     //checks the sent password against the username and hash stored in newtdb
