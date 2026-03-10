@@ -1,6 +1,3 @@
-//to-do List:
-//fix-XSS-on-text-adventure
-
 //imports
 const fs = require("fs");
 const path = require("path");
@@ -92,19 +89,19 @@ app.post("/login", async(req, res) => {
       //log in to the session
       req.session.authenticated = true;
       req.session.user = {
-        username,
-        password
+        username
       }
-
-      //send back to client that everything is working
       return res.status(200).json({
         success: true,
-        message: "Logged In" 
-      
-      })
-      // res.redirect(303, "/main");
+        message: "Logged In"
+      });
+    } else {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid Password"
+      });
     }
-
+    
   } catch (err) {
     console.error(err);
     return res.status(500).json({
@@ -151,31 +148,23 @@ app.listen(PORT, "127.0.0.1", () => {
 
 
 //connect to sql database
-let con;
 
-async function connect() {
-  try {
-    con = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: "newtdb"
-    });
-    console.log("Connected to MySQL");
-
-  } catch (err) {
-    console.error("MySQL connection failed:", err.message);
-  }
-}
-
-connect();
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: "newtdb",
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
 
 
 //funcs
 async function insertIntoSQL(inputUser, inputHash) {
   try {
     let sql = "SELECT EXISTS(SELECT 1 FROM logins WHERE username = ?) AS existsFlag";
-    const [rows] = await con.query(sql, [inputUser]);
+    const [rows] = await pool.query(sql, [inputUser]);
 
     if (rows[0].existsFlag === 1) {
       console.log("Username already taken.");
@@ -183,7 +172,7 @@ async function insertIntoSQL(inputUser, inputHash) {
     }
     
     sql = "INSERT INTO logins (username, password) VALUES (?, ?)";
-    await con.query(sql, [inputUser, inputHash]);
+    await pool.query(sql, [inputUser, inputHash]);
     console.log("1 record inserted");  
 
     return true;
@@ -198,7 +187,7 @@ async function pullFromSQL(inputUser){
   try {
     let hash;
     let sql = "SELECT password FROM logins WHERE username = ?";
-    const [rows] = await con.query(sql, [inputUser]);
+    const [rows] = await pool.query(sql, [inputUser]);
     console.log("Hash found");
     if(rows.length > 0) {
       hash = rows[0].password;
