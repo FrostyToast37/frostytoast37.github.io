@@ -24,7 +24,7 @@ let debugText;
     if (!data.success) {
       throw new Error(data.message || "Registration Failed :(");
     } else if (data.success) {
-    window.location.href = "/main";
+      window.close();
     }
     outputDiv.textContent = "Registration Success!"
   } catch (err) {

@@ -18,6 +18,8 @@ async function login(user, password) {
 
     if (!data.success) {
       throw new Error(data.message || "Login Failed, check your password");
+    } else if (data.success) {
+      window.location.href = "/main";
     }
     outputDiv.textContent = "Login Success!"
   } catch (err) {
