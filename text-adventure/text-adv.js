@@ -233,8 +233,8 @@ const r_secrethall1 =    new Room(7, 3, 2, ["E","W"], secretHall_d);
 const r_h_X8Y3Z2 =       new Room(8, 3, 2, ["N","S","W"], X8Y3Z2h_d);
 const r_breakRoom =      new Room(5, 5, 2, ["S"], breakRoom_d);
 const r_masterBed =      new Room(6, 3, 2, ["N","E"], masterBed_d);
-const r_lockedStairs =   new Room(8, 4, 2, ["S"], "LOCKED");
-const r_keyRoom =        new Room(8, 2, 2, ["N"], "You enter the room and immediately notice something is off. You see two ghost-like creatures hovering across from you, and you sigh, preparing to fight once again. But something is different this time; something is wrong. The two ghosts don't look like the others in the manor, they have a skeletal body and head. They simultaneously speak 'Why have you come here, mortal? To die?' Before you can respond, the dooor slams shut behind you and they grab nearby staffs. Their staffs start to glow with an ethereal light and you feel the manor's torches start to flicker. The room is thrown into near darkness, with the only light being their two glowing staffs. From the darkness, you hear a voice, 'Then DIE, mortal'. You prepare to fight this new opponent, with a sinking feeling this might be your last battle in the manor.", [], m_g_hydrangeaSons);
+const r_lockedStairs =   new Room(8, 4, 2, ["S"], lockedStairs_d);
+const r_keyRoom =        new Room(8, 2, 2, ["N"], keyRoom_d, [], m_g_hydrangeaSons);
 const Rooms = [
   r_gate, r_path, r_door, r_mainRoom, r_mainStairsZ1,
   r_frontDesk, r_deskCloset, r_secretRoom,
