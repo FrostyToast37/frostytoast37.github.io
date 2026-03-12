@@ -43,7 +43,7 @@ class Player {
   deathReset(){
     const itemsToDrop = this.inventory.filter(item => item !== null);
     currentRoom.items.push(...itemsToDrop)
-    currentRoom = r_gate;
+    currentRoom = map[4][0][1];
     this.health = 10;
     this.inventory = [w_dagger, null, null, null, null, null, null, null];
   }
@@ -153,7 +153,8 @@ const m_g_hydrangeaSons = new Monster(20, ["attack", "block", "load", "load", "a
 
 //Room definition
 class Room {
-  constructor(x, y, floor, exits = [], dialogue = "", items = [], monster = null) {
+  constructor(id, x, y, floor, exits = [], dialogue = "", items = [], monster = null) {
+    this.id = id;
     this.x = x;
     this.y = y;
     this.z = floor;
@@ -189,76 +190,53 @@ for (let x = 0; x < length; x++) {
   }
 }
 
-//Room Object creations
-//ground floor (z = 1)
 
-const r_gate =           new Room(4, 0, 1, ["N"], gate_d);
-const r_path =           new Room(4, 1, 1, ["N","S"], path_d);
-const r_door =           new Room(4, 2, 1, ["N","S"], door_d);
-const r_mainRoom =       new Room(4, 3, 1, ["N","E","S","W"], mainRoom_d);
-const r_mainStairsZ1 =   new Room(4, 4, 1, ["S","U"], mainStairsZ1_d);
-const r_frontDesk =      new Room(3, 3, 1, ["N","E","W"], frontDesk_d, [w_candlestick,i_shells]);
-const r_deskCloset =     new Room(2, 3, 1, ["E","W"], deskCloset_d, [w_DBshotgun]);
-const r_secretRoom =     new Room(1, 3, 1, ["E"], secretRoom_d);
-const r_h_X5Y3 =         new Room(5, 3, 1, ["E","W"], X5Y3h_d);
-const r_h_X6Y3 =         new Room(6, 3, 1, ["N","E","W"], X6Y3h_d);
-const r_diningRoom =     new Room(7, 3, 1, ["E","W"], diningRoom_d);
-const r_kitchen =        new Room(8, 3, 1, ["N","W", "S"], kitchen_d, [], m_g_chef);
-const r_porch =          new Room(8, 2, 1, ["S","N"], porch_d);
-const r_pantry =         new Room(8, 4, 1, ["S"], pantry_d);
-const r_h_X6Y4 =         new Room(6, 4, 1, ["N","S"], X6Y4h_d);
-const r_lounge =         new Room(6, 5, 1, ["E","S"], lounge_d);
-const r_poolRoom =       new Room(7, 5, 1, ["W"], pool_d);
-const r_h_X3Y4 =         new Room(3, 4, 1, ["S","W"], X3Y4h_d);
-const r_h_X2Y4 =         new Room(2, 4, 1, ["E","W"], X2Y4h_d);
-const r_h_X1Y4 =         new Room(1, 4, 1, ["N","E","W",], X1Y4h_d);
-const r_greenhouse =     new Room(0, 4, 1, ["E"], greenhouse_d);
-const r_h_X1Y5 =         new Room(1, 5, 1, ["N","S"], X1Y5h_d);
-const r_h_X1Y6 =         new Room(1, 6, 1, ["E","S","W"], X1Y6h_d);
-const r_secretRoom_2 =   new Room(0, 6, 1, ["E"], secretRoom2_d);
-const r_mapRoom =        new Room(2, 6, 1, ["E","W"], mapRoom_d);
-const r_secretRoom_3 =   new Room(3, 6, 1, ["W"], secretRoom3_d);
+const registry = {
+  "w_candlestick": w_candlestick,
+  "i_shells": i_shells,
+  "w_DBshotgun": w_DBshotgun,
+  "m_g_chef": m_g_chef,
+  "m_g_hydrangeaSons": m_g_hydrangeaSons
+};
 
-//upper floor (z = 2)
-const r_mainStairsZ2 =   new Room(4, 4, 2, ["W","D","E"], mainStairsZ2_d);
-const r_h_X3Y4Z2 =       new Room(3, 4, 2, ["E","W"], X3Y4Z2h_d);
-const r_h_X2Y4Z2 =       new Room(2, 4, 2, ["E","S","W"], X2Y4Z2h_d);
-const r_h_X1Y4Z2 =       new Room(1, 4, 2, ["N","E","W"], X1Y4Z2h_d);
-const r_laboratory =     new Room(2, 3, 2, ["N"], lab_d);
-const r_mirrorMaze =     new Room(1, 5, 2, ["S"], maze_d);
-const r_secretRoom_4 =   new Room(0, 4, 2, ["E"], secretRoom4_d);
-const r_h_X5Y4Z2 =       new Room(5, 4, 2, ["N","E","W"], X5Y4Z2h_d);
-const r_h_X6Y4Z2 =       new Room(6, 4, 2, ["S","W"], X6Y4Z2h_d);
-const r_secrethall1 =    new Room(7, 3, 2, ["E","W"], secretHall_d);
-const r_h_X8Y3Z2 =       new Room(8, 3, 2, ["N","S","W"], X8Y3Z2h_d);
-const r_breakRoom =      new Room(5, 5, 2, ["S"], breakRoom_d);
-const r_masterBed =      new Room(6, 3, 2, ["N","E"], masterBed_d);
-const r_lockedStairs =   new Room(8, 4, 2, ["S"], lockedStairs_d);
-const r_keyRoom =        new Room(8, 2, 2, ["N"], keyRoom_d, [], m_g_hydrangeaSons);
-const Rooms = [
-  r_gate, r_path, r_door, r_mainRoom, r_mainStairsZ1,
-  r_frontDesk, r_deskCloset, r_secretRoom,
-  r_h_X5Y3, r_h_X6Y3, r_diningRoom, r_kitchen,
-  r_pantry, r_h_X6Y4, r_lounge, r_poolRoom,
-  r_h_X3Y4, r_h_X2Y4, r_h_X1Y4, r_greenhouse,
-  r_mainStairsZ2, r_porch, r_h_X1Y5, r_h_X1Y6, 
-  r_secretRoom_2, r_mapRoom, r_secretRoom_3,
-  r_h_X3Y4Z2, r_h_X2Y4Z2, r_h_X1Y4Z2,
-  r_laboratory, r_mirrorMaze, r_secretRoom_4, 
-  r_h_X5Y4Z2, r_h_X6Y4Z2, r_secrethall, r_masterBed, 
-  r_h_X8Y3Z2, r_breakRoom, r_lockedStairs, r_keyRoom
-];
-//fill map with Rooms
-for (const RoomObj of Rooms) {
-  map[RoomObj.x][RoomObj.y][RoomObj.z] = RoomObj;
+async function initRooms() {
+  const res = await fetch("/rooms.json");
+  const data = await res.json();
+
+  data.rooms.forEach(room => {
+    const resolvedItems = room.items ? room.items.map(id => registry[id]) : [];
+    const resolvedMonster = room.monster ? registry[room.monster] : null;
+
+    const newRoom = new Room(
+      room.id,
+      room.x, room.y, room.z, 
+      room.exits, 
+      room.dialogue, 
+      resolvedItems, 
+      resolvedMonster
+    );
+
+    map[room.x][room.y][room.z] = newRoom;
+
+    if (room.id === "r_gate") {
+      currentRoom = newRoom;
+    }
+  });
+
+
+
 }
 
 //Initializing
-p_player.inventory[0] = w_dagger;
-let currentRoom = r_gate;
-document.getElementById("output").innerHTML = "<p>" + currentRoom.dialogue + "</p>";
-let outputLog = (currentRoom.dialogue);
-document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
+let currentRoom;
+async function initWorld() {
+  p_player.inventory[0] = w_dagger;
+  await initRooms();
+  document.getElementById("output").innerHTML = "<p>" + currentRoom.dialogue + "</p>";
+  let outputLog = (currentRoom.dialogue);
+  document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
+}
+
 
 //Commands
 
