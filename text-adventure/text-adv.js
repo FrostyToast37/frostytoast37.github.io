@@ -240,8 +240,6 @@ async function initWorld() {
 
 
 //Commands
-
-//move
 function move(inputRoom, direction) {
   if (!inputRoom.exits.includes(direction)) {
     rawOutput = "You can't go that way."; return;
@@ -406,7 +404,7 @@ document.getElementById("prompt_input").addEventListener("keypress",
       } else if (/^GRAB (.+)$/.test(input)) {
         let match = input.match(/^GRAB (.+)$/);
         grab(match[1]);
-      }else if (input == "BLOCK") {
+      } else if (input == "BLOCK") {
         p_player.turn = "block";
       } else if (input == "ATTACK") {
         p_player.turn = "attack";
