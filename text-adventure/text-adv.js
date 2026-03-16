@@ -5,6 +5,7 @@ let devTest = false;
 let devPass = "PASSWORD123";
 let devtools = false;
 let gameState = "playing";
+let outputLog = "";
 
 //utils
 function sleep(ms) {
@@ -23,12 +24,12 @@ async function deadTextAnimation() {
   let text = document.getElementById("output").textContent;
   let randomIndex = 0;
   let iterations = text.length;
-  for (i = 0; i < iterations; i++) {
+  for (let i = 0; i < iterations; i++) {
     randomIndex = Math.floor(Math.random() * text.length);
     text = text.slice(0, randomIndex) + text.slice(randomIndex + 1);
     if (i % 5 == 0) {
       document.getElementById("output").textContent = text;
-      await sleep(0.005);
+      await sleep(10);
     }
   }
 }
@@ -233,7 +234,7 @@ async function initWorld() {
   p_player.inventory[0] = w_dagger;
   await initRooms();
   document.getElementById("output").innerHTML = "<p>" + currentRoom.dialogue + "</p>";
-  let outputLog = (currentRoom.dialogue);
+  outputLog = (currentRoom.dialogue);
   document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
 }
 
