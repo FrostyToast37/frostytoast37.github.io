@@ -95,7 +95,21 @@ class Weapon {
     this.ammoType = ammoType;
   }
   load() {
-    this.mag += this.loadAmount;
+    let hasAmmo = null;
+    if(this.mag + this.loadAmount <= magCap) {
+      if(this.ammoType){
+        hasAmmo = false;
+        p_player.inventory.forEach(item => {
+          if(item.name == this.ammoType) {
+            hasAmmo = true;
+            item.quantity -= this.loadAmount;
+          }
+//maybe add output that says if you have the ammo or not
+        });
+
+      }
+      this.mag += this.loadAmount;
+    };
   }
 }
 
@@ -151,6 +165,20 @@ class Monster {
 
 const m_g_chef =          new Monster(5, ["load", "attack", "block", "block"], 1, "Pierre the Polturgeist");
 const m_g_hydrangeaSons = new Monster(20, ["attack", "block", "load", "load", "attack", "attack", "block", "block"], 4, "Hydrangea's Sons");
+
+class Food {
+    constructor(name, health, uses) {
+    //properties
+    this.name = name;
+    this.health = health;
+    this.uses = uses;
+  }
+  //methods
+  eat(eater) {
+    eater.health += this.health;
+    this.uses -= 1;
+  }
+}
 
 //Room definition
 class Room {
