@@ -201,7 +201,7 @@ const registry = {
 };
 
 async function initRooms() {
-  const res = await fetch("/rooms.json");
+  const res = await fetch("./rooms.json");
   const data = await res.json();
 
   data.rooms.forEach(room => {
