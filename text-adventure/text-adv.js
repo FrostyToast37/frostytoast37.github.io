@@ -237,6 +237,7 @@ async function initWorld() {
   outputLog = (currentRoom.dialogue);
   document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
 }
+initWorld();
 
 
 //Commands
