@@ -95,7 +95,6 @@ class Weapon {
     this.ammoType = ammoType;
   }
   load() {
-    rawOutput += "made it into method";
     let hasAmmo = null;
     if(this.mag + this.loadAmount <= magCap) {
       if(this.ammoType){
@@ -328,8 +327,6 @@ function grab(item) {
 }
 
 function load() {
-  rawOutput += "got into function";
-  return;
   let function_return = p_player.inventory[0].load();
   if (function_return != false) {
     rawOutput = "your " + p_player.inventory[0].name + " now has " + p_player.inventory[0].mag + " uses.";
