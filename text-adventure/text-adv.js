@@ -96,7 +96,7 @@ class Weapon {
   }
   load() {
     let hasAmmo = null;
-    if(this.mag + this.loadAmount <= magCap) {
+    if(this.mag + this.loadAmount <= this.magCap) {
       if(this.ammoType){
         hasAmmo = false;
         p_player.inventory.forEach(item => {
