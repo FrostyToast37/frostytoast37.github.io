@@ -95,28 +95,33 @@ class Weapon {
     this.ammoType = ammoType;
   }
   load() {
-    let hasAmmo = null;
+    let dialogue = "";
     if(this.mag + this.loadAmount <= this.magCap) {
       if(this.ammoType){
-        hasAmmo = false;
+        let hasAmmo = false;
         p_player.inventory.forEach(item => {
           if(item.name == this.ammoType) {
             hasAmmo = true;
+            dialogue = "you used " + this.loadAmount + " " + this.ammoType + "to load your " + this.name + ". It now has " + this.mag + "uses.";
             item.quantity -= this.loadAmount;
-          }
-//maybe add output that says if you have the ammo or not
+          } 
         });
+        if (hasAmmo = false) {
+          dialogue = "You don't have enough " + this.ammoType + " to load your " + this.name + ".";
+        };
 
+      } else {
+        dialogue = "your " + this.name + " now has " + this.mag + " uses.";
       }
       this.mag += this.loadAmount;
     };
-    return hasAmmo;
+    return dialogue;
   }
 }
 
 const w_dagger =          new Weapon("Dagger", "melee", 2, 1, 0, 1, 1, null); 
 const w_candlestick =     new Weapon("Candlestick", "melee", 1, 1, 0, 1, 1, null);
-const w_StarterPistol =   new Weapon("Starter Pistol", "ranged", 3, 1, 1, 0, 2, "44magnums"); 
+const w_StarterPistol =   new Weapon("Starter Pistol", "ranged", 3, 1, 1, 0, 6, "44magnums"); 
 const w_DBshotgun =       new Weapon("Double Barrel Shotgun", "ranged", 5, 2, 1, 0, 2, "shells"); 
 
 //Monster definition
@@ -326,13 +331,14 @@ function grab(item) {
   }
 }
 
-function load() {
-  let function_return = p_player.inventory[0].load();
+function load(item) {
   if (function_return != false) {
-    rawOutput = "your " + p_player.inventory[0].name + " now has " + p_player.inventory[0].mag + " uses.";
+    rawOutput = "your " + this.name + " now has " + this.mag + " uses.";
   } else if (function_return == false) {
     rawOutput = "your " + p_player.inventory[0].name + " requires " + p_player.inventory[0].ammoType + " to load.";
   }
+
+  rawOutput = p_player.inventory[0].load();
 }
 
 function attack() {
