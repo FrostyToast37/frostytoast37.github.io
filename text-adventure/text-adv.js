@@ -332,12 +332,6 @@ function grab(item) {
 }
 
 function load(item) {
-  if (function_return != false) {
-    rawOutput = "your " + this.name + " now has " + this.mag + " uses.";
-  } else if (function_return == false) {
-    rawOutput = "your " + p_player.inventory[0].name + " requires " + p_player.inventory[0].ammoType + " to load.";
-  }
-
   rawOutput = p_player.inventory[0].load();
 }
 
