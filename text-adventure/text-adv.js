@@ -106,7 +106,7 @@ class Weapon {
       if (ammo) {
         if(ammo.name == this.ammoType && ammo.quantity >= amountToLoad) {
           this.mag += amountToLoad;
-          item.quantity -= amountToLoad;
+          ammo.quantity -= amountToLoad;
           dialogue = "you used " + amountToLoad + " " + this.ammoType + "to load your " + this.name + ". It now has " + this.mag + "uses.";
         } else {
           dialogue = "You don't have enough " + this.ammoType + " to load your " + this.name + ".";
