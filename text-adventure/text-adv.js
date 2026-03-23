@@ -343,10 +343,15 @@ function load() {
 }
 
 function attack() {
-  if (!currentRoom.monster) {
-  rawOutput = "There's nothing here to attack.";
-  return;}
   let weaponUsed = p_player.inventory[0];
+  if (!currentRoom.monster) {
+    if (weaponUsed.mag <= weaponUsed.mag) {
+      rawOutput = "There's no monster here... \n  \n So you attacked a wall! The wall remains undamaged.";
+    } else {
+      rawOutput = "Your " + weaponUsed.name + " isn't loaded enough to attack!";
+    }
+    return;
+  }
   let monster = currentRoom.monster;
   if (weaponUsed.loadReq <= weaponUsed.mag) {
     weaponUsed.mag -= weaponUsed.loadReq;
