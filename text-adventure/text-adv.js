@@ -102,7 +102,7 @@ class Weapon {
     if(this.ammoType){
       let hasAmmo = false;
 
-      let ammo = p_player.inventory.find((item) => {item.name === this.ammoType})
+      let ammo = p_player.inventory.find((item) => {item && item.name === this.ammoType})
       if(ammo.name == this.ammoType && ammo.quantity >= amountToLoad) {
         hasAmmo = true;
         this.mag += amountToLoad;
