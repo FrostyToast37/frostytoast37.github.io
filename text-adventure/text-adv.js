@@ -96,26 +96,29 @@ class Weapon {
   }
   load() {
     let dialogue = "";
-    if(this.mag + this.loadAmount <= this.magCap) {
-      if(this.ammoType){
-        let hasAmmo = false;
-        p_player.inventory.forEach(item => {
-          if(item.name == this.ammoType && item.quantity >= this.loadAmount) {
-            hasAmmo = true;
-            this.mag += this.loadAmount;
-            item.quantity -= this.loadAmount;
-            dialogue = "you used " + this.loadAmount + " " + this.ammoType + "to load your " + this.name + ". It now has " + this.mag + "uses.";
-          } 
-        });
-        if (!hasAmmo) {
-          dialogue = "You don't have enough " + this.ammoType + " to load your " + this.name + ".";
-        };
+    let magFree = this.magCap - this.mag;
+    let amountToLoad = Math.min(magFree,this.loadAmount)
 
-      } else {
-        this.mag += this.loadAmount;
-        dialogue = "your " + this.name + " now has " + this.mag + " uses.";
-      }
-    };
+    if(this.ammoType){
+      let hasAmmo = false;
+
+      let ammo = p_player.inventory.find((item) => {item.name === this.ammoType})
+      if(ammo.name == this.ammoType && ammo.quantity >= amountToLoad) {
+        hasAmmo = true;
+        this.mag += amountToLoad;
+        item.quantity -= amountToLoad;
+        dialogue = "you used " + amountToLoad + " " + this.ammoType + "to load your " + this.name + ". It now has " + this.mag + "uses.";
+      } 
+
+      if (!hasAmmo) {
+        dialogue = "You don't have enough " + this.ammoType + " to load your " + this.name + ".";
+      };
+
+    } else {
+      this.mag += amountToLoad;
+      dialogue = "your " + this.name + " now has " + this.mag + " uses.";
+    }
+
     return dialogue;
   }
 }
@@ -333,7 +336,10 @@ function grab(item) {
 }
 
 function load() {
-  rawOutput = p_player.inventory[0].load();
+  if (p_player.inventory[0] instanceof Weapon) {
+    rawOutput = p_player.inventory[0].load();
+  }
+  else {rawOutput = "You don't have a weapon in your first slot."}
 }
 
 function attack() {
