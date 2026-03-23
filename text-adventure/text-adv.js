@@ -107,7 +107,7 @@ class Weapon {
         if(ammo.name == this.ammoType && ammo.quantity >= amountToLoad) {
           this.mag += amountToLoad;
           ammo.quantity -= amountToLoad;
-          dialogue = "you used " + amountToLoad + " " + this.ammoType + "to load your " + this.name + ". It now has " + this.mag + "uses.";
+          dialogue = "you used " + amountToLoad + " " + this.ammoType + " to load your " + this.name + ". It now has " + this.mag + " uses.";
         } else {
           dialogue = "You don't have enough " + this.ammoType + " to load your " + this.name + ".";
         }
@@ -376,6 +376,12 @@ function block() {
   rawOutput  = "You block."
 }
 
+function drop(slot) {
+  let itemToDrop = p_player.inventory[slot];
+  p_player.inventory[slot] = null;
+  currentRoom.items.push(itemToDrop);
+}
+
 
 //TERMINAL SCRIPTING
 let output;
@@ -453,6 +459,9 @@ document.getElementById("prompt_input").addEventListener("keypress",
       } else if (/^GRAB (.+)$/.test(input)) {
         let match = input.match(/^GRAB (.+)$/);
         grab(match[1]);
+      } else if (/^DROP (.+)$/.test(input)) {
+        let match = input.match(/^DROP (.+)$/);
+        drop(match[1]);
       } else if (input == "BLOCK") {
         p_player.turn = "block";
       } else if (input == "ATTACK") {
