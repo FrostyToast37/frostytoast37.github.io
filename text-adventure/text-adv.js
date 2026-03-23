@@ -5,21 +5,31 @@ let devTest = false;
 let devPass = "PASSWORD123";
 let devtools = false;
 let gameState = "playing";
+let outputLog = "";
 
+//utils
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+function escapeHTML(str) {
+  const p = document.createElement('p');
+  p.textContent = str;
+  return p.innerHTML;
+}
+
+//Others
 
 async function deadTextAnimation() {
   let text = document.getElementById("output").textContent;
   let randomIndex = 0;
   let iterations = text.length;
-  for (i = 0; i < iterations; i++) {
+  for (let i = 0; i < iterations; i++) {
     randomIndex = Math.floor(Math.random() * text.length);
     text = text.slice(0, randomIndex) + text.slice(randomIndex + 1);
     if (i % 5 == 0) {
       document.getElementById("output").textContent = text;
-      await sleep(0.005);
+      await sleep(10);
     }
   }
 }
@@ -34,7 +44,7 @@ class Player {
   deathReset(){
     const itemsToDrop = this.inventory.filter(item => item !== null);
     currentRoom.items.push(...itemsToDrop)
-    currentRoom = r_gate;
+    currentRoom = map[4][0][1];
     this.health = 10;
     this.inventory = [w_dagger, null, null, null, null, null, null, null];
   }
@@ -85,13 +95,37 @@ class Weapon {
     this.ammoType = ammoType;
   }
   load() {
-    this.mag += this.loadAmount;
+    let dialogue = "";
+    let magFree = this.magCap - this.mag;
+    let amountToLoad = Math.min(magFree,this.loadAmount)
+
+    if(this.ammoType){
+      let hasAmmo = false;
+
+      let ammo = p_player.inventory.find((item) => {item.name === this.ammoType})
+      if(ammo.name == this.ammoType && ammo.quantity >= amountToLoad) {
+        hasAmmo = true;
+        this.mag += amountToLoad;
+        item.quantity -= amountToLoad;
+        dialogue = "you used " + amountToLoad + " " + this.ammoType + "to load your " + this.name + ". It now has " + this.mag + "uses.";
+      } 
+
+      if (!hasAmmo) {
+        dialogue = "You don't have enough " + this.ammoType + " to load your " + this.name + ".";
+      };
+
+    } else {
+      this.mag += amountToLoad;
+      dialogue = "your " + this.name + " now has " + this.mag + " uses.";
+    }
+
+    return dialogue;
   }
 }
 
-const w_dagger =          new Weapon("Dagger", "melee", 2, 1, 0, 0, 0, null); 
-const w_candlestick =     new Weapon("Candlestick", "melee", 1, 1, 0, 0, 0, null);
-const w_StarterPistol =   new Weapon("Starter Pistol", "ranged", 3, 1, 1, 0, 2, "44magnums"); 
+const w_dagger =          new Weapon("Dagger", "melee", 2, 1, 0, 1, 1, null); 
+const w_candlestick =     new Weapon("Candlestick", "melee", 1, 1, 0, 1, 1, null);
+const w_StarterPistol =   new Weapon("Starter Pistol", "ranged", 3, 1, 1, 0, 6, "44magnums"); 
 const w_DBshotgun =       new Weapon("Double Barrel Shotgun", "ranged", 5, 2, 1, 0, 2, "shells"); 
 
 //Monster definition
@@ -142,9 +176,24 @@ class Monster {
 const m_g_chef =          new Monster(5, ["load", "attack", "block", "block"], 1, "Pierre the Polturgeist");
 const m_g_hydrangeaSons = new Monster(20, ["attack", "block", "load", "load", "attack", "attack", "block", "block"], 4, "Hydrangea's Sons");
 
+class Food {
+    constructor(name, health, uses) {
+    //properties
+    this.name = name;
+    this.health = health;
+    this.uses = uses;
+  }
+  //methods
+  eat(eater) {
+    eater.health += this.health;
+    this.uses -= 1;
+  }
+}
+
 //Room definition
 class Room {
-  constructor(x, y, floor, exits = [], dialogue = "", items = [], monster = null) {
+  constructor(id, x, y, floor, exits = [], dialogue = "", items = [], monster = null) {
+    this.id = id;
     this.x = x;
     this.y = y;
     this.z = floor;
@@ -180,80 +229,56 @@ for (let x = 0; x < length; x++) {
   }
 }
 
-//Room Object creations
-//ground floor (z = 1)
 
-const r_gate =           new Room(4, 0, 1, ["N"], gate_d);
-const r_path =           new Room(4, 1, 1, ["N","S"], path_d);
-const r_door =           new Room(4, 2, 1, ["N","S"], door_d);
-const r_mainRoom =       new Room(4, 3, 1, ["N","E","S","W"], mainRoom_d);
-const r_mainStairsZ1 =   new Room(4, 4, 1, ["S","U"], mainStairsZ1_d);
-const r_frontDesk =      new Room(3, 3, 1, ["N","E","W"], frontDesk_d, [w_candlestick,i_shells]);
-const r_deskCloset =     new Room(2, 3, 1, ["E","W"], deskCloset_d, [w_DBshotgun]);
-const r_secretRoom =     new Room(1, 3, 1, ["E"], secretRoom_d);
-const r_h_X5Y3 =         new Room(5, 3, 1, ["E","W"], X5Y3h_d);
-const r_h_X6Y3 =         new Room(6, 3, 1, ["N","E","W"], X6Y3h_d);
-const r_diningRoom =     new Room(7, 3, 1, ["E","W"], diningRoom_d);
-const r_kitchen =        new Room(8, 3, 1, ["N","W", "S"], kitchen_d, [], m_g_chef);
-const r_porch =          new Room(8, 2, 1, ["S","N"], porch_d);
-const r_pantry =         new Room(8, 4, 1, ["S"], pantry_d);
-const r_h_X6Y4 =         new Room(6, 4, 1, ["N","S"], X6Y4h_d);
-const r_lounge =         new Room(6, 5, 1, ["E","S"], lounge_d);
-const r_poolRoom =       new Room(7, 5, 1, ["W"], pool_d);
-const r_h_X3Y4 =         new Room(3, 4, 1, ["S","W"], X3Y4h_d);
-const r_h_X2Y4 =         new Room(2, 4, 1, ["E","W"], X2Y4h_d);
-const r_h_X1Y4 =         new Room(1, 4, 1, ["N","E","W",], X1Y4h_d);
-const r_greenhouse =     new Room(0, 4, 1, ["E"], greenhouse_d);
-const r_h_X1Y5 =         new Room(1, 5, 1, ["N","S"], X1Y5h_d);
-const r_h_X1Y6 =         new Room(1, 6, 1, ["E","S","W"], X1Y6h_d);
-const r_secretRoom_2 =   new Room(0, 6, 1, ["E"], secretRoom2_d);
-const r_mapRoom =        new Room(2, 6, 1, ["E","W"], mapRoom_d);
-const r_secretRoom_3 =   new Room(3, 6, 1, ["W"], secretRoom3_d);
+const registry = {
+  "w_candlestick": w_candlestick,
+  "i_shells": i_shells,
+  "w_DBshotgun": w_DBshotgun,
+  "m_g_chef": m_g_chef,
+  "m_g_hydrangeaSons": m_g_hydrangeaSons
+};
 
-//upper floor (z = 2)
-const r_mainStairsZ2 =   new Room(4, 4, 2, ["W","D","E"], mainStairsZ2_d);
-const r_h_X3Y4Z2 =       new Room(3, 4, 2, ["E","W"], X3Y4Z2h_d);
-const r_h_X2Y4Z2 =       new Room(2, 4, 2, ["E","S","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the east and west, and there is a room to your south.");
-const r_h_X1Y4Z2 =       new Room(1, 4, 2, ["N","E","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches, except, for one thing... The hallway continues to the east and there are rooms to your north and west. Then it hits you! The torch on the west wall looks a little dull.");
-const r_laboratory =     new Room(2, 3, 2, ["N"], "The smell of chlorine and chemicals greets your nose as you enter the laboratory. As you enter, you see active experiments occurring, but before you get a good look, the emergency doors slide shut, blocking your view. Do you go back north?");
-const r_mirrorMaze =     new Room(1, 5, 2, ["S"], "As you walk in, you are immediately disoriented by the sheer amount of mirrors. They face every direction, throwing weird reflections across the room. You manage to make it to the center and spot a crossbow sitting on a pedestal. The hallway is to the south.");
-const r_secretRoom_4 =   new Room(0, 4, 2, ["E"], "As you pull the fake torch down, the wall splits in half, and you enter the secret room. On the far side of the wall, there is a weirdly shaped banner with a interesting pattern on it. The room is comfortably furnished and well treated, unlike the other couches you've seen in here. You realize it is the meeting place for someone... Do you exit back east?");
-const r_h_X5Y4Z2 =       new Room(5, 4, 2, ["N","E","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the east and there are rooms to your north and west.");
-const r_h_X6Y4Z2 =       new Room(6, 4, 2, ["S","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the west and there is a room to your south.");
-const r_sh_X7Y3Z2 =      new Room(7, 3, 2, ["E","W"], "After you twist the lamp, a door opens leading into a hallway. The hallway looks the same as every other: medieval architecture and glowing ethereal torches. It coninues to the east and there is a room to your west.");
-const r_h_X8Y3Z2 =       new Room(8, 3, 2, ["N","S","W"], "The hallway looks the same as every other: medieval architecture and glowing ethereal torches. The hallway continues to the west and there are rooms to your north and south.");
-const r_breakRoom =      new Room(5, 5, 2, ["S"], "The room's smell hits you immediately. It smells like a combination of rot, mildew, and popcorn. There is a small counter with some sort of old machine behind it. There are old, dusty couches in a semicircle around a coffee table to the side. There is a hallway to your south.");
-const r_masterBed =      new Room(6, 3, 2, ["N","E"], "The bedroom looks pretty similar to a bedroom nowadays, except for the dust and mildew covering everything. There is a shiny new lamp on the east wall and a coffee table next to the bed. The bed itself is a deep red color with curtains on the west side only. There is a hallway to your north.");
-const r_lockedStairs =   new Room(8, 4, 2, ["S"], "LOCKED");
-const r_keyRoom =        new Room(8, 2, 2, ["N"], "You enter the room and immediately notice something is off. You see two ghost-like creatures hovering across from you, and you sigh, preparing to fight once again. But something is different this time; something is wrong. The two ghosts don't look like the others in the manor, they have a skeletal body and head. They simultaneously speak 'Why have you come here, mortal? To die?' Before you can respond, the dooor slams shut behind you and they grab nearby staffs. Their staffs start to glow with an ethereal light and you feel the manor's torches start to flicker. The room is thrown into near darkness, with the only light being their two glowing staffs. From the darkness, you hear a voice, 'Then DIE, mortal'. You prepare to fight this new opponent, with a sinking feeling this might be your last battle in the manor.", [], m_g_hydrangeaSons);
-const Rooms = [
-  r_gate, r_path, r_door, r_mainRoom, r_mainStairsZ1,
-  r_frontDesk, r_deskCloset, r_secretRoom,
-  r_h_X5Y3, r_h_X6Y3, r_diningRoom, r_kitchen,
-  r_pantry, r_h_X6Y4, r_lounge, r_poolRoom,
-  r_h_X3Y4, r_h_X2Y4, r_h_X1Y4, r_greenhouse,
-  r_mainStairsZ2, r_porch, r_h_X1Y5, r_h_X1Y6, 
-  r_secretRoom_2, r_mapRoom, r_secretRoom_3,
-  r_h_X3Y4Z2, r_h_X2Y4Z2, r_h_X1Y4Z2,
-  r_laboratory, r_mirrorMaze, r_secretRoom_4, 
-  r_h_X5Y4Z2, r_h_X6Y4Z2, r_sh_X7Y3Z2, r_masterBed, 
-  r_h_X8Y3Z2, r_breakRoom, r_lockedStairs, r_keyRoom
-];
-//fill map with Rooms
-for (const RoomObj of Rooms) {
-  map[RoomObj.x][RoomObj.y][RoomObj.z] = RoomObj;
+async function initRooms() {
+  const res = await fetch("./rooms.json");
+  const data = await res.json();
+
+  data.rooms.forEach(room => {
+    const resolvedItems = room.items ? room.items.map(id => registry[id]) : [];
+    const resolvedMonster = room.monster ? registry[room.monster] : null;
+
+    const newRoom = new Room(
+      room.id,
+      room.x, room.y, room.z, 
+      room.exits, 
+      room.dialogue, 
+      resolvedItems, 
+      resolvedMonster
+    );
+
+    map[room.x][room.y][room.z] = newRoom;
+
+    if (room.id === "r_gate") {
+      currentRoom = newRoom;
+    }
+  });
+
+
+
 }
 
 //Initializing
-p_player.inventory[0] = w_dagger;
-let currentRoom = r_gate;
-document.getElementById("output").innerHTML = "<p>" + currentRoom.dialogue + "</p>";
-let outputLog = (currentRoom.dialogue);
-document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
+let currentRoom;
+async function initWorld() {
+  p_player.inventory[0] = w_dagger;
+  await initRooms();
+  document.getElementById("output").innerHTML = "<p>" + currentRoom.dialogue + "</p>";
+  outputLog = (currentRoom.dialogue);
+  document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
+}
+initWorld();
+
 
 //Commands
-
-//move
 function move(inputRoom, direction) {
   if (!inputRoom.exits.includes(direction)) {
     rawOutput = "You can't go that way."; return;
@@ -311,15 +336,22 @@ function grab(item) {
 }
 
 function load() {
-  p_player.inventory[0].load()
-  rawOutput = "your " + p_player.inventory[0].name + " now has " + p_player.inventory[0].mag + " uses.";
+  if (p_player.inventory[0] instanceof Weapon) {
+    rawOutput = p_player.inventory[0].load();
+  }
+  else {rawOutput = "You don't have a weapon in your first slot."}
 }
 
 function attack() {
-  if (!currentRoom.monster) {
-  rawOutput = "There's nothing here to attack.";
-  return;}
   let weaponUsed = p_player.inventory[0];
+  if (!currentRoom.monster) {
+    if (weaponUsed.mag <= weaponUsed.mag) {
+      rawOutput = "There's no monster here... \n  \n So you attacked a wall! The wall remains undamaged.";
+    } else {
+      rawOutput = "Your " + weaponUsed.name + " isn't loaded enough to attack!";
+    }
+    return;
+  }
   let monster = currentRoom.monster;
   if (weaponUsed.loadReq <= weaponUsed.mag) {
     weaponUsed.mag -= weaponUsed.loadReq;
@@ -394,7 +426,8 @@ document.getElementById("prompt_input").addEventListener("keypress",
           let match = userInput.match(/^\/run (.+)$/i);
           try {
             // Code that might throw an error
-            rawOutput = eval(match[1]);
+            //rawOutput = eval(match[1]); //comment out in production
+            rawOutput = "yeah sorry man I disabled this for safety";
           } catch (error) {
             // Code that runs if an error happens
             rawOutput = error.message;
@@ -417,7 +450,7 @@ document.getElementById("prompt_input").addEventListener("keypress",
       } else if (/^GRAB (.+)$/.test(input)) {
         let match = input.match(/^GRAB (.+)$/);
         grab(match[1]);
-      }else if (input == "BLOCK") {
+      } else if (input == "BLOCK") {
         p_player.turn = "block";
       } else if (input == "ATTACK") {
         p_player.turn = "attack";
@@ -448,7 +481,8 @@ document.getElementById("prompt_input").addEventListener("keypress",
       //output 
       if (!playerDied) {
         output = rawOutput;
-        outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + userInput + "<br>" + output;
+        let safeInput = escapeHTML(userInput); //sanitize for xss
+        outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + safeInput + "<br>" + output;
         document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
         document.body.scrollTop = document.body.scrollHeight;
       }

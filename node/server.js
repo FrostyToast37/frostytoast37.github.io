@@ -1,6 +1,3 @@
-//to-do:
-//fix-XSS-on-text-adventure
-
 //imports
 const fs = require("fs");
 const path = require("path");
@@ -43,20 +40,34 @@ app.use(express.json());
 app.post("/signUp", async (req, res) => {
   try{
     const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ success: false, message: "Missing credentials" });
+    }
+
+
     const hash = await encrypt(password);
-    await insertIntoSQL(username, hash);
-    res.status(200).json({
+    
+    
+    if (!await insertIntoSQL(username, hash)) {
+      return res.status(409).json({
+        success: false,
+        message: "Username Taken"
+      })
+    }
+    
+    return res.status(200).json({
       success: true,
       message: "Password input"
     });
 
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
-  }
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Server error:" + err.message
+      });
+    }
 });
 
     //checks the sent password against the username and hash stored in newtdb
@@ -78,19 +89,19 @@ app.post("/login", async(req, res) => {
       //log in to the session
       req.session.authenticated = true;
       req.session.user = {
-        username,
-        password
+        username
       }
-
-      //send back to client that everything is working
-      res.status(200).json({
+      return res.status(200).json({
         success: true,
-        message: "Logged In" 
-      
-      })
-      // res.redirect(303, "/main");
+        message: "Logged In"
+      });
+    } else {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid Password"
+      });
     }
-
+    
   } catch (err) {
     console.error(err);
     return res.status(500).json({
@@ -119,13 +130,14 @@ app.get("/main", ensureAuthentication, async(req, res) =>{
     console.error(err);
     return res.status(500).json({
       success: false,
-      message: "Server error"
+      message: "Server error" + err.message
     });
   }
 })
 
 
   //express needs to listen on port whatever, this starts the server
+  //MAKE SURE THIS STAYS AT THE BOTTOM OF THE EXPRESS SECTION
 
 app.listen(PORT, "127.0.0.1", () => {
   console.log(`API listening on port ${PORT}`);
@@ -134,24 +146,18 @@ app.listen(PORT, "127.0.0.1", () => {
 
 //MYSQL------------------------------------------------------------------------------------------------------------------
 //consts
-
-
 //connect to sql database
-let con;
-
-async function connect() {
-  try {
-    con = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: "newtdb"
-    });
-    console.log("Connected to MySQL");
-
-  } catch (err) {
-    console.error("MySQL connection failed:", err.message);
-  }
+let pool;
+function connect() {
+    pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: "newtdb",
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+  });
 }
 
 connect();
@@ -160,10 +166,20 @@ connect();
 //funcs
 async function insertIntoSQL(inputUser, inputHash) {
   try {
-    let sql = "INSERT INTO logins (username, hash) VALUES (?, ?)";
-    await con.query(sql, [inputUser, inputHash]);
-    console.log("1 record inserted");  
+    let sql = "SELECT EXISTS(SELECT 1 FROM logins WHERE username = ?) AS existsFlag";
+    const [rows] = await pool.query(sql, [inputUser]);
+
+    if (rows[0].existsFlag === 1) {
+      console.log("Username already taken.");
+      return false;
+    }
     
+    sql = "INSERT INTO logins (username, password) VALUES (?, ?)";
+    await pool.query(sql, [inputUser, inputHash]);
+    console.log("1 record inserted");  
+
+    return true;
+     
   } catch (err) {
     console.error(err);
     throw err; 
@@ -172,13 +188,15 @@ async function insertIntoSQL(inputUser, inputHash) {
 
 async function pullFromSQL(inputUser){
   try {
-    let sql = "SELECT hash FROM logins WHERE username = ?";
-    const [rows] = await con.query(sql, [inputUser]);
+    let hash;
+    let sql = "SELECT password FROM logins WHERE username = ?";
+    const [rows] = await pool.query(sql, [inputUser]);
     console.log("Hash found");
     if(rows.length > 0) {
-      var hash = rows[0].hash;
+      hash = rows[0].password;
     } else {
       console.log("No user found");
+      return null;
     }
 
     return hash;

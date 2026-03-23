@@ -1,10 +1,10 @@
-let mysql = require("mysql");
+/*let mysql = require("mysql2");
 
 
-let con2 = mysql.createConnection({
+let con = mysql.createConnection({
   host: "localhost",
   user: "newt",
-  password: "@lVAiR^Gr0$nDUt1%BHY",
+  password: "a7cFefl0T0iCMdYiCBiR!",
   database: "newtdb"
 });
 
@@ -12,11 +12,12 @@ con.connect(function(err) {
   let sql = "CREATE TABLE logins (username VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL)"
     if (err) throw err;
     console.log("Connected!");
-    con2.query(sql , function (err, result) {
+    con.query(sql , function (err, result) {
         if (err) throw err;
         console.log("Table created");
     });
+  con.end();
 });
 
 
-//
+*/ 
