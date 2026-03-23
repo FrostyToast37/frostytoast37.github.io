@@ -100,19 +100,23 @@ class Weapon {
     let amountToLoad = Math.min(magFree,this.loadAmount)
 
     if(this.ammoType){
-      let hasAmmo = false;
 
       let ammo = p_player.inventory.find((item) => {item && item.name === this.ammoType})
-      if(ammo.name == this.ammoType && ammo.quantity >= amountToLoad) {
-        hasAmmo = true;
-        this.mag += amountToLoad;
-        item.quantity -= amountToLoad;
-        dialogue = "you used " + amountToLoad + " " + this.ammoType + "to load your " + this.name + ". It now has " + this.mag + "uses.";
-      } 
 
-      if (!hasAmmo) {
-        dialogue = "You don't have enough " + this.ammoType + " to load your " + this.name + ".";
-      };
+      if (ammo) {
+        if(ammo.name == this.ammoType && ammo.quantity >= amountToLoad) {
+          hasAmmo = true;
+          this.mag += amountToLoad;
+          item.quantity -= amountToLoad;
+          dialogue = "you used " + amountToLoad + " " + this.ammoType + "to load your " + this.name + ". It now has " + this.mag + "uses.";
+        } else {
+          dialogue = "You don't have enough " + this.ammoType + " to load your " + this.name + ".";
+        }
+      } else {
+        dialogue = "You don't have any " + this.ammoType + " to load your " + this.name + ".";
+      }
+        
+
 
     } else {
       this.mag += amountToLoad;
