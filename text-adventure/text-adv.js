@@ -101,7 +101,7 @@ class Weapon {
 
     if(this.ammoType){
 
-      let ammo = p_player.inventory.find((item) => {item && item.name === this.ammoType})
+      let ammo = p_player.inventory.find((item) => item && item.name === this.ammoType)
 
       if (ammo) {
         if(ammo.name == this.ammoType && ammo.quantity >= amountToLoad) {
