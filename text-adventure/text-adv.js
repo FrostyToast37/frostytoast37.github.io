@@ -100,20 +100,21 @@ class Weapon {
       if(this.ammoType){
         let hasAmmo = false;
         p_player.inventory.forEach(item => {
-          if(item.name == this.ammoType) {
+          if(item.name == this.ammoType && item.quantity >= this.loadAmount) {
             hasAmmo = true;
-            dialogue = "you used " + this.loadAmount + " " + this.ammoType + "to load your " + this.name + ". It now has " + this.mag + "uses.";
+            this.mag += this.loadAmount;
             item.quantity -= this.loadAmount;
+            dialogue = "you used " + this.loadAmount + " " + this.ammoType + "to load your " + this.name + ". It now has " + this.mag + "uses.";
           } 
         });
-        if (hasAmmo = false) {
+        if (!hasAmmo) {
           dialogue = "You don't have enough " + this.ammoType + " to load your " + this.name + ".";
         };
 
       } else {
+        this.mag += this.loadAmount;
         dialogue = "your " + this.name + " now has " + this.mag + " uses.";
       }
-      this.mag += this.loadAmount;
     };
     return dialogue;
   }
