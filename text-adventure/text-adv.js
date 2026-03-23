@@ -332,7 +332,7 @@ function grab(item) {
   }
 }
 
-function load(item) {
+function load() {
   rawOutput = p_player.inventory[0].load();
 }
 
