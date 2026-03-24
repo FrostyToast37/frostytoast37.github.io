@@ -66,3 +66,33 @@ pre {
   display: inline-block;
   width: 25%;
 }
+
+.popup {
+  position: relative;
+  display: inline-block;
+}
+
+.popup .inner_popup {
+  visibility: hidden;
+  width: 40%;
+  height: 40%;
+  background-color: black;
+  color: #16F529;
+  text-align: left;
+  border-radius: 2px;
+  border-color: #16F529;
+  padding: 12px;
+  position: absolute;
+  z-index: 1;
+  bottom: 30%;
+  left: 30%;
+
+}
+
+.popup .show {
+  visibility: visible;
+}
+
+.popup .hide {
+  visibility: hidden;
+}

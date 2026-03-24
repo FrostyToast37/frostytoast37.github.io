@@ -6,6 +6,7 @@ let devPass = "PASSWORD123";
 let devtools = false;
 let gameState = "playing";
 let outputLog = "";
+let viewItems = document.getElementById("view_items");
 
 //utils
 function sleep(ms) {
@@ -380,6 +381,13 @@ function drop(slot) {
   let itemToDrop = p_player.inventory[slot];
   p_player.inventory[slot] = null;
   currentRoom.items.push(itemToDrop);
+
+  rawOutput = `you dropped your ${itemToDrop.name}`;
+}
+
+function view(slot) {
+  let itemToView = p_player.inventory[slot];
+  viewItems.classList.toggle("show");
 }
 
 
