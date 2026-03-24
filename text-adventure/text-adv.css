@@ -68,7 +68,8 @@ pre {
 }
 
 .popup {
-  position: relative;
+  position: absolute;
+  display: flex;
 }
 
 .popup .inner_popup {
@@ -78,7 +79,7 @@ pre {
   background-color: black;
   color: #16F529;
   text-align: left;
-  border-radius: 2px;
+  border: 2px;
   border-color: #16F529;
   padding: 12px;
   position: absolute;
