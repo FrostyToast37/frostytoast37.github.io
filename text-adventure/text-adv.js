@@ -470,6 +470,9 @@ document.getElementById("prompt_input").addEventListener("keypress",
       } else if (/^DROP (.+)$/.test(input)) {
         let match = input.match(/^DROP (.+)$/);
         drop(match[1]);
+      } else if (/^VIEW (.+)$/.test(input)) {
+        let match = input.match(/^VIEW (.+)$/);
+        view(match[1]);
       } else if (input == "BLOCK") {
         p_player.turn = "block";
       } else if (input == "ATTACK") {
