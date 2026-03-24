@@ -69,7 +69,6 @@ pre {
 
 .popup {
   position: relative;
-  display: inline-block;
 }
 
 .popup .inner_popup {
