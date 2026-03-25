@@ -393,9 +393,13 @@ function drop(slot) {
 function view(slot) {
   let itemToView = p_player.inventory[slot];
   let output = "";
-  Object.entries(itemToView).forEach(([key, value]) => {
-    output += `${key}: ${value} <br>`;
-  });
+  if (itemToView) {
+    Object.entries(itemToView).forEach(([key, value]) => {
+      output += `${key}: ${value} <br>`;
+    });
+  } else {
+    output = "You don't have anything in this slot";
+  }
   itemViewer.innerHTML = output;
   viewItems.classList.toggle("show");
 }
