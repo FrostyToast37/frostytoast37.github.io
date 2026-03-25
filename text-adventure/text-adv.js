@@ -517,6 +517,7 @@ document.getElementById("prompt_input").addEventListener("keypress",
         let safeInput = escapeHTML(userInput); //sanitize for xss
         outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + safeInput + "<br>" + output;
         document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
+        document.body.scrollTop = document.body.scrollHeight;
       }
       document.body.scrollTop = document.body.scrollHeight;
     }
