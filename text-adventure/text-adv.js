@@ -392,6 +392,9 @@ function drop(slot) {
 function view(slot) {
   let itemToView = p_player.inventory[slot];
   viewItems.classList.toggle("show");
+  itemToView.entries(user).forEach(([key, value]) => {
+    //iteration here
+  });
 }
 
 
