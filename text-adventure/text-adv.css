@@ -103,7 +103,8 @@ pre {
   background-color: black;
   color: #16F529;
   padding: 2px;
-  margin: -5px;
+  margin-left: -5px;
+  margin-top:-5px;
 }
 
 .popup .show {
