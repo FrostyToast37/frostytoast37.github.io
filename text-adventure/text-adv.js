@@ -518,6 +518,6 @@ document.getElementById("prompt_input").addEventListener("keypress",
         outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + safeInput + "<br>" + output;
         document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
       }
-      document.body.scrollTop = document.body.scrollHeight;
+      document.getElementById("prompt_input").scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }, true);
