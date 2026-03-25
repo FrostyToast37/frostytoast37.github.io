@@ -85,7 +85,8 @@ pre {
   border-style: solid;
   border-width: 4px;
   border-color: #16F529;
-/*padding: 12px; */
+  position: relative;
+  padding: 12px;
 }
 
 .popup .inner_popup .close_window {
