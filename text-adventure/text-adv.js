@@ -19,6 +19,10 @@ function escapeHTML(str) {
   return p.innerHTML;
 }
 
+function closeViewItems() {
+  viewItems.classList.toggle("show");
+}
+
 //Others
 
 async function deadTextAnimation() {

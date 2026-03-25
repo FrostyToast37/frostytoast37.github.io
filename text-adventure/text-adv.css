@@ -70,8 +70,8 @@ pre {
 .popup {
   position: fixed;
   display: flex;
-  width: 40%;
-  height: 40%;
+  width: 300px;
+  height: 200px;
   top: 30%;
   left: 30%;
   z-index: 2;
@@ -83,9 +83,21 @@ pre {
   color: #16F529;
   text-align: left;
   border-style: solid;
-  border-width: 2px;
+  border-width: 4px;
   border-color: #16F529;
   padding: 12px;
+}
+
+.popup .inner_popup .close_window {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 15px;
+  height: 15px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #16F529;
+  text-align: center;
 }
 
 .popup .show {
