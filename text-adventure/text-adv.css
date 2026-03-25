@@ -91,7 +91,7 @@ pre {
 
 .popup .inner_popup .close_window {
   position: absolute;
-  top: 0px;
+  top: 5px;
   right: 0px;
   width: 15px;
   height: 15px;
@@ -106,7 +106,6 @@ pre {
   margin-left: -5px;
   margin-top:-5px;
 }
-
 .popup .show {
   visibility: visible;
 }
