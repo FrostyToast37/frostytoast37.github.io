@@ -98,6 +98,8 @@ pre {
   border-width: 2px;
   border-color: #16F529;
   text-align: center;
+  border-radius: 0px;
+  background-color: black;
 }
 
 .popup .show {
