@@ -22,6 +22,7 @@ function escapeHTML(str) {
 
 function closeViewItems() {
   viewItems.classList.toggle("show");
+  document.getElementById("prompt_input").focus();
 }
 
 //Others
