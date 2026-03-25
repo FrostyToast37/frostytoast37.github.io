@@ -68,11 +68,11 @@ pre {
 }
 
 .popup {
-  position: sticky;
+  position: fixed;
   display: flex;
   width: 40%;
   height: 40%;
-  bottom: 30%;
+  top: 30%;
   left: 30%;
   z-index: 2;
 }
@@ -86,7 +86,6 @@ pre {
   border-width: 2px;
   border-color: #16F529;
   padding: 12px;
-  position: relative;
 }
 
 .popup .show {
