@@ -104,6 +104,7 @@ pre {
   background-color: black;
   color: #16F529;
   align-items: center;
+  justify-content: center;
 }
 .popup .show {
   visibility: visible;
