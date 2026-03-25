@@ -7,6 +7,7 @@ let devtools = false;
 let gameState = "playing";
 let outputLog = "";
 let viewItems = document.getElementById("view_items");
+let itemViewer = document.getElementById("item_viewer");
 
 //utils
 function sleep(ms) {
@@ -395,7 +396,7 @@ function view(slot) {
   Object.entries(itemToView).forEach(([key, value]) => {
     output += `${key}: ${value} <br>`;
   });
-  viewItems.innerHTML = output;
+  itemViewer.innerHTML = output;
   viewItems.classList.toggle("show");
 }
 
@@ -516,7 +517,7 @@ document.getElementById("prompt_input").addEventListener("keypress",
         let safeInput = escapeHTML(userInput); //sanitize for xss
         outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + safeInput + "<br>" + output;
         document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
-        document.body.scrollTop = document.body.scrollHeight;
       }
     }
+    document.body.scrollTop = document.body.scrollHeight;
   }, true);
