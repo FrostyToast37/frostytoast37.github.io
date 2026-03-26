@@ -184,6 +184,7 @@ class Monster {
 }
 
 const m_g_chef =          new Monster(5, ["load", "attack", "block", "block"], 1, "Pierre the Polturgeist");
+const m_g_warrior =       new Monster(7, ["attack", "load", "block", "attack", "load"], 2, "Eerie Warrior");
 const m_g_hydrangeaSons = new Monster(20, ["attack", "block", "load", "load", "attack", "attack", "block", "block"], 4, "Hydrangea's Sons");
 
 class Food {
