@@ -334,7 +334,7 @@
       "exits": ["S"],
       "dialogue": "...",
       "items": [],
-      "monster": null
+      "monster": "m_g_warrior"
     },
   ]
 }
