@@ -283,7 +283,7 @@
     {
       "id": "r_secrethall1",
       "x": 7, "y": 3, "z": 2,
-      "exits": ["E", "W"],
+      "exits": ["N", "E", "W"],
       "dialogue": "After you twist the lamp, a door opens leading into a hallway. The hallway looks the same as every other: medieval architecture and glowing ethereal torches. It coninues to the east and there is a room to your west.",
       "items": [],
       "monster": null
@@ -328,5 +328,13 @@
       "items": [],
       "monster": "m_g_hydrangeaSons"
     }
+    {
+      "id": "r_arsenal",
+      "x": 7, "y": 4, "z": 2,
+      "exits": ["S"],
+      "dialogue": "...",
+      "items": [],
+      "monster": null
+    },
   ]
 }
