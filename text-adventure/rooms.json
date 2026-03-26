@@ -333,7 +333,7 @@
       "x": 7, "y": 4, "z": 2,
       "exits": ["S"],
       "dialogue": "...",
-      "items": [],
+      "items": ["w_lance"],
       "monster": "m_g_warrior"
     },
   ]
