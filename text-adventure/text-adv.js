@@ -21,7 +21,7 @@ function escapeHTML(str) {
 }
 
 function closeViewItems() {
-  viewItems.classList.toggle("show");
+  viewItems.classList.remove("show");
   document.getElementById("prompt_input").focus();
 }
 
@@ -402,7 +402,7 @@ function view(slot) {
     output = "You don't have anything in this slot";
   }
   itemViewer.innerHTML = output;
-  viewItems.classList.toggle("show");
+  viewItems.classList.add("show");
 }
 
 
@@ -520,9 +520,17 @@ document.getElementById("prompt_input").addEventListener("keypress",
       if (!playerDied) {
         output = rawOutput;
         let safeInput = escapeHTML(userInput); //sanitize for xss
-        outputLog = outputLog + "<br>" + "&gt;&gt;&gt;" + safeInput + "<br>" + output;
+        outputLog += "<br>" + "&gt;&gt;&gt;" + safeInput + "<br>" + output;
         document.getElementById("output").innerHTML = "<p>" + outputLog + "</p>";
       }
       document.getElementById("prompt_input").scrollIntoView({ behavior: "smooth", block: "end" });
     }
   }, true);
+
+//HOTKEY SCRIPTING
+document.addEventListener('keydown', (event) => {
+  if (viewItems.contains("show") && event.key === "x") {
+    event.preventDefault(); 
+    closeViewItems();
+  }
+});
