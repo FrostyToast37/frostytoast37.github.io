@@ -332,8 +332,8 @@
       "id": "r_arsenal",
       "x": 7, "y": 4, "z": 2,
       "exits": ["S"],
-      "dialogue": "...",
-      "items": ["w_lance"],
+      "dialogue": "You walk through the secret seam in the wallpaper, revelaing a massive room with weapons lining the walls including a Lance, Starter Pistol, Shells, and 44magnums. However, standing in the middle is a ghostly, tattered ghoul holding a wicked sword as black as the night sky.",
+      "items": ["w_lance", "i_shells", "w_StarterPistol", "i_44magnums"],
       "monster": "m_g_warrior"
     }
   ]
