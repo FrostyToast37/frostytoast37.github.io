@@ -156,7 +156,9 @@ function connect() {
     database: "newtdb",
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    enableKeepAlive: true, 
+    keepAliveInitialDelay: 0
   });
 }
 
