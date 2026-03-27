@@ -327,7 +327,7 @@
       "dialogue": "You enter the room and immediately notice something is off. You see two ghost-like creatures hovering across from you, and you sigh, preparing to fight once again. But something is different this time; something is wrong. The two ghosts don't look like the others in the manor, they have a skeletal body and head. They simultaneously speak 'Why have you come here, mortal? To die?' Before you can respond, the dooor slams shut behind you and they grab nearby staffs. Their staffs start to glow with an ethereal light and you feel the manor's torches start to flicker. The room is thrown into near darkness, with the only light being their two glowing staffs. From the darkness, you hear a voice, 'Then DIE, mortal'. You prepare to fight this new opponent, with a sinking feeling this might be your last battle in the manor.",
       "items": [],
       "monster": "m_g_hydrangeaSons"
-    }
+    },
     {
       "id": "r_arsenal",
       "x": 7, "y": 4, "z": 2,
@@ -335,6 +335,6 @@
       "dialogue": "...",
       "items": ["w_lance"],
       "monster": "m_g_warrior"
-    },
+    }
   ]
 }
