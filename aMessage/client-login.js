@@ -8,6 +8,7 @@ async function login(user, password) {
     const res = await fetch("/aMessage/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
       body: JSON.stringify({
         username: user,
         password: password
