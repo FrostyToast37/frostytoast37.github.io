@@ -252,7 +252,8 @@ const registry = {
   "m_g_hydrangeaSons": m_g_hydrangeaSons,
   "w_Lance": w_Lance,
   "w_StarterPistol": w_StarterPistol,
-  "i_44magnums": i_44magnums
+  "i_44magnums": i_44magnums,
+  "m_g_warrior": m_g_warrior
 };
 
 async function initRooms() {
