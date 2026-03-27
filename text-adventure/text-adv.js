@@ -249,7 +249,10 @@ const registry = {
   "i_shells": i_shells,
   "w_DBshotgun": w_DBshotgun,
   "m_g_chef": m_g_chef,
-  "m_g_hydrangeaSons": m_g_hydrangeaSons
+  "m_g_hydrangeaSons": m_g_hydrangeaSons,
+  "w_Lance": w_Lance,
+  "w_StarterPistol": w_StarterPistol,
+  "i_44magnums": i_44magnums
 };
 
 async function initRooms() {
