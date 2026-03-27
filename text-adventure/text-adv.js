@@ -344,7 +344,7 @@ function grab(item) {
           p_player.inventory[slotNum] = itemObj;
           currentRoom.items.splice(currentRoom.items.indexOf(itemObj), 1);
           showInventory();
-          rawOutput += "You picked up the " + itemObj.name;
+          rawOutput += `You picked up the ${itemObj.name}.`;
           break;
         }
         slotNum += 1;
