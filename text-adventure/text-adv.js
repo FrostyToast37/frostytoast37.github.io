@@ -137,7 +137,7 @@ const w_dagger =          new Weapon("Dagger", "melee", 2, 1, 0, 1, 1, null);
 const w_candlestick =     new Weapon("Candlestick", "melee", 1, 1, 0, 1, 1, null);
 const w_StarterPistol =   new Weapon("Starter Pistol", "ranged", 3, 1, 1, 0, 6, "44magnums"); 
 const w_DBshotgun =       new Weapon("Double Barrel Shotgun", "ranged", 5, 2, 1, 0, 2, "shells"); 
-const W_Lance =           new Weapon("Lance", "melee", 3, 1, 0, 1, 1, null);
+const w_Lance =           new Weapon("Lance", "melee", 3, 1, 0, 1, 1, null);
 
 //Monster definition
 class Monster {
@@ -244,6 +244,7 @@ for (let x = 0; x < length; x++) {
 
 const registry = {
   "w_candlestick": w_candlestick,
+  "w_dagger": w_dagger,
   "i_shells": i_shells,
   "w_DBshotgun": w_DBshotgun,
   "m_g_chef": m_g_chef,
