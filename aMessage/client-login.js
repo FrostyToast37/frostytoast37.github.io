@@ -5,7 +5,7 @@ const outputDiv = document.getElementById("output_div");
 
 async function login(user, password) {
   try {
-    const res = await fetch("http://localhost:3000/login", {
+    const res = await fetch("/aMessage/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -19,7 +19,7 @@ async function login(user, password) {
     if (!data.success) {
       throw new Error(data.message || "Login Failed, check your password");
     } else if (data.success) {
-      window.location.href = "/main";
+      window.location.href = "/aMessage/main";
     }
     outputDiv.textContent = "Login Success!"
   } catch (err) {

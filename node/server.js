@@ -37,7 +37,7 @@ app.use(express.json());
 
 
     //get username and password and put them into the sql database "newtdb" under the table "logins" in columns called "username" and "password"
-app.post("/signUp", async (req, res) => {
+app.post("/aMessage/api/signUp", async (req, res) => {
   try{
     const { username, password } = req.body;
 
@@ -72,7 +72,7 @@ app.post("/signUp", async (req, res) => {
 
     //checks the sent password against the username and hash stored in newtdb
 
-app.post("/login", async(req, res) => {
+app.post("/aMessage/api/login", async(req, res) => {
   try {
     const { username, password } = req.body;
     const hash = await pullFromSQL(username);
@@ -119,7 +119,7 @@ function ensureAuthentication(req, res, next) {
   }
 }
 
-app.get("/main", ensureAuthentication, async(req, res) =>{
+app.get("/aMessage/main", ensureAuthentication, async(req, res) =>{
   try {
     res.sendFile(path.join(__dirname,"main.html"));
     // res.status(200).json({
