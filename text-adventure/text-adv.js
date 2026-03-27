@@ -88,7 +88,8 @@ class Item {
   }
 }
 
-const i_shells = new Item("shells", 10);
+const i_shells     = new Item("shells", 10);
+const i_44magnums  = new Item("44magnums", 12);
 
 class Weapon {
   constructor(name, type, damage, loadAmount, loadReq, mag, magCap, ammoType) {
