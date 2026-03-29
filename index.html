@@ -21,7 +21,7 @@
     <button onclick="openMC()">Fun?</button>
     <button onclick="openOOS()">OOS?</button>
     <button onclick="openAI()">Game?</button>
-    <button href="https://morellifamily.asuscomm.com/aMessage/index.html">aMessage app</button>
+    <button onclick="openaMessage()">aMessage app</button>
     </div>
     
     
@@ -147,6 +147,9 @@
             iframe.style.border = "none";
             iframe.src = url
             win.document.body.appendChild(iframe)
+        }
+        function openaMessage() {
+            window.open("https://morellifamily.asuscomm.com/aMessage")
         }
     </script>
 </body>

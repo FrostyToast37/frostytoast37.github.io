@@ -88,7 +88,7 @@ app.post("/aMessage/api/login", async(req, res) => {
     if (result) {
       //log in to the session
       req.session.authenticated = true;
-      req.session.user = { username }
+      req.session.user = { username };
 
       //I hate callbacks so this just makes session.save a promise
       await new Promise((resolve, reject) => {
@@ -109,6 +109,18 @@ app.post("/aMessage/api/login", async(req, res) => {
       });
     }
     
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
+  }
+});
+
+app.post("/aMessage/api/main", async(req, res) => {
+  try {
+    return res.status(200).json({username: req.session.user.username});
   } catch (err) {
     console.error(err);
     return res.status(500).json({

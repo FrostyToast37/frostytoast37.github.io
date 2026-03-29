@@ -24,12 +24,13 @@ let debugText;
     if (!data.success) {
       throw new Error(data.message || "Registration Failed :(");
     } else if (data.success) {
-      window.close();
+      outputDiv.textContent = "Registration Success!"
+      window.location.href = "/aMessage/login.html"
     }
-    outputDiv.textContent = "Registration Success!"
+    
   } catch (err) {
     outputDiv.textContent = err.message;
-    outputDiv.textContent += ("\nFULL SERVER RESPONSE:", debugText);
+    //outputDiv.textContent += ("\nFULL SERVER RESPONSE:", debugText);
   }
 }
 
