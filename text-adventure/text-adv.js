@@ -566,7 +566,7 @@ document.getElementById("prompt_input").addEventListener("keypress",
 
 //HOTKEY SCRIPTING
 document.addEventListener('keydown', (event) => {
-  if (viewItems.contains("show") === true && event.key === "x") {
+  if (viewItems.classList.contains("show") && event.key === "x") {
     event.preventDefault(); 
     closeViewItems();
   }
