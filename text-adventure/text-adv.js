@@ -414,7 +414,7 @@ function view(slot) {
 }
 
 async function save() {
-  const inventoryStrings = p_player.inventory.map(item => item.id);
+  const inventoryStrings = p_player.inventory.map(item => item ? item.id : null);
 
   const res = await fetch("/text-adv/api/save", {
     method: "POST",
