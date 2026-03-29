@@ -527,6 +527,10 @@ document.getElementById("prompt_input").addEventListener("keypress",
         p_player.turn = "attack";
       } else if (input == "LOAD") {
         p_player.turn = "load";
+      } else if (input == "SAVE") {
+        save();
+      } else if (input == "LOAD") {
+        load();
       } else {
         rawOutput = "Unknown command.";
       }
