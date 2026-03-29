@@ -413,6 +413,31 @@ function view(slot) {
   viewItems.classList.add("show");
 }
 
+async function save() {
+  const inventoryStrings = p_player.inventory.map(item => item.id);
+
+  const res = await fetch("/text-adv/api/save", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      inventory: inventoryStrings,
+      location: [currentRoom.x, currentRoom.y, currentRoom.z]
+    })
+  });
+}
+
+async function load() {
+  const res = await fetch("/text-adv/api/load", {
+    method: "POST",
+  });
+
+  const data = await res.json()
+
+  p_player.inventory = data.inventory.map(item => {return registry[item] || null;});
+  currentRoom = map[data.location[0]][data.location[1]][data.location[2]];
+  rawOutput = currentRoom.dialogue;
+}
+
 
 //TERMINAL SCRIPTING
 let output;

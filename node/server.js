@@ -32,12 +32,33 @@ app.use(session({
 }));
 app.use(express.json());
 
-  
+//ROUTE FUNCTIONS
+  //checks if user is logged in
+function ensureAuthentication(req, res, next) {
+  if (req.session.authenticated) {
+    return next();
+  } else {
+    res.status(403).json({ msg: "You're not authorized to view this page" });
+  }
+}
+
   //ROUTE HANDLERS
 
+  //text-adv Route Handlers
+    //saves
+app.post("/text-adv/api/save", async(req,res) =>{
+  req.session.user.textAdv.save = req.body;
+  return res.status(200);
+});
 
+    //loads
+app.post("/text-adv/api/load", async(req,res) =>{
+  return res.status(200).json(req.session.user.textAdv.save);
+});
+
+  //aMessage Route Handlers
     //get username and password and put them into the sql database "newtdb" under the table "logins" in columns called "username" and "password"
-app.post("/aMessage/api/signUp", async (req, res) => {
+app.post("/aMessage/api/signUp", async(req, res) => {
   try{
     const { username, password } = req.body;
 
@@ -71,7 +92,6 @@ app.post("/aMessage/api/signUp", async (req, res) => {
 });
 
     //checks the sent password against the username and hash stored in newtdb
-
 app.post("/aMessage/api/login", async(req, res) => {
   try {
     const { username, password } = req.body;
@@ -118,6 +138,7 @@ app.post("/aMessage/api/login", async(req, res) => {
   }
 });
 
+    //currently this route just is for testing
 app.post("/aMessage/api/main", async(req, res) => {
   try {
     return res.status(200).json({username: req.session.user.username});
@@ -130,14 +151,7 @@ app.post("/aMessage/api/main", async(req, res) => {
   }
 });
 
-function ensureAuthentication(req, res, next) {
-  if (req.session.authenticated) {
-    return next();
-  } else {
-    res.status(403).json({ msg: "You're not authorized to view this page" });
-  }
-}
-
+    //serves the file only if authenticated
 app.get("/aMessage/main", ensureAuthentication, async(req, res) =>{
   try {
     res.sendFile(path.join(__dirname,"main.html"));
@@ -152,7 +166,7 @@ app.get("/aMessage/main", ensureAuthentication, async(req, res) =>{
       message: "Server error" + err.message
     });
   }
-})
+});
 
 
   //express needs to listen on port whatever, this starts the server
