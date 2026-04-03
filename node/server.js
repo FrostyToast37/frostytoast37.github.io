@@ -47,8 +47,19 @@ function ensureAuthentication(req, res, next) {
   //text-adv Route Handlers
     //saves
 app.post("/text-adv/api/save", async(req,res) =>{
-  req.session.user.textAdv.save = req.body;
-  return res.status(200);
+  try {
+    req.session.user.textAdv.save = req.body;
+    return res.status(200).json({
+      success: true,
+      message: "saved!"
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: "not saved, server error."
+    });
+  }
 });
 
     //loads

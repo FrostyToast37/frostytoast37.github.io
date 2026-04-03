@@ -393,10 +393,13 @@ function block() {
 
 function drop(slot) {
   let itemToDrop = p_player.inventory[slot];
-  p_player.inventory[slot] = null;
-  currentRoom.items.push(itemToDrop);
-
-  rawOutput = `you dropped your ${itemToDrop.name}`;
+  if(itemToDrop){
+    p_player.inventory[slot] = null;
+    currentRoom.items.push(itemToDrop);
+    rawOutput = `you dropped your ${itemToDrop.name}`;
+  } else if(!itemToDrop) {
+    rawOutput = "Make sure to use the correct item slot number";
+  }
 }
 
 function view(slot) {
@@ -415,15 +418,22 @@ function view(slot) {
 
 async function save() {
   const inventoryStrings = p_player.inventory.map(item => item ? item.id : null);
+  let d = new Date();
 
   const res = await fetch("/text-adv/api/save", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       inventory: inventoryStrings,
-      location: [currentRoom.x, currentRoom.y, currentRoom.z]
+      location: [currentRoom.x, currentRoom.y, currentRoom.z],
+      time: `${d.toTimeString()}`
     })
   });
+
+  const data = await res.json();
+  if(data.success) {
+    rawOutput = `Saved at ${d.toTimeString()}`;
+  }
 }
 
 async function load() {
@@ -431,11 +441,11 @@ async function load() {
     method: "POST",
   });
 
-  const data = await res.json()
+  const data = await res.json();
 
   p_player.inventory = data.inventory.map(item => {return registry[item] || null;});
   currentRoom = map[data.location[0]][data.location[1]][data.location[2]];
-  rawOutput = currentRoom.dialogue;
+  rawOutput = `Save loaded from ${data.time}\n\n${currentRoom.dialogue}`;
 }
 
 
