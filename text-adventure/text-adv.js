@@ -450,7 +450,7 @@ async function loadSave() {
 
   const data = await res.json();
 
-  p_player.inventory = data.inventory.map(item => {return registry[item.id] || null;});
+  p_player.inventory = data.inventory.map(item => {return registry[item] || null;});
   currentRoom = map[data.location[0]][data.location[1]][data.location[2]];
   rawOutput = `Save loaded from ${data.time}\n\n${currentRoom.dialogue}`;
 }
