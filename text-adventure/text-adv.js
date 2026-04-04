@@ -82,17 +82,19 @@ class Player {
 const p_player = new Player();
 
 class Item {
-  constructor(name, quantity = 1) {
+  constructor(id, name, quantity = 1) {
+    this.id = id;
     this.name = name;
     this.quantity = quantity;
   }
 }
 
-const i_shells     = new Item("shells", 10);
-const i_44magnums  = new Item("44magnums", 12);
+const i_shells     = new Item("i_shells", "shells", 10);
+const i_44magnums  = new Item("i_44magnums","44magnums", 12);
 
 class Weapon {
-  constructor(name, type, damage, loadAmount, loadReq, mag, magCap, ammoType) {
+  constructor(id, name, type, damage, loadAmount, loadReq, mag, magCap, ammoType) {
+    this.id = id;
     this.name = name;
     this.type = type;
     this.damage = damage;
@@ -134,11 +136,11 @@ class Weapon {
   }
 }
 
-const w_dagger =          new Weapon("Dagger", "melee", 2, 1, 0, 1, 1, null); 
-const w_candlestick =     new Weapon("Candlestick", "melee", 1, 1, 0, 1, 1, null);
-const w_StarterPistol =   new Weapon("Starter Pistol", "ranged", 3, 1, 1, 0, 6, "44magnums"); 
-const w_DBshotgun =       new Weapon("Double Barrel Shotgun", "ranged", 5, 2, 1, 0, 2, "shells"); 
-const w_Lance =           new Weapon("Lance", "melee", 3, 1, 0, 1, 1, null);
+const w_dagger =          new Weapon("w_dagger", "Dagger", "melee", 2, 1, 0, 1, 1, null); 
+const w_candlestick =     new Weapon("w_candlestick", "Candlestick", "melee", 1, 1, 0, 1, 1, null);
+const w_StarterPistol =   new Weapon("w_StarterPistol", "Starter Pistol", "ranged", 3, 1, 1, 0, 6, "44magnums"); 
+const w_DBshotgun =       new Weapon("w_DBshotgun", "Double Barrel Shotgun", "ranged", 5, 2, 1, 0, 2, "shells"); 
+const w_Lance =           new Weapon("w_Lance", "Lance", "melee", 3, 1, 0, 1, 1, null);
 
 //Monster definition
 class Monster {
@@ -190,8 +192,9 @@ const m_g_warrior =       new Monster(7, ["attack", "load", "block", "attack", "
 const m_g_hydrangeaSons = new Monster(20, ["attack", "block", "load", "load", "attack", "attack", "block", "block"], 4, "Hydrangea's Sons");
 
 class Food {
-    constructor(name, health, uses) {
+    constructor(id, name, health, uses) {
     //properties
+    this.id = id;
     this.name = name;
     this.health = health;
     this.uses = uses;
@@ -202,6 +205,8 @@ class Food {
     this.uses -= 1;
   }
 }
+
+const f_apple =            new Food("f_apple", "Apple", 2, 1);
 
 //Room definition
 class Room {
@@ -418,7 +423,7 @@ function view(slot) {
 }
 
 async function save() {
-  const inventoryStrings = p_player.inventory.map(item => item ? item.name : "null");
+  const inventoryStrings = p_player.inventory.map(item => item ? item.id : "null");
 
   let d = new Date();
 
@@ -445,7 +450,7 @@ async function loadSave() {
 
   const data = await res.json();
 
-  p_player.inventory = data.inventory.map(item => {return registry[item] || null;});
+  p_player.inventory = data.inventory.map(item => {return registry[item.id] || null;});
   currentRoom = map[data.location[0]][data.location[1]][data.location[2]];
   rawOutput = `Save loaded from ${data.time}\n\n${currentRoom.dialogue}`;
 }
