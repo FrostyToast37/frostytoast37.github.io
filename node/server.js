@@ -74,7 +74,21 @@ app.post("/text-adv/api/save", async(req,res) =>{
 
     //loads
 app.post("/text-adv/api/load", async(req,res) =>{
-  return res.status(200).json(req.session.user.textAdv.save);
+  try {
+    if(!req.session.user) {
+      return res.status(401).json({
+        success: false,
+        message: "You are not logged in."
+      });
+    }
+    return res.status(200).json(req.session.user.textAdv.save);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: "not saved, server error."
+    });
+  }
 });
 
   //aMessage Route Handlers
