@@ -418,7 +418,7 @@ function view(slot) {
 }
 
 async function save() {
-  const inventoryStrings = p_player.inventory.map(item => item ? item.name : null);
+  const inventoryStrings = p_player.inventory.map(item => item ? item.name : "null");
 
   let d = new Date();
 
