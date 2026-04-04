@@ -540,9 +540,9 @@ document.getElementById("prompt_input").addEventListener("keypress",
       } else if (input == "LOAD") {
         p_player.turn = "load";
       } else if (input == "SAVE") {
-        save();
+        await save();
       } else if (input == "LOAD") {
-        load();
+        await load();
       } else {
         rawOutput = "Unknown command.";
       }
