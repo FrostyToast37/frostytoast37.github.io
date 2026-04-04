@@ -438,7 +438,7 @@ async function save() {
   }
 }
 
-async function load() {
+async function loadSave() {
   const res = await fetch("/text-adv/api/load", {
     method: "POST",
   });
@@ -541,8 +541,8 @@ document.getElementById("prompt_input").addEventListener("keypress",
         p_player.turn = "load";
       } else if (input == "SAVE") {
         await save();
-      } else if (input == "LOAD") {
-        await load();
+      } else if (input == "LOADSAVE") {
+        await loadSave();
       } else {
         rawOutput = "Unknown command.";
       }
