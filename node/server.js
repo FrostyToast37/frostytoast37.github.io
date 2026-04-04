@@ -48,6 +48,7 @@ function ensureAuthentication(req, res, next) {
     //saves
 app.post("/text-adv/api/save", async(req,res) =>{
   try {
+    console.log(req.body);
     req.session.user.textAdv.save = req.body;
     return res.status(200).json({
       success: true,
