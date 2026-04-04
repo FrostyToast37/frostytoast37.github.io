@@ -49,7 +49,10 @@ function ensureAuthentication(req, res, next) {
 app.post("/text-adv/api/save", async(req,res) =>{
   try {
     console.log(req.body);
+    req.session.user.textAdv = req.session.user.textAdv || {};
+    //*NOTE* fixing typeError on textAdv.save because textAdv was never defined and then .save could not be used because could not read properties of null. Hopefully fixed now.
     req.session.user.textAdv.save = req.body;
+    console.log(req.session.user.textAdv.save);
     return res.status(200).json({
       success: true,
       message: "saved!"
