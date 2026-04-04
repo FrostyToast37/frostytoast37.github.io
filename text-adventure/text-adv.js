@@ -253,7 +253,8 @@ const registry = {
   "w_Lance": w_Lance,
   "w_StarterPistol": w_StarterPistol,
   "i_44magnums": i_44magnums,
-  "m_g_warrior": m_g_warrior
+  "m_g_warrior": m_g_warrior,
+  "null": null
 };
 
 async function initRooms() {
@@ -417,7 +418,8 @@ function view(slot) {
 }
 
 async function save() {
-  const inventoryStrings = p_player.inventory.map(item => item ? item.id : null);
+  const inventoryStrings = p_player.inventory.map(item => item ? item.id : "null");
+
   let d = new Date();
 
   const res = await fetch("/text-adv/api/save", {
