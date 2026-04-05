@@ -20,13 +20,9 @@ button {
   margin-bottom: 5px;
 }
 
-.button-group {
-  display: flex;
-  flex-wrap: wrap;
-}
-
 
 body {
+  border-color:#16F529;
   font-family: "Lucida Console", "Courier New", monospace;  
   background-color: black;
   color: #16F529;

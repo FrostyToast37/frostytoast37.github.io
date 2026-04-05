@@ -14,3 +14,43 @@
   padding: none;
   border: none;
 }
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#bio_container {
+  position: fixed;
+  right: -2px;
+  width: 30%;
+  border: solid;
+  border-width: 2px;
+  border-color: inherit;
+
+}
+
+#bio {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  width: 90%;
+  height: 90%;
+  padding: 5%;
+}
+
+#bio p {
+  size: 11px;
+}
+
+#contacts {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+#contacts p {
+  size: 8px;
+  color: white;
+}
