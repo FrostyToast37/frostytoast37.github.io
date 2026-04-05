@@ -1,0 +1,16 @@
+.madebyothers {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 25%;
+  padding: none;
+  border: none;
+}
+.madebyme {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 25%;
+  padding: none;
+  border: none;
+}
