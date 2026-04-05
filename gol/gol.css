@@ -4,16 +4,16 @@
 }
 
 td {
-  background-color: white;
-  transition: background-color 0.5s;
+  background-color: inherit;
+  transition: background-color 0.1s;
   padding: 8px;
   text-align: center;
 }
 
 td:hover {
-  background-color: coral;
+  background-color: #16F529;
 }
 
 .on {
-  background-color: red;
+  background-color: white;
 }
