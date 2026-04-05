@@ -36,7 +36,10 @@ body {
   position: fixed;
   right: 20px;
   bottom: 20px;
+  margin: 30px;
   border: solid;
+  border-width: 2px;
+  border-radius: 60px;
   border-color: #16F529;
 }
 /*I stole this from: https://codepen.io/designcouch/pen/ExvwPY */
