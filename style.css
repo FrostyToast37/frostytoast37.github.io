@@ -1,16 +1,18 @@
 button:hover {
   box-shadow:0 8px 16px 0 rgba(0,0,0,0.6);
   background-color: black;
-  color:white;
+  color:#16F529;
 }
 
 button {
   font-family: inherit;
   padding: 10px 24px;
-  background-color: LightGray;
+  background-color: #16F529;
   color: black;
-  border: none;
-  border-radius: 12px;
+  border: solid;
+  border-radius: 0;
+  border-color: #16F529;
+  border-width: 0.1%; /* hehehehe*/
   transition-duration: 0.4s;
   margin-left: 10px;
   margin-right: 10px;
@@ -25,4 +27,6 @@ button {
 
 body {
   font-family: "Lucida Console", "Courier New", monospace;  
+  background-color: black;
+  color: #16F529;
 }
