@@ -26,18 +26,18 @@
   bottom: 0px;
   right: -2px;
   width: 30%;
-  height: 100%;
   border: solid;
   border-width: 2px;
   border-color: inherit;
   overflow-y: auto;
+  box-sizing: border-box;
 }
 
 #bio {
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: left;
+  align-items: flex-end;
   width: 90%;
   height: 90%;
   padding: 5%;
