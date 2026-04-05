@@ -3,7 +3,7 @@ body {
 }
 
 form {
-  background-color: lightgray;
+  background-color: black;
   display: flex; 
   flex-direction: column;
   justify-content: space-evenly;
@@ -11,8 +11,8 @@ form {
 
 .submit_button {
   margin: 5px;
-  background-color: #14f170;
-  color: white;
+  background-color: #16F529;
+  color: black;
 }
 label {
   margin: 5px;
@@ -21,9 +21,9 @@ label {
 input {
   margin: 5px;
   padding: 5px;
-  border-radius: 5px;
+  border-radius: 0px;
 }
 
 input:focus {
-  outline-color: #14f170;
+  outline-color: #16F529;
 }
