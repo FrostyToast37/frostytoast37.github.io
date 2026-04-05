@@ -23,13 +23,14 @@
 #bio_container {
   position: fixed;
   top: 0px;
+  bottom: 0px;
   right: -2px;
   width: 30%;
   height: 100%;
   border: solid;
   border-width: 2px;
   border-color: inherit;
-
+  overflow-y: auto;
 }
 
 #bio {
@@ -43,7 +44,7 @@
 }
 
 #bio p {
-  font-size: 11px;
+  font-size: 24px;
 }
 
 #contacts {
@@ -53,6 +54,6 @@
 }
 
 #contacts p {
-  font-size: 8px;
+  font-size: 16px;
   color: white;
 }
