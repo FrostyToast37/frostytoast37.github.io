@@ -29,7 +29,8 @@
     </span>
   </span>
   <span id="bio_container">
-    <div id="bio">
+    <span id="drag" onclick="dragOpen()">&gt;</span>
+    <span id="bio">
       <h1>Hey I'm Andrew</h2>
       <p id="story">I use this website as a way to learn more web developement and just have fun and provide resources for friends. I'm on my way to learning full stack JS, but I already can safely say I can write in Python, Java, C++ (sometimes), Javascript, HTML, CSS, and hopefully the list keeps growing. Hopefully you enjoy the website; I've been working on it since 9th grade. Feel free to contact me any of the ways below.</p>
       <div id="contacts">
@@ -37,13 +38,16 @@
         <p>Discord: FrostyToast37</p>
         <p>Phone: Haha no you don't get that</p>
       </div>
-    </div>
+    </span>
   </span>
   
   
 
 
   <script>
+    function dragopen() {
+      document.getElementById("bio").classList.toggle("open");
+    }
     function openCookieChaos() {
       window.open("https://cookiechaos.xyz");
     }
