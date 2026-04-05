@@ -8,7 +8,7 @@ td {
   transition: background-color 0.1s;
   padding: 2px;
   text-align: center;
-  size: 8px;
+  font-size: 8px;
 }
 
 td:hover {
