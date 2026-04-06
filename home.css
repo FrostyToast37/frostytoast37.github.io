@@ -23,6 +23,7 @@
 
 #bio_container {
   display: flex;
+  position: fixed;
   flex-direction: column;
   align-items: center;
   bottom: -2px;
