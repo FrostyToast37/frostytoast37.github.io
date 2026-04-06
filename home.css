@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 25%;
+  width: 100%;
   padding: none;
   border: none;
 }
@@ -10,7 +10,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 25%;
+  width: 100%;
   padding: none;
   border: none;
 }
@@ -72,10 +72,13 @@
 }
 
 @media (min-width: 48rem) {
+  .madebyothers, .madebyme {
+    width: 25%;
+  }
   .button-group {
     flex-direction: row;
   }
-  #bio_container{
+  #bio_container {
     flex-direction: row;
     top: 0px;
     bottom: 0px;
