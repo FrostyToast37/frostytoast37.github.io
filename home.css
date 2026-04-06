@@ -25,7 +25,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: sticky;
   bottom: -2px;
   top: auto;
   right: 0px;
@@ -40,10 +39,11 @@
 }
 
 #bio_container #drag {
+  left: 0px;
+  right: 0px;
   rotate: 270deg;
   font-size: 5.0rem;
   border: solid;
-  border-right: 2px;
   border-color: inherit;
   padding: 0.5rem;
 }
@@ -81,7 +81,6 @@
     flex-direction: row;
   }
   #bio_container {
-    position: fixed;
     flex-direction: row;
     top: 0px;
     bottom: 0px;
@@ -92,5 +91,7 @@
 
   #bio_container #drag {
     rotate: 0deg;
+    top: 0px;
+    bottom: 0px;
   }
 }
