@@ -3,7 +3,6 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding: none;
   border: none;
 }
 .madebyme {
@@ -11,7 +10,6 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding: none;
   border: none;
 }
 
@@ -19,9 +17,11 @@
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
+  z-index: 1;
 }
 
 #bio_container {
+  background-color: black;
   display: flex;
   position: fixed;
   flex-direction: column;
@@ -37,9 +37,20 @@
   overflow-y: auto;
   box-sizing: border-box;
   z-index: 9;
+  transition-duration: 0.5s;
+  transform: translateY(calc(100% - 5rem));
 }
 
+#bio_container .open {
+  transform: translateX(0);
+}
+
+
+
 #bio_container #drag {
+  box-sizing: border-box;
+  width: 6rem;
+  height: 5rem;
   left: 0px;
   right: 0px;
   rotate: 270deg;
@@ -88,6 +99,11 @@
     right: -2px;
     width: 30%;
     left: auto;
+    transform: translateY(calc(100% - 6rem));
+  }
+
+  #bio_container .open {
+    transform: translateY(0);
   }
 
   #bio_container #drag {
