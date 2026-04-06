@@ -37,8 +37,11 @@
 }
 
 #bio_container #drag {
-  font-size: 50px;
+  font-size: 5.0rem;
+  border: solid;
   border-right: 2px;
+  border-color: inherit;
+  padding: 0.5rem;
 }
 
 #bio {
@@ -52,7 +55,7 @@
 }
 
 #bio p {
-  font-size: 18px;
+  font-size: 1.8rem;
 }
 
 #contacts {
@@ -62,6 +65,6 @@
 }
 
 #contacts p {
-  font-size: 14px;
+  font-size: 1.4rem;
   color: white;
 }
