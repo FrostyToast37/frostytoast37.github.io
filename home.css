@@ -41,7 +41,7 @@
   transform: translateY(calc(100% - 5rem));
 }
 
-#bio_container .open {
+#bio_container.open {
   transform: translateY(0);
 }
 
@@ -104,7 +104,7 @@
     transform: translateX(calc(100% - 6rem));
   }
 
-  #bio_container .open {
+  #bio_container.open {
     transform: translateX(0);
   }
 
