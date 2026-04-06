@@ -32,7 +32,7 @@ body {
 #nav-icon3-container {
   position: fixed;
   right: 20px;
-  bottom: 20px;
+  top: 20px;
   z-index: 10;
 }
 /*I stole this from: https://codepen.io/designcouch/pen/ExvwPY */

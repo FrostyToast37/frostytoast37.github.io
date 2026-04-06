@@ -21,6 +21,9 @@
 }
 
 #bio_container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   position: fixed;
   top: 0px;
   bottom: 0px;
@@ -31,6 +34,11 @@
   border-color: inherit;
   overflow-y: auto;
   box-sizing: border-box;
+}
+
+#bio_container p {
+  font-size: 50px;
+  border-right: 2px;
 }
 
 #bio {
