@@ -33,7 +33,7 @@
   width: 100%;
   border: solid;
   border-width: 2px;
-  border-color: inherit;
+  border-color: inherit;  
   overflow-y: auto;
   box-sizing: border-box;
   z-index: 9;
@@ -81,6 +81,7 @@
     flex-direction: row;
   }
   #bio_container {
+    position: fixed;
     flex-direction: row;
     top: 0px;
     bottom: 0px;
