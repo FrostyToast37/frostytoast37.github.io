@@ -42,7 +42,7 @@
 }
 
 #bio_container .open {
-  transform: translateX(0);
+  transform: translateY(0);
 }
 
 
@@ -58,6 +58,8 @@
   border: solid;
   border-color: inherit;
   padding: 0.5rem;
+  display: grid;
+  place-items: center;
 }
 
 #bio {
@@ -99,11 +101,11 @@
     right: -2px;
     width: 30%;
     left: auto;
-    transform: translateY(calc(100% - 6rem));
+    transform: translateX(calc(100% - 6rem));
   }
 
   #bio_container .open {
-    transform: translateY(0);
+    transform: translateX(0);
   }
 
   #bio_container #drag {
