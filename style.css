@@ -50,7 +50,7 @@ body {
 
 #menu-list {
   position: fixed;
-  border: 2px solid transparent;
+  border: solid transparent;
   border-radius: 1.0rem;
   right: 2.0rem;
   top: 10.0rem;
