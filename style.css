@@ -54,7 +54,7 @@ body {
   border-color: #16F529;
   border-radius: 1.0rem;
   right: 2.0rem;
-  top: 8.0rem;
+  top: 10.0rem;
   transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
   max-height: 0;
   overflow: hidden;
@@ -64,6 +64,7 @@ body {
 }
 
 #menu-list td {
+  text-decoration: none;
   border: 2px solid inherit;
   padding: 0.5rem;
   font-size: 1.6rem;
