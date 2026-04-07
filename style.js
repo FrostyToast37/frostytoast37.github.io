@@ -1,8 +1,9 @@
-let menu = document.getElementById("nav-icon3");
+let menu = document.getElementById("drop-menu");
+let icon = document.getElementById("nav-icon3");
 let menuList = document.getElementById("menu-list");
 
-menu.addEventListener("click", () => {
-  menu.classList.toggle("open");
+icon.addEventListener("click", () => {
+  icon.classList.toggle("open");
   menuList.classList.toggle("open");
 });
 
