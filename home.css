@@ -36,7 +36,7 @@
   border-color: inherit;  
   overflow-y: auto;
   box-sizing: border-box;
-  z-index: 9;
+  z-index: 2;
   transition: transform 0.5s ease-in-out;
   transform: translateY(calc(100% - 5rem));
 }
