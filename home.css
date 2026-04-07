@@ -37,7 +37,7 @@
   overflow-y: auto;
   box-sizing: border-box;
   z-index: 9;
-  transition-duration: 0.5s;
+  transition-duration: 0.5s ease-in-out;
   transform: translateY(calc(100% - 5rem));
 }
 
@@ -48,25 +48,25 @@
 
 
 #bio_container #drag {
-  padding-top: -2rem;
   box-sizing: border-box;
   width: 6rem;
   height: 5rem;
   left: 0px;
   right: 0px;
   rotate: 270deg;
-  font-size: 3.5rem;
+  font-size: 3.0rem;
   border: solid;
   border-color: inherit;
   padding: 0.5rem;
   display: grid;
   place-items: center;
+  cursor: pointer;
+  transition-duration: 0.5s ease-in-out;
 }
 
 #drag.open {
-    rotate: 90deg;
-    content: "&lt";
-  }
+  rotate: 90deg;
+}
 
 #bio {
   position: relative;
@@ -118,6 +118,10 @@
     rotate: 0deg;
     top: 0px;
     bottom: 0px;
-    transition: 0.5s;
+    transition-duration: 0.5s;
+  }
+
+  #drag.open {
+    rotate: 180deg;
   }
 }
