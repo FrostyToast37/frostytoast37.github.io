@@ -48,7 +48,7 @@
 
 
 #bio_container #drag {
-  margin-left: -2rem;
+  padding-top: -2rem;
   box-sizing: border-box;
   width: 6rem;
   height: 5rem;
@@ -65,6 +65,7 @@
 
 #drag.open {
     rotate: 90deg;
+    content: "&lt";
   }
 
 #bio {
@@ -114,14 +115,9 @@
   }
 
   #bio_container #drag {
-    margin-top: -2rem;
     rotate: 0deg;
     top: 0px;
     bottom: 0px;
     transition: 0.5s;
-  }
-
-  #drag.open {
-    rotate: 180deg;
   }
 }
