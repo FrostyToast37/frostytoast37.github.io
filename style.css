@@ -50,12 +50,11 @@ body {
 
 #menu-list {
   position: fixed;
-  border: solid;
-  border-color: #16F529;
+  border: 2px solid transparent;
   border-radius: 1.0rem;
   right: 2.0rem;
   top: 10.0rem;
-  transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+  transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out, border-color 0.5s ease-in-out 0.5s;
   max-height: 0;
   overflow: hidden;
   padding: 0;
@@ -85,7 +84,9 @@ body {
 }
 
 #menu-list.open {
+  border-color: #16F529;
   max-height: 30rem;
   padding: 1.2rem;
   overflow: visible;
+  transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out, border-color 0s ease-in-out 0s;
 }
