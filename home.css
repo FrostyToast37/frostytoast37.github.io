@@ -63,7 +63,7 @@
   place-items: center;
 }
 
-#grab.open {
+#drag.open {
     rotate: 90deg;
   }
 
@@ -121,7 +121,7 @@
     transition: 0.5s;
   }
 
-  #grab.open {
+  #drag.open {
     rotate: 180deg;
   }
 }
