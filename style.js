@@ -6,4 +6,4 @@ menu.addEventListener("click", () => {
   menuList.classList.toggle("open");
 });
 
-body.innerHTML += '<div id="menu-list"><table> <tr><td id="home">Home</td></tr> <tr><td id="sign-up">Sign up</td></tr> <tr><td id="login">Login</td></tr> <tr><td id="log-out">Log Out</td></tr> </table></div>';
+menu.innerHTML += '<div id="menu-list"><table> <tr><td id="home">Home</td></tr> <tr><td id="sign-up">Sign up</td></tr> <tr><td id="login">Login</td></tr> <tr><td id="log-out">Log Out</td></tr> </table></div>';
