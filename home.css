@@ -37,7 +37,7 @@
   overflow-y: auto;
   box-sizing: border-box;
   z-index: 9;
-  transition-duration: transform 0.5s ease-in-out;
+  transition: transform 0.5s ease-in-out;
   transform: translateY(calc(100% - 5rem));
 }
 
@@ -61,7 +61,7 @@
   display: grid;
   place-items: center;
   cursor: pointer;
-  transition-duration: rotate 0.5s ease-in-out;
+  transition: rotate 0.5s ease-in-out;
 }
 
 #bio_container #drag.open {
