@@ -34,10 +34,10 @@ body {
 }
 
 #nav-icon3-container {
-  padding: 2rem;
+  padding: 1.2rem;
   border: solid;
   border-color: #16F529;
-  border-radius: 0.2rem;
+  border-radius: 0.6rem;
   position: fixed;
   right: 2.0rem;
   top: 2.0rem;
