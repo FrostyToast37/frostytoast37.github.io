@@ -34,6 +34,7 @@ body {
 }
 
 #nav-icon3-container {
+  background-color: black;
   padding: 1.2rem;
   border: solid;
   border-color: #16F529;
