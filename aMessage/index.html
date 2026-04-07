@@ -4,28 +4,32 @@
   <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
   <link rel="stylesheet" href="/style.css">
 </head>
-<body>
-  <p>is it werking</p>
-  <button onclick="login()">Login</button>
-  <script>
-    function login() {
-      window.location.href = "/aMessage/login.html"
-    }
-  </script>
-  <button onclick="signUp()">Sign Up</button>
-  <script>
-    function signUp() {
-      window.location.href = "/aMessage/sign-up.html"
-    }
-  </script>
-  <div id="nav-icon3-container">
-    <!--I stole this, check css file for url-->
-    <div id="nav-icon3">
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
+<html>
+  <body>
+    <h1>aMessage!</h1>
+    <button onclick="login()">Login</button>
+    <script>
+      function login() {
+        window.location.href = "/aMessage/login.html"
+      }
+    </script>
+    <button onclick="signUp()">Sign Up</button>
+    <script>
+      function signUp() {
+        window.location.href = "/aMessage/sign-up.html"
+      }
+    </script>
+    <div id="drop-menu">
+      <div id="nav-icon3-container">
+      <!--I stole this, check css file for url-->
+        <div id="nav-icon3">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        </div>
+      </div>
     </div>
-  </div>
-  <script src="/style.js"></script>
-</body>
+    <script src="/style.js"></script>
+  </body>
+</html>
