@@ -1,3 +1,4 @@
+const outputDiv = document.getElementById("output");
 
 async function logout() {
   try {
@@ -20,3 +21,5 @@ async function logout() {
     outputDiv.textContent = err.message;
   }
 }
+
+logout();
