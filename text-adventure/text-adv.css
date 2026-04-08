@@ -111,3 +111,15 @@ pre {
 .popup .show {
   visibility: visible;
 }
+
+@media (max-width: 48rem) {
+  #instructions {
+    flex-direction: column;
+    max-height: 0;
+    border: solid #16F529;
+    transition: max-height 0.5s ease-in-out;
+  }
+  #instructions.open {
+    max-height: 100%;
+  }
+}
