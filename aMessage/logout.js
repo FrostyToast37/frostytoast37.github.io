@@ -3,7 +3,8 @@ const outputDiv = document.getElementById("output");
 async function logout() {
   try {
     const res = await fetch("/aMessage/api/logout", {
-      method: "POST"
+      method: "POST",
+      credentials: "include"
     });
 
     const data = await res.json();
