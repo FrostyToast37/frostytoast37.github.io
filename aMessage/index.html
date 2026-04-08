@@ -7,16 +7,22 @@
 <html>
   <body>
     <h1>aMessage!</h1>
+    <button onclick="loggedIn()">Already Logged In?</button>
+    <script>
+      function loggedIn() {
+        window.location.href = "/aMessage/main";
+      }
+    </script>
     <button onclick="login()">Login</button>
     <script>
       function login() {
-        window.location.href = "/aMessage/login.html"
+        window.location.href = "/aMessage/login.html";
       }
     </script>
     <button onclick="signUp()">Sign Up</button>
     <script>
       function signUp() {
-        window.location.href = "/aMessage/sign-up.html"
+        window.location.href = "/aMessage/sign-up.html";
       }
     </script>
     <div id="drop-menu">
