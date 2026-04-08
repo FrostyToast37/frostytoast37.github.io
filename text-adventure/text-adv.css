@@ -112,7 +112,7 @@ pre {
   visibility: visible;
 }
 
-@media (max-width: 52rem) {
+@media (max-width: 48rem) {
   #instructions {
     flex-direction: column;
     max-height: 0;
