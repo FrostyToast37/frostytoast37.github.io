@@ -29,7 +29,7 @@ input:focus {
   align-items: center;
   width: 100%;
   padding: none;
-  margin-top: -16px;
+  margin-top: -1.6rem;
   border: none;
 }
 
@@ -39,7 +39,7 @@ input:focus {
 }
 
 #output {
-  font-size: 16px;
+  font-size: 1.6rem;
 }
 
 pre {
@@ -54,12 +54,13 @@ pre {
 #instructions {
   display: flex;
   align-items: flex-start;
+  flex-wrap: wrap;
   width: 100%;
   position: sticky;
   top: 0;
   background-color: black;
-  padding: 10px;
-  box-shadow:0 8px 16px 0 rgba(0,0,0,1);
+  padding: 1.0rem;
+  box-shadow:0 0.8rem 1.6rem 0 rgba(0,0,0,1);
   box-sizing: border-box;
 }
 
@@ -71,8 +72,8 @@ pre {
 .popup {
   position: fixed;
   display: flex;
-  width: 300px;
-  height: 200px;
+  width: 30.0rem;
+  height: 20.0rem;
   top: 30%;
   left: 30%;
   z-index: 2;
@@ -87,7 +88,7 @@ pre {
   border-width: 4px;
   border-color: #16F529;
   position: relative;
-  padding: 12px;
+  padding: 1.2rem;
 }
 
 .popup .inner_popup .close_window {
@@ -95,8 +96,8 @@ pre {
   display: flex;
   top: 0px;
   right: 0px;
-  width: 15px;
-  height: 15px;
+  width: 1.5rem;
+  height: 1.5rem;
   border-style: solid;
   border-width: 2px;
   border-color: #16F529;
