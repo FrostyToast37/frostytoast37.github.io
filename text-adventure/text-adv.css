@@ -112,11 +112,12 @@ pre {
   visibility: visible;
 }
 
-@media (max-width: 48rem) {
+@media (max-width: 52rem) {
   #instructions {
     flex-direction: column;
     max-height: 0;
     overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
   }
   #instructions.open {
     max-height: 100%;
