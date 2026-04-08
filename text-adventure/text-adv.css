@@ -116,6 +116,7 @@ pre {
   #instructions {
     flex-direction: column;
     max-height: 0;
+    overflow: hidden;
     border: solid #16F529;
     transition: max-height 0.5s ease-in-out;
   }
