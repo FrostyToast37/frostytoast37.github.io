@@ -121,6 +121,9 @@ pre {
     max-height: 0;
     overflow: hidden;
   }
+  #instructions span {
+    width: 100%;
+  }
   #instructions.open {
     max-height: 100%;
     border: solid #16F529;
