@@ -113,8 +113,8 @@ pre {
 }
 
 @media (max-width: 48rem) {
-  #actions {
-    content: "Actions (click to see):";
+  #actions::before {
+    content: "(click to see)";
   }
   #instructions {
     flex-direction: column;
