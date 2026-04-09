@@ -1,0 +1,19 @@
+#table {
+  width: 80%
+}
+
+.element {
+  padding: 0.5rem;
+  border: 4px solid #16F529;
+  background-color: black;
+  transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+}
+
+.element:hover {
+  background-color: #16F529;
+  color:#16F529;
+}
+
+.element .symbol {
+  font-size: 1.6rem;
+}
