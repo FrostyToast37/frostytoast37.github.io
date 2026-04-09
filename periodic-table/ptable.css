@@ -1,5 +1,5 @@
 #table {
-  width: 80%
+  width: 60%
 }
 
 .element[id] {
@@ -14,6 +14,8 @@
 }
 
 .element {
+  width: calc(100%/18);
+  aspect-ratio: 1 / 1 ;
   padding: 0.5rem;
 }
 
