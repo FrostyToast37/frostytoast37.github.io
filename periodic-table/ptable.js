@@ -3,7 +3,7 @@ tableDiv = document.getElementById("table");
 async function loadJSON() {
   try {
     // get file
-    const data = await fetch("/elements.json");
+    const data = await fetch("elements.json");
 
     // parse
     const parsedJSON = await data.json();
