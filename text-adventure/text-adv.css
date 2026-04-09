@@ -114,7 +114,7 @@ pre {
 
 @media (max-width: 48rem) {
   #actions {
-    content: "Actions (click to see):"
+    content: "Actions (click to see):";
   }
   #instructions {
     flex-direction: column;
