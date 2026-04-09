@@ -50,9 +50,9 @@ async function BuildPeriodicTable() {
     for (let group = 0; group <= 18; group++) {
       // Use unique IDs for each element using parameters
       const currentElement = table[group][period];
-      const idString = currentElement?.name ? `${currentElement.name}` : '';
+      const idString = currentElement?.name ? `id="${currentElement.name}"` : '';
       const symbolString = currentElement?.symbol || "&nbsp;";
-      tableHTML += `<td id="${idString}" class="element"><div class="symbol">${symbolString}</div></td>`;
+      tableHTML += `<td ${idString} class="element"><div class="symbol">${symbolString}</div></td>`;
     }
     tableHTML += '</tr>';
   }
