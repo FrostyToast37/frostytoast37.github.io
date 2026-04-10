@@ -29,7 +29,7 @@ async function loadJSON() {
 function showInfo(elementName) {
   const element = elementsList.find(e => e.name === elementName);
   let output = "";
-  Object.entries(itemToView).forEach(([key, value]) => {
+  Object.entries(element).forEach(([key, value]) => {
     output += `${key}: ${value} <br>`;
   });
   infoSpan.innerHTML = output;
