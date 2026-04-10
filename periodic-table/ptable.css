@@ -1,8 +1,10 @@
 #table {
+  display: inline-block;
   width: 60%
 }
 
 #info {
+  display: inline-block;
   width: 30%;
   border: 3px solid #16F529;
   background-color: black;
