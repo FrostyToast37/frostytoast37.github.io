@@ -4,6 +4,8 @@
 }
 
 #info {
+  font-size: 1.6rem;
+  right: 5%;
   display: inline-block;
   width: 30%;
   border: 3px solid #16F529;
