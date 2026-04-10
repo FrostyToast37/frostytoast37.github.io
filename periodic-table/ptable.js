@@ -1,7 +1,7 @@
 tableDiv = document.getElementById("table");
 infoSpan = document.getElementById("info");
 
-const elementsList = [];
+let elementsList = [];
 
 
 class Element {
@@ -65,7 +65,7 @@ async function BuildPeriodicTable() {
       const currentElement = table[group][period];
       const idString = currentElement?.name ? `id="${currentElement.name}"` : '';
       const symbolString = currentElement?.symbol || "&nbsp;";
-      const onClickString = currentElement?.name ? `onclick="showInfo(${currentElement.name})` : "";
+      const onClickString = currentElement?.name ? `onclick="showInfo('${currentElement.name}')"` : "";
       tableHTML += `<td ${idString} ${onClickString} class="element"><div class="symbol">${symbolString}</div></td>`;
     }
     tableHTML += '</tr>'
