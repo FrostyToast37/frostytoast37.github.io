@@ -1,4 +1,7 @@
 tableDiv = document.getElementById("table");
+infoSpan = document.getElementById("info");
+
+const elementsList = [];
 
 
 class Element {
@@ -22,9 +25,19 @@ async function loadJSON() {
     console.error("Error loading file:", err);
   }
 }
+
+function showInfo(elementName) {
+  const element = elementsList.find(e => e.name === elementName);
+  let output = "";
+  Object.entries(itemToView).forEach(([key, value]) => {
+    output += `${key}: ${value} <br>`;
+  });
+  infoSpan.innerHTML = output;
+}
+
 async function BuildPeriodicTable() {
   const ptableJSON = await loadJSON();
-  const elementsList = ptableJSON.map(jsonItem => new Element(jsonItem));
+  elementsList = ptableJSON.map(jsonItem => new Element(jsonItem));
 
   //declare
   let table = [];
@@ -52,9 +65,10 @@ async function BuildPeriodicTable() {
       const currentElement = table[group][period];
       const idString = currentElement?.name ? `id="${currentElement.name}"` : '';
       const symbolString = currentElement?.symbol || "&nbsp;";
-      tableHTML += `<td ${idString} class="element"><div class="symbol">${symbolString}</div></td>`;
+      const onClickString = currentElement?.name ? `onclick="showInfo(${currentElement.name})` : "";
+      tableHTML += `<td ${idString} ${onClickString} class="element"><div class="symbol">${symbolString}</div></td>`;
     }
-    tableHTML += '</tr>';
+    tableHTML += '</tr>'
   }
   tableHTML += '</table>';
 
