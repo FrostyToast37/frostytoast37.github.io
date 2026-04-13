@@ -39,47 +39,47 @@ td[id]:hover {
   font-size: 2.4rem;
 }
 
-.diatomic_nonmetal {
+td.diatomic_nonmetal {
   background-color: aqua;
   color: black;
 }
 
-.alkali_metal {
+td.alkali_metal {
   background-color: #FFFF00;
   color: black;
 }
 
-.alkaline_earth_metal {
+td.alkaline_earth_metal {
   background-color: #BF00FF;
   color: white;
 }
 
-.transition_metal {
+td.transition_metal {
   background-color: #16F529;
   color: black
 }
 
-.post-transition_metal {
+td.post-transition_metal {
   background-color: #B44F34;
   color: white;
 }
 
-.metalloid {
+td.metalloid {
   background-color: #0033FF;
   color: white;
 }
 
-.noble_gas {
+td.noble_gas {
   background-color: #FD1C03;
   color: white;
 }
 
-.actinide {
+td.actinide {
   background-color: #FF00CC;
   color: white;
 }
 
-.lanthanide {
+td.lanthanide {
   background-color: white;
   color: black;
 }
