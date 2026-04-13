@@ -13,8 +13,9 @@
 }
 
 .element[id] {
-  border: 4px solid #16F529;
-  background-color: black;
+  border: 4px solid black;
+  background-color: rgb(48, 48, 87);
+  color: white;
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
@@ -30,11 +31,45 @@
 }
 
 .element[id]:hover {
-  background-color: #16F529;
-  color: black;
+  background-color: black;
+  color: #16F529;
 }
 
-.element .symbol {
+.symbol {
   font-size: 2.4rem;
 }
 
+.diatomic_nonmetal {
+  background-color: aqua;
+  color: black;
+}
+
+.alkali_metal {
+  background-color: #FFFF00;
+  color: black;
+}
+
+.alkaline_earth_metal {
+  background-color: #BF00FF;
+  color: white;
+}
+
+.transition_metal {
+  background-color: #16F529;
+  color: black
+}
+
+.post-transition_metal {
+  background-color: #B44F34;
+  color: white;
+}
+
+.metalloid {
+  background-color: #0033FF;
+  color: white;
+}
+
+.noble_gas {
+  background-color: #FD1C03;
+  color: white;
+}
