@@ -85,6 +85,6 @@ td.lanthanide {
 }
 
 td.polyatomic_nonmetal {
-  background-color: (48, 48, 87);
+  background-color: rgb(48, 48, 87);
   color: white;
 }
