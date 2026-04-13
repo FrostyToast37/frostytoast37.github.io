@@ -39,37 +39,37 @@
   font-size: 2.4rem;
 }
 
-.diatomic_nonmetal {
+.element.diatomic_nonmetal {
   background-color: aqua;
   color: black;
 }
 
-.alkali_metal {
+.element.alkali_metal {
   background-color: #FFFF00;
   color: black;
 }
 
-.alkaline_earth_metal {
+.element.alkaline_earth_metal {
   background-color: #BF00FF;
   color: white;
 }
 
-.transition_metal {
+.element.transition_metal {
   background-color: #16F529;
   color: black
 }
 
-.post-transition_metal {
+.element.post-transition_metal {
   background-color: #B44F34;
   color: white;
 }
 
-.metalloid {
+.element.metalloid {
   background-color: #0033FF;
   color: white;
 }
 
-.noble_gas {
+.element.noble_gas {
   background-color: #FD1C03;
   color: white;
 }
