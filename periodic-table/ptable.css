@@ -14,7 +14,7 @@
 
 td[id] {
   border: 4px solid black;
-  background-color: rgb(48, 48, 87);
+  background-color: black;
   color: white;
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
@@ -82,4 +82,9 @@ td.actinide {
 td.lanthanide {
   background-color: white;
   color: black;
+}
+
+td.polyatomic_nonmetal {
+  background-color: (48, 48, 87);
+  color: white;
 }
