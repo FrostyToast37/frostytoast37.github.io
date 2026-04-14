@@ -21,7 +21,7 @@ async function login(user, password) {
       throw new Error(data.message || "Login Failed, check your password");
     } else if (data.success === true) {
       outputDiv.textContent = "Login Success!"
-      window.location.href = "/aMessage/main";
+      window.location.href = "/api/aMessage/main";
     } else {
       outputDiv.textContent = "Yeah idk how the heck you got here"
     }

@@ -4,7 +4,7 @@ const socket = io();
 
 async function testFunc() {
   try {
-    const res = await fetch("/aMessage/api/main", {
+    const res = await fetch("/api/aMessage/main", {
       method: "POST",
     });
 

@@ -54,9 +54,10 @@ app.use(express.json());
     //checks if user is logged in
 function ensureAuthentication(req, res, next) {
   if (req.session.authenticated) {
+    res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
     return next();
   } else {
-    res.status(403).json({ msg: "You're not authorized to view this page" });
+    res.redirect('/aMessage/login.html');
   }
 }
 
@@ -211,7 +212,7 @@ app.post("/api/aMessage/main", async(req, res) => {
 });
 
     //serves the file only if authenticated
-app.get("/aMessage/main", ensureAuthentication, async(req, res) =>{
+app.get("/api/aMessage/main", ensureAuthentication, async(req, res) =>{
   try {
     res.sendFile(path.join(__dirname,"main.html"));
     // res.status(200).json({
@@ -227,8 +228,24 @@ app.get("/aMessage/main", ensureAuthentication, async(req, res) =>{
   }
 });
 
+app.get("/api/aMessage/mainJS", ensureAuthentication, async(req, res) =>{
+  try {
+    res.sendFile(path.join(__dirname,"main.js"));
+    // res.status(200).json({
+    //   success: true,
+    //   message: "Successful login"
+    // })
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error" + err.message
+    });
+  }
+});
+
     //logs user out
-app.post("/aMessage/api/logout", (req, res) => {
+app.post("/api/aMessage/logout", (req, res) => {
   const sessionID = req.session.id;
   
   req.session.destroy((err) => {
