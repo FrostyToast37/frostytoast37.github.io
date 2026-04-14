@@ -1,0 +1,18 @@
+RIGHTS:
+
+🌟 You’re totally welcome to use this plugin in both commercial and non-commercial games — go wild, make magic~!
+
+💖 Feel free to tweak it, style it, or add your own flair~! You can edit or build on top of it however you'd like!
+
+🛍️ The only thing I ask is that you don’t resell the plugin by itself or as part of a bundle — it’s meant to be used in games, not repackaged~!
+
+✨ Credit isn’t required, but it makes my heart happy! If you’d like to credit me, “XyScripts” is perfect, or you can link back to:  https://xyscripts.itch.io/
+
+💾 This plugin is pretty much in its final sparkle form and works just the way I dreamed it would~! I don’t have plans to add anything new to it right now, but it’s all set and ready to go~!
+
+🔧 Compatibility-wise, it should play nice with most other plugins. If there's a plugin that it doesn't run with please let me know so I can warn others.
+
+🌱 If you're using it with another plugin and everything works smoothly, let me know in the comments and I’ll add it to the list to help other devs out~!
+
+🧁 If something gets wonky or buggy, feel free to message me or leave a comment! I’ll do my best to help (just note I might not be able to test paid plugins)~!
+

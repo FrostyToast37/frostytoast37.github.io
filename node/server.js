@@ -203,6 +203,24 @@ app.get("/aMessage/main", ensureAuthentication, async(req, res) =>{
   }
 });
 
+    //logs user out
+app.post("/aMessage/api/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Server error, could not log out."
+      });
+    }
+    
+    res.clearCookie("connect.sid");
+    return res.status(200).json({
+      success: true,
+      message: "logged out and cookies cleared!"
+    });
+  });
+});
 
   //express needs to listen on port whatever, this starts the server
   //MAKE SURE THIS STAYS AT THE BOTTOM OF THE EXPRESS SECTION

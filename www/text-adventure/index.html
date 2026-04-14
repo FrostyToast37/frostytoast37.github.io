@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Text Adventure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
     <link rel="stylesheet" href="text-adv.css">
     <link rel="stylesheet" href="/style.css">
@@ -14,7 +15,7 @@
       </span>
     </div>
     <h1 id="title">Text Adventure</h1>
-    <h2>Actions:</h2>
+    <h2 id="actions">Actions:</h2>
     <div id="instructions">
       <span id="movement">
         <h2>Movement</h2>
@@ -25,7 +26,7 @@
         <h4>Search      <br>
             Grab [item] </h4>
       </span>
-      <span id="interact">
+      <span id="inventory">
         <h2>Inventory:                 </h2>
         <h4>Inventory/inv (opens)      <br>
             View [item slot number]    <br>
@@ -52,13 +53,15 @@
       </div>
     </div>
     <script src="text-adv.js"></script>
-    <div id="nav-icon3-container">
-    <!--I stole this, check css file for url-->
-      <div id="nav-icon3">
+    <div id="drop-menu">
+      <div id="nav-icon3-container">
+      <!--I stole this, check css file for url-->
+        <div id="nav-icon3">
         <span></span>
         <span></span>
         <span></span>
         <span></span>
+        </div>
       </div>
     </div>
     <script src="/style.js"></script>

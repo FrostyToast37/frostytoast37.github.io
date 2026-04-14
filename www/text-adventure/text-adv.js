@@ -588,3 +588,7 @@ document.addEventListener('keydown', (event) => {
     closeViewItems();
   }
 });
+
+document.getElementById("actions").addEventListener("click", () => {
+  document.getElementById("instructions").classList.toggle("open");
+});

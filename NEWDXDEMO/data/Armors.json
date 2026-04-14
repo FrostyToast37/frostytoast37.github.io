@@ -1,0 +1,11 @@
+[
+null,
+{"id":1,"atypeId":1,"description":"*My good ol' black suitcoat \nNothing good, or bad about it.","etypeId":2,"traits":[{"code":22,"dataId":1,"value":0}],"iconIndex":154,"name":"Blacksuit suitcoat","note":"","params":[0,0,1,1,0,1,0,0],"price":0},
+{"id":2,"atypeId":1,"description":"A cloth hat reinforced with a plate of plastic.\nSomehow sturdy.","etypeId":2,"traits":[{"code":22,"dataId":1,"value":0}],"iconIndex":142,"name":"Helper Hat","note":"","params":[0,0,0,12,0,0,0,0],"price":100},
+{"id":3,"atypeId":2,"description":"*Boots that'll make me move a little faster.\nNo wonder its contraband.","etypeId":3,"traits":[{"code":22,"dataId":1,"value":0}],"iconIndex":143,"name":"RingBoots","note":"","params":[0,0,0,0,0,0,15,0],"price":0},
+{"id":4,"atypeId":1,"description":"*A chestplate made from scrap parts. \nThis thing was really salvaged.","etypeId":2,"traits":[{"code":22,"dataId":1,"value":0}],"iconIndex":144,"name":"Weakmetal Chestplate","note":"","params":[0,0,0,21,0,0,0,0],"price":500},
+{"id":5,"atypeId":2,"description":"*Why won't it teleport me home?\nBoosts PSI power.","etypeId":3,"traits":[{"code":22,"dataId":1,"value":0}],"iconIndex":145,"name":"PSI Power Mirror","note":"","params":[0,0,0,0,23,0,0,0],"price":400},
+{"id":6,"atypeId":1,"description":"*Carol's funny looking hoodie.\nI have never heard of this brand before","etypeId":2,"traits":[{"code":22,"dataId":1,"value":0}],"iconIndex":146,"name":"Ralham Skullz Hoodie","note":"","params":[0,0,0,12,0,15,16,0],"price":0},
+{"id":7,"atypeId":2,"description":"<WordWrap>*Uppon dmaging a foe, I'll say something whitty and get a stat boost.\nThis has a 50% to occur.","etypeId":3,"traits":[{"code":22,"dataId":1,"value":0},{"code":43,"dataId":65,"value":1}],"iconIndex":147,"name":"Rebuttal Brace","note":"","params":[0,0,23,13,23,13,0,0],"price":1200},
+{"id":8,"atypeId":1,"description":"<WordWrap>*A magnetic suit of armor conposed of shards of an unkown material. \nIt fits like a glove.","etypeId":2,"traits":[{"code":22,"dataId":1,"value":0},{"code":43,"dataId":70,"value":1}],"iconIndex":148,"name":"ShardSuit","note":"","params":[0,0,0,45,0,20,0,0],"price":3000}
+]
