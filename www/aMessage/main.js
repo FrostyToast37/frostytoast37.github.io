@@ -1,4 +1,6 @@
-test = document.getElementById("test");
+let test = document.getElementById("test");
+
+const socket = io();
 
 async function testFunc() {
   try {
