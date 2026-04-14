@@ -37,6 +37,16 @@ io.on('connection', (socket) => {
   const sessionID = socket.request.session.id;
   console.log('a user connected');
   socket.join(sessionID)
+
+
+  //message recieved
+  socket.on("msg", (message) => {
+    socket.emit("rsp", 
+      `message: ${message} recieved. Here is it backwards! ${message.split('').reverse().join('')}`
+    )
+  })
+
+  //disconnect signal
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });

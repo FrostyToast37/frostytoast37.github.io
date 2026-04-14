@@ -1,4 +1,5 @@
 let test = document.getElementById("test");
+let input = document.getElementById("chat_input");
 
 const socket = io();
 
@@ -16,3 +17,16 @@ async function testFunc() {
       console.error(err);
   }
 }
+
+async function sendChat(message) {
+  socket.emit("msg", message);
+}
+
+
+socket.on("rsp", (res) => {
+  test.innerText = res; // world
+});
+
+input.addEventListener("submit", (event) => {
+  event.preventDefault();
+})
