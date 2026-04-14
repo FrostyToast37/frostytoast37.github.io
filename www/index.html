@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>FrostyToast37's Fun</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body>
+  <!-- BUTTONS -->
+  <span class="button-group">
+    <span class="madebyothers">
+      <h2>MADE BY OTHER PEOPLE</h2>
+      <button onclick="openCookieChaos()">COOKIE OF CHAOS?</button>
+      <button onclick="openCC3d()">CC3d?</button>
+      <button onclick="openSR3d()">SNOW RIDER 3d?</button>
+      <button onclick="openMC()">Fun?</button>
+      <button onclick="openOOS()">OOS?</button>
+    </span>
+    <span class="madebyme">
+      <h2>ANDREW GOT BORED</h2>
+      <button onclick="crash()">DO NOT CLICK THIS</button>
+      <button onclick="openTextAdventure()">Click for an adventure?</button>
+      <button onclick="openGOL()">What is Life?</button>
+      <button onclick="openAI()">Game?</button>
+      <button onclick="openaMessage()">aMessage app</button>
+      <button onclick="ptable()">I work on this periodically</button>
+    </span>
+  </span>
+  <span id="bio_container">
+    <span id="drag" onclick="dragOpen()">&gt;</span>
+    <span id="bio">
+      <h1>Hey I'm Andrew</h2>
+      <p id="story">I use this website as a way to learn more web developement and just have fun and provide resources for friends. I'm on my way to learning full stack JS, but I already can safely say I can write in Python, Java, C++ (sometimes), Javascript, HTML, CSS, and hopefully the list keeps growing. Hopefully you enjoy the website; I've been working on it since 9th grade. Feel free to contact me any of the ways below.</p>
+      <div id="contacts">
+        <p>Email: andrew.j.morelli@gmail.com</p>
+        <p>Discord: FrostyToast37</p>
+        <p>Phone: Haha no you don't get that</p>
+      </div>
+    </span>
+  </span>
+  
+  
+
+
+  <script>
+    function dragopen() {
+      document.getElementById("bio").classList.toggle("open");
+    }
+    function openCookieChaos() {
+      window.open("https://cookiechaos.xyz");
+    }
+    function openCC3d() {
+      var win = window.open()
+      var url = "https://crazy-cattle.github.io/"
+      var iframe = win.document.createElement('iframe');
+      iframe.style.width = "100%";
+      iframe.style.height = "100%";
+      iframe.style.border = "none";
+      iframe.src = url
+      win.document.body.appendChild(iframe)
+    }
+    function openSR3d() {
+      window.open("https://morellifamily.asuscomm.com/Snow-Rider3D-main/index.html");
+    }
+    function ptable() {
+      window.open("https://morellifamily.asuscomm.com/periodic-table/index.html");
+    }
+    function iframe() {
+      var win = window.open()
+      var url = "https://morellifamily.asuscomm.com/crash.html"
+      var iframe = win.document.createElement('iframe');
+      iframe.style.width = "100%";
+      iframe.style.height = "100%";
+      iframe.style.border = "none";
+      iframe.src = url
+      win.document.body.appendChild(iframe)
+    }
+    function crash() {
+      for (let step = 0; step <100; step++) {
+        iframe();
+      }
+    }
+    function openTextAdventure() {
+      window.open("https://morellifamily.asuscomm.com/text-adventure");
+    }
+    function openGOL() {
+      window.open("https://morellifamily.asuscomm.com/gol");
+    }
+    function openMC() {
+      window.open("https://morellifamily.asuscomm.com/fun.html");
+    }
+    function openOOS() {
+      window.open("https://morellifamily.asuscomm.com/OOS.html");
+    }
+    function openAI() {
+      window.open("https://morellifamily.asuscomm.com/ai-game");
+    }
+    function openaMessage() {
+      window.open("https://morellifamily.asuscomm.com/aMessage")
+    }
+  </script>
+  <div id="nav-icon3-container">
+  <!--I stole this, check css file for url-->
+    <div id="nav-icon3">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    </div>
+  </div>
+  <script src="/style.js"></script>
+</body>
+</html>

