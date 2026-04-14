@@ -64,7 +64,7 @@ function ensureAuthentication(req, res, next) {
 
   //text-adv Route Handlers
     //saves
-app.post("/text-adv/api/save", async(req,res) =>{
+app.post("/api/text-adv/save", async(req,res) =>{
   try {
     if(!req.session.user) {
       return res.status(401).json({
@@ -91,7 +91,7 @@ app.post("/text-adv/api/save", async(req,res) =>{
 });
 
     //loads
-app.post("/text-adv/api/load", async(req,res) =>{
+app.post("/api/text-adv/load", async(req,res) =>{
   try {
     if(!req.session.user) {
       return res.status(401).json({
@@ -117,7 +117,7 @@ app.post("/text-adv/api/load", async(req,res) =>{
 
   //aMessage Route Handlers
     //get username and password and put them into the sql database "newtdb" under the table "logins" in columns called "username" and "password"
-app.post("/aMessage/api/signUp", async(req, res) => {
+app.post("/api/aMessage/signUp", async(req, res) => {
   try{
     const { username, password } = req.body;
 
@@ -151,7 +151,7 @@ app.post("/aMessage/api/signUp", async(req, res) => {
 });
 
     //checks the sent password against the username and hash stored in newtdb
-app.post("/aMessage/api/login", async(req, res) => {
+app.post("/api/aMessage/login", async(req, res) => {
   try {
     const { username, password } = req.body;
     const hash = await pullFromSQL(username);
@@ -198,7 +198,7 @@ app.post("/aMessage/api/login", async(req, res) => {
 });
 
     //currently this route just is for testing
-app.post("/aMessage/api/main", async(req, res) => {
+app.post("/api/aMessage/main", async(req, res) => {
   try {
     return res.status(200).json({username: req.session.user.username});
   } catch (err) {

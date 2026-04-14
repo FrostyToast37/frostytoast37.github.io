@@ -2,7 +2,7 @@ const outputDiv = document.getElementById("output");
 
 async function logout() {
   try {
-    const res = await fetch("/aMessage/api/logout", {
+    const res = await fetch("/api/aMessage/logout", {
       method: "POST",
       credentials: "include"
     });

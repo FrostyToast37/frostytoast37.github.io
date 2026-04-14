@@ -5,7 +5,7 @@ const outputDiv = document.getElementById("output_div");
 
 async function login(user, password) {
   try {
-    const res = await fetch("/aMessage/api/login", {
+    const res = await fetch("/api/aMessage/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "same-origin",

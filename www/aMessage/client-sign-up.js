@@ -6,7 +6,7 @@ const outputDiv = document.getElementById("output_div");
 async function signup(createdUser, createdPassword) {
 let debugText;
   try {
-    const res = await fetch("/aMessage/api/signUp", {
+    const res = await fetch("/api/aMessage/signUp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

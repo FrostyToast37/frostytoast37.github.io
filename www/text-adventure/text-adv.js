@@ -427,7 +427,7 @@ async function save() {
 
   let d = new Date();
 
-  const res = await fetch("/text-adv/api/save", {
+  const res = await fetch("/api/text-adv/save", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -444,7 +444,7 @@ async function save() {
 }
 
 async function loadSave() {
-  const res = await fetch("/text-adv/api/load", {
+  const res = await fetch("/api/text-adv/load", {
     method: "POST",
   });
 
