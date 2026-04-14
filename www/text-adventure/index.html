@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Text Adventure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+    <link rel="stylesheet" href="text-adv.css">
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <div class="popup">
+      <span class="inner_popup" id="view_items" >
+        <button class="close_window" onclick="closeViewItems()">x</button>
+        <p id="item_viewer">span full of words</p>
+      </span>
+    </div>
+    <h1 id="title">Text Adventure</h1>
+    <h2 id="actions">Actions:</h2>
+    <div id="instructions">
+      <span id="movement">
+        <h2>Movement</h2>
+        <h4>N,E,S,W,U,D</h4>
+      </span>
+      <span id="interact">
+        <h2>Interact:   </h2>
+        <h4>Search      <br>
+            Grab [item] </h4>
+      </span>
+      <span id="inventory">
+        <h2>Inventory:                 </h2>
+        <h4>Inventory/inv (opens)      <br>
+            View [item slot number]    <br>
+            Drop [item slot number]    <br>
+            Swap [slot 1] [slot 2]   </h4>
+      </span>
+      <span id="fighting">
+        <h2>Fighting Actions: (use your 1st slot weapon)</h2>
+        <h4>Attack   <br>
+            Load    <br>
+            Block   </h4>
+      </span>
+    </div>
+    <div id="terminal">
+      <div id="output">
+      <p>&nbsp;</p>
+      <!-- inner html placed here by js -->
+      </div>
+      <div class="prompt">
+        <form autocomplete="off">
+          <label id="prompt_label" for="input">&gt;&gt;&gt;</label>
+          <input type="text" id="prompt_input" name="input" autoFocus>
+        </form>
+      </div>
+    </div>
+    <script src="text-adv.js"></script>
+    <div id="drop-menu">
+      <div id="nav-icon3-container">
+      <!--I stole this, check css file for url-->
+        <div id="nav-icon3">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        </div>
+      </div>
+    </div>
+    <script src="/style.js"></script>
+  </body>
+</html>

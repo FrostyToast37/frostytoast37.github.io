@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<head>
+  <title>aMessage Sign-Up</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <form id="sign_up_form" autocomplete="off" method="post">
+    <h1>
+      Sign Up
+    </h1>
+    <label id="username_label" for="username">Username</label>
+    <input type="text" id="username_input" name="username" placeholder="Your Username" autofocus>
+    <label id="password_label" for="password">Password</label>
+    <input type="password" id="password_input" name="password" placeholder="Your Password" autofocus>
+    <div id="output_div"></div>
+    <button class="submit_button" type="submit"> SIGN UP </button>
+  </form>
+  <div id="drop-menu">
+    <div id="nav-icon3-container">
+    <!--I stole this, check css file for url-->
+      <div id="nav-icon3">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      </div>
+    </div>
+  </div>
+  <script src="client-sign-up.js"></script>
+  <script src="/style.js"></script>
+</body>

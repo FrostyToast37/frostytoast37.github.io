@@ -1,0 +1,131 @@
+body {
+  background-color: black;
+  color: #16F529;
+  font-size: 16px;
+  font-family: monospace;
+}
+
+#prompt_input {
+  font-family: inherit;
+  border: none;
+  background-color: black;
+  color: #16F529;
+  font-size: 16px;
+  flex: 1; 
+  width: auto; 
+}
+
+input:focus {
+  outline: none;
+}
+
+.prompt {
+  display: flex;
+}
+
+.prompt form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  padding: none;
+  margin-top: -1.6rem;
+  border: none;
+}
+
+#prompt_label {
+  margin-right: 0.5em;
+  white-space: nowrap;
+}
+
+#output {
+  font-size: 1.6rem;
+}
+
+pre {
+  display: inline;
+}
+
+#output p {
+  margin-top: none;
+  margin-bottom: none;
+}
+
+#instructions {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  background-color: black;
+  padding: 1.0rem;
+  box-shadow:0 0.8rem 1.6rem 0 rgba(0,0,0,1);
+  box-sizing: border-box;
+}
+
+#instructions span {
+  display: inline-block;
+  width: 25%;
+}
+
+.popup {
+  position: fixed;
+  display: flex;
+  width: 30.0rem;
+  height: 20.0rem;
+  top: 30%;
+  left: 30%;
+  z-index: 2;
+}
+
+.popup .inner_popup {
+  visibility: hidden;
+  background-color: black;
+  color: #16F529;
+  text-align: left;
+  border-style: solid;
+  border-width: 4px;
+  border-color: #16F529;
+  position: relative;
+  padding: 1.2rem;
+}
+
+.popup .inner_popup .close_window {
+  position: absolute;
+  display: flex;
+  top: 0px;
+  right: 0px;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #16F529;
+  text-align: center;
+  border-radius: 0px;
+  background-color: black;
+  color: #16F529;
+  align-items: center;
+  justify-content: center;
+}
+.popup .show {
+  visibility: visible;
+}
+
+@media (max-width: 48rem) {
+  #actions::before {
+    content: "(click to see)";
+  }
+  #instructions {
+    flex-direction: column;
+    max-height: 0;
+    overflow: hidden;
+  }
+  #instructions span {
+    width: 100%;
+  }
+  #instructions.open {
+    max-height: 100%;
+    border: solid #16F529;
+  }
+}

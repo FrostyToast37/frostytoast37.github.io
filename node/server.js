@@ -1,22 +1,30 @@
-//to-do List:
-//fix-XSS-on-text-adventure
-
 //imports
 const fs = require("fs");
 const path = require("path");
 const express = require("express"); 
+const { createServer } = require('node:http');
+const { Server } = require("socket.io");
 let mysql = require("mysql2/promise");
 let bcrypt = require("bcrypt");
 let session = require("express-session");
 
 
-
-//EXPRESS----------------------------------------------------------------------------------------------------------------
-  //consts
+//consts
 const SECRET = process.env.SESSION_SECRET
 const PORT = process.env.PORT;
 const app = express();
+const server = createServer(app);
+const io = new Server(server);
 
+//SOCKET.IO--------------------------------------------------------------------------------------------------------------
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
+
+//EXPRESS----------------------------------------------------------------------------------------------------------------
   //express middleware configs
 
 app.set('trust proxy', 1)
@@ -27,7 +35,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: true, 
+    secure: false,
     httpOnly: true, 
     sameSite: "lax", 
     maxAge: 1000 * 60 * 60 * 24 //expires in 24 hours
@@ -35,33 +43,102 @@ app.use(session({
 }));
 app.use(express.json());
 
-  
+//ROUTE FUNCTIONS
+  //checks if user is logged in
+function ensureAuthentication(req, res, next) {
+  if (req.session.authenticated) {
+    return next();
+  } else {
+    res.status(403).json({ msg: "You're not authorized to view this page" });
+  }
+}
+
   //ROUTE HANDLERS
 
-
-    //get username and password and put them into the sql database "newtdb" under the table "logins" in columns called "username" and "password"
-app.post("/signUp", async (req, res) => {
-  try{
-    const { username, password } = req.body;
-    const hash = await encrypt(password);
-    await insertIntoSQL(username, hash);
-    res.status(200).json({
+  //text-adv Route Handlers
+    //saves
+app.post("/text-adv/api/save", async(req,res) =>{
+  try {
+    if(!req.session.user) {
+      return res.status(401).json({
+        success: false,
+        message: "You are not logged in."
+      });
+    }
+    console.log(req.body);
+    req.session.user.textAdv = req.session.user.textAdv || {};
+    //*NOTE* 1 fixing typeError on textAdv.save because textAdv was never defined and then .save could not be used because could not read properties of null. Hopefully fixed now.
+    req.session.user.textAdv.save = req.body;
+    console.log(req.session.user.textAdv.save);
+    return res.status(200).json({
       success: true,
-      message: "Password input"
+      message: "saved!"
     });
-
   } catch (err) {
     console.error(err);
     return res.status(500).json({
       success: false,
-      message: "Server error"
+      message: "not saved, server error."
     });
   }
 });
 
-    //checks the sent password against the username and hash stored in newtdb
+    //loads
+app.post("/text-adv/api/load", async(req,res) =>{
+  try {
+    if(!req.session.user) {
+      return res.status(401).json({
+        success: false,
+        message: "You are not logged in."
+      });
+    }
+    return res.status(200).json(req.session.user.textAdv.save);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: "not saved, server error."
+    });
+  }
+});
 
-app.post("/login", async(req, res) => {
+  //aMessage Route Handlers
+    //get username and password and put them into the sql database "newtdb" under the table "logins" in columns called "username" and "password"
+app.post("/aMessage/api/signUp", async(req, res) => {
+  try{
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ success: false, message: "Missing credentials" });
+    }
+
+
+    const hash = await encrypt(password);
+    
+    
+    if (!await insertIntoSQL(username, hash)) {
+      return res.status(409).json({
+        success: false,
+        message: "Username Taken"
+      })
+    }
+    
+    return res.status(200).json({
+      success: true,
+      message: "Password input"
+    });
+
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Server error:" + err.message
+      });
+    }
+});
+
+    //checks the sent password against the username and hash stored in newtdb
+app.post("/aMessage/api/login", async(req, res) => {
   try {
     const { username, password } = req.body;
     const hash = await pullFromSQL(username);
@@ -77,20 +154,27 @@ app.post("/login", async(req, res) => {
     if (result) {
       //log in to the session
       req.session.authenticated = true;
-      req.session.user = {
-        username,
-        password
-      }
+      req.session.user = { username };
 
-      //send back to client that everything is working
-      res.status(200).json({
+      //I hate callbacks so this just makes session.save a promise
+      await new Promise((resolve, reject) => {
+        req.session.save((err) => {
+          if (err) return reject(err);
+          resolve(); 
+        });
+      });
+
+      return res.status(200).json({
         success: true,
-        message: "Logged In" 
-      
-      })
-      // res.redirect(303, "/main");
+        message: "Logged In"
+      });
+    } else {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid Password"
+      });
     }
-
+    
   } catch (err) {
     console.error(err);
     return res.status(500).json({
@@ -100,15 +184,21 @@ app.post("/login", async(req, res) => {
   }
 });
 
-function ensureAuthentication(req, res, next) {
-  if (req.session.authenticated) {
-    return next();
-  } else {
-    res.status(403).json({ msg: "You're not authorized to view this page" });
+    //currently this route just is for testing
+app.post("/aMessage/api/main", async(req, res) => {
+  try {
+    return res.status(200).json({username: req.session.user.username});
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
   }
-}
+});
 
-app.get("/main", ensureAuthentication, async(req, res) =>{
+    //serves the file only if authenticated
+app.get("/aMessage/main", ensureAuthentication, async(req, res) =>{
   try {
     res.sendFile(path.join(__dirname,"main.html"));
     // res.status(200).json({
@@ -119,13 +209,32 @@ app.get("/main", ensureAuthentication, async(req, res) =>{
     console.error(err);
     return res.status(500).json({
       success: false,
-      message: "Server error"
+      message: "Server error" + err.message
     });
   }
-})
+});
 
+    //logs user out
+app.post("/aMessage/api/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Server error, could not log out."
+      });
+    }
+    
+    res.clearCookie("connect.sid");
+    return res.status(200).json({
+      success: true,
+      message: "logged out and cookies cleared!"
+    });
+  });
+});
 
   //express needs to listen on port whatever, this starts the server
+  //MAKE SURE THIS STAYS AT THE BOTTOM OF THE EXPRESS SECTION
 
 app.listen(PORT, "127.0.0.1", () => {
   console.log(`API listening on port ${PORT}`);
@@ -134,24 +243,20 @@ app.listen(PORT, "127.0.0.1", () => {
 
 //MYSQL------------------------------------------------------------------------------------------------------------------
 //consts
-
-
 //connect to sql database
-let con;
-
-async function connect() {
-  try {
-    con = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: "newtdb"
-    });
-    console.log("Connected to MySQL");
-
-  } catch (err) {
-    console.error("MySQL connection failed:", err.message);
-  }
+let pool;
+function connect() {
+    pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: "newtdb",
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    enableKeepAlive: true, 
+    keepAliveInitialDelay: 0
+  });
 }
 
 connect();
@@ -160,9 +265,19 @@ connect();
 //funcs
 async function insertIntoSQL(inputUser, inputHash) {
   try {
-    let sql = "INSERT INTO logins (username, password) VALUES (?, ?)";
-    await con.query(sql, [inputUser, inputHash]);
+    let sql = "SELECT EXISTS(SELECT 1 FROM logins WHERE username = ?) AS existsFlag";
+    const [rows] = await pool.query(sql, [inputUser]);
+
+    if (rows[0].existsFlag === 1) {
+      console.log("Username already taken.");
+      return false;
+    }
+    
+    sql = "INSERT INTO logins (username, password) VALUES (?, ?)";
+    await pool.query(sql, [inputUser, inputHash]);
     console.log("1 record inserted");  
+
+    return true;
      
   } catch (err) {
     console.error(err);
@@ -172,13 +287,15 @@ async function insertIntoSQL(inputUser, inputHash) {
 
 async function pullFromSQL(inputUser){
   try {
+    let hash;
     let sql = "SELECT password FROM logins WHERE username = ?";
-    const [rows] = await con.query(sql, [inputUser]);
+    const [rows] = await pool.query(sql, [inputUser]);
     console.log("Hash found");
     if(rows.length > 0) {
-      var hash = rows[0].password;
+      hash = rows[0].password;
     } else {
       console.log("No user found");
+      return null;
     }
 
     return hash;

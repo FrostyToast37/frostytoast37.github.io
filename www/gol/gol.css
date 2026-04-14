@@ -1,0 +1,20 @@
+#gameboard {
+  border: 1px solid;
+  width: 100%;
+}
+
+td {
+  background-color: inherit;
+  transition: background-color 0.1s;
+  padding: 2px;
+  text-align: center;
+  font-size: 8px;
+}
+
+td:hover {
+  background-color: #16F529;
+}
+
+.on {
+  background-color: white;
+}
