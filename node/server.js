@@ -2,18 +2,29 @@
 const fs = require("fs");
 const path = require("path");
 const express = require("express"); 
+const { createServer } = require('node:http');
+const { Server } = require("socket.io");
 let mysql = require("mysql2/promise");
 let bcrypt = require("bcrypt");
 let session = require("express-session");
 
 
-
-//EXPRESS----------------------------------------------------------------------------------------------------------------
-  //consts
+//consts
 const SECRET = process.env.SESSION_SECRET
 const PORT = process.env.PORT;
 const app = express();
+const server = createServer(app);
+const io = new Server(server);
 
+//SOCKET.IO--------------------------------------------------------------------------------------------------------------
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
+
+//EXPRESS----------------------------------------------------------------------------------------------------------------
   //express middleware configs
 
 app.set('trust proxy', 1)

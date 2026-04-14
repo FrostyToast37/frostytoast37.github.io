@@ -9,7 +9,11 @@
   <body>
     <p id="test">Hey man you did it!</p>
     <button onclick="testFunc()">test?</button>
-    <script src="/aMessage/main.js"></script>
+
+    <form>
+      <label>Message</label>
+      <input id="chat_input">
+    </form>
     
     <div id="drop-menu">
       <div id="nav-icon3-container">
@@ -22,6 +26,9 @@
         </div>
       </div>
     </div>
+
+    <script src="/aMessage/main.js"></script>
+    <script src="https://cdn.socket.io/4.8.3/socket.io.min.js"></script>
     <script src="/style.js"></script>
   </body>
 </html>
