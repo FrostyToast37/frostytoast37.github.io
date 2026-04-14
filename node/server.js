@@ -15,21 +15,7 @@ const PORT = process.env.PORT;
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
-
-//SOCKET.IO--------------------------------------------------------------------------------------------------------------
-io.on('connection', (socket) => {
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-});
-
-//EXPRESS----------------------------------------------------------------------------------------------------------------
-  //express middleware configs
-
-app.set('trust proxy', 1)
-
-app.use(session({
+const sessionMiddleware = session({
   proxy: true,
   secret: SECRET,
   resave: false,
@@ -40,11 +26,32 @@ app.use(session({
     sameSite: "lax", 
     maxAge: 1000 * 60 * 60 * 24 //expires in 24 hours
   }
-}));
+})
+
+//SOCKET.IO--------------------------------------------------------------------------------------------------------------
+  //socket.io middleware configs
+io.engine.use(sessionMiddleware);
+
+  //routes? connections? idk what to call these
+io.on('connection', (socket) => {
+  const sessionID = socket.request.session.id;
+  console.log('a user connected');
+  socket.join(sessionID)
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
+
+//EXPRESS----------------------------------------------------------------------------------------------------------------
+  //express middleware configs
+
+app.set('trust proxy', 1)
+
+app.use(sessionMiddleware);
 app.use(express.json());
 
-//ROUTE FUNCTIONS
-  //checks if user is logged in
+  //ROUTE FUNCTIONS
+    //checks if user is logged in
 function ensureAuthentication(req, res, next) {
   if (req.session.authenticated) {
     return next();
@@ -91,6 +98,12 @@ app.post("/text-adv/api/load", async(req,res) =>{
         success: false,
         message: "You are not logged in."
       });
+    }
+    if(!req.session.user?.textAdv?.save) {
+      return res.status(404).json({
+        success: false,
+        message: "You don't have a save."
+      })
     }
     return res.status(200).json(req.session.user.textAdv.save);
   } catch (err) {
@@ -216,6 +229,8 @@ app.get("/aMessage/main", ensureAuthentication, async(req, res) =>{
 
     //logs user out
 app.post("/aMessage/api/logout", (req, res) => {
+  const sessionID = req.session.id;
+  
   req.session.destroy((err) => {
     if (err) {
       console.error(err);
@@ -225,19 +240,13 @@ app.post("/aMessage/api/logout", (req, res) => {
       });
     }
     
+    io.in(sessionID).disconnectSockets();
     res.clearCookie("connect.sid");
     return res.status(200).json({
       success: true,
       message: "logged out and cookies cleared!"
     });
   });
-});
-
-  //express needs to listen on port whatever, this starts the server
-  //MAKE SURE THIS STAYS AT THE BOTTOM OF THE EXPRESS SECTION
-
-app.listen(PORT, "127.0.0.1", () => {
-  console.log(`API listening on port ${PORT}`);
 });
 
 
@@ -320,3 +329,12 @@ async function check(hash, inputPassword){
   //returns boolean true or false for the password match to the stored hash
   return await bcrypt.compare(inputPassword, hash);
 }
+
+//STARTS THE SERVER------------------------------------------/\/\/\/\/\/\/\/\/\\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+  //express needs to listen on port whatever, this starts the server
+  //socket.io also needs to be attached to the parent server
+  //MAKE SURE THIS STAYS AT THE BOTTOM OF THE PAGE (just to prevent routes defined after the listen)
+
+server.listen(PORT, "127.0.0.1", () => {
+  console.log(`API listening on port ${PORT}`);
+});
