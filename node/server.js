@@ -215,7 +215,7 @@ app.get("/aMessage/main", ensureAuthentication, async(req, res) =>{
 });
 
     //logs user out
-app.post("/aMessage/api/logout", (req, res) => {
+app.post("/www/aMessage/api/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error(err);
