@@ -1,5 +1,5 @@
 let test = document.getElementById("test");
-let input = document.getElementById("chat_input");
+const input = document.getElementById("chat_input");
 
 const socket = io();
 
@@ -18,7 +18,7 @@ async function testFunc() {
   }
 }
 
-async function sendChat(message) {
+function sendChat(message) {
   socket.emit("msg", message);
 }
 
@@ -29,4 +29,5 @@ socket.on("rsp", (res) => {
 
 input.addEventListener("submit", (event) => {
   event.preventDefault();
+  sendChat(input.value);
 })
