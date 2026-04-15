@@ -19,8 +19,7 @@ html {
 
 #top-banner {
   background-color: navy;
-  width: 75%;
-  left:0;
+  width: 100%;
   top: 0;
   padding: 0.6rem;
   display: flex;
