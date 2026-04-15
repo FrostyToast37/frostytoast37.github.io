@@ -1,4 +1,5 @@
 let test = document.getElementById("test");
+const form = document.getElementById("chat_form");
 const input = document.getElementById("chat_input");
 
 const socket = io();
@@ -27,7 +28,7 @@ socket.on("rsp", (res) => {
   test.innerText = res; // world
 });
 
-input.addEventListener("submit", (event) => {
+form.addEventListener("submit", (event) => {
   event.preventDefault();
   sendChat(input.value);
 })
