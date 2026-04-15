@@ -25,12 +25,12 @@ html {
   display: flex;
   flex-direction: row;
   color: white;
-  align-items: stretch;
+  align-items: center;
+  justify-content: space-evenly;
   margin: 0;
 }
 
 #top-banner h2 {
-  flex-grow: 1;
   font-size: 3.6rem;
   background-color: navy;
   color: white;
@@ -38,6 +38,7 @@ html {
   border-radius: 1.6rem;
   padding: 0.4rem;
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  width: max-content;
 }
 
 #top-banner h2:hover {
@@ -48,14 +49,13 @@ html {
 #flavors {
   display: flex;
   flex-direction: row;
-  align-items: stretch;
-  flex-grow: 1;
+  align-items: center;
 }
 
 #usuals, #weeklys {
   display: flex;
   flex-direction: row;
-  align-items: stretch;
+  align-items: center;
   flex-grow: 1;
   justify-content: space-evenly;
   margin: 1.6rem;
