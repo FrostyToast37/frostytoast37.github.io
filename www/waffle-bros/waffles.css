@@ -51,18 +51,17 @@ html {
   flex-grow: 1;
 }
 
-#usuals {
+#usuals, #weeklys {
   display: flex;
   flex-direction: row;
   align-items: stretch;
   flex-grow: 1;
+  justify-content: space-evenly
 }
 
 #weeklys {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  flex-grow: 1;
+  background-color: #F08080;
+  color: white;
 }
 
 #usuals span, #weeklys span {
