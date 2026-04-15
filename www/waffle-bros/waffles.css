@@ -19,18 +19,20 @@ html {
   background-color: navy;
   width: 100%;
   top: 0;
-  padding: 16rem;
+  padding: 1.6rem;
   display: flex;
   flex-direction: row;
   color: white;
 }
 
 #top-banner h2 {
-  font-size: 24rem;
+  font-size: 2.4rem;
   background-color: navy;
   color: white;
   border: 4px solid navy;
-  padding: 4rem;
+  padding: 0.4rem;
+  transition: background-color 0.5s ease-in-out;
+  transition: color 0.5s ease-in-out;
 }
 
 #top-banner h2:hover {
