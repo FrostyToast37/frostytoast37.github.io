@@ -33,6 +33,9 @@
         <button onclick="openOOS()">OOS?</button>
         <button onclick="openAGBOUND()">AGBOUND</button>
       </span>
+      <span class="bigred">
+        <button onclick="increment()"></button>
+      </span>
     </span>
     <span id="bio_container">
       <span id="drag" onclick="dragOpen()">&gt;</span>
@@ -61,6 +64,26 @@
       function openCookieChaos() {
         window.open("https://cookiechaos.xyz");
       }
+
+      async function increment() {
+        const res = await fetch("/api/increment", {
+          method: "POST"
+        });
+        const data = await res.JSON();
+
+        if (data.success) {
+          if (data.message < 1000) {
+            if (data.message % 100 === 0) {
+              alert(`You are the ${data.message}th click!`);
+            }
+          } else if (data.message % 1000 === 0) {
+            alert(`You are the ${data.message}th click!`);
+          }
+        } else {
+          alert("Your click didn't quite go through, maybe try again later.");
+        }
+      }
+
       function openCC3d() {
         var win = window.open()
         var url = "https://crazy-cattle.github.io/"

@@ -28,6 +28,8 @@ const sessionMiddleware = session({
   }
 })
 
+let counter = 0;
+
 //SOCKET.IO--------------------------------------------------------------------------------------------------------------
   //socket.io middleware configs
 io.engine.use(sessionMiddleware);
@@ -72,6 +74,24 @@ function ensureAuthentication(req, res, next) {
 }
 
   //ROUTE HANDLERS
+
+  //misc Routes
+    //button click
+app.post("/api/increment", async(req,res) =>{
+  try {
+    counter++;
+    res.status(200).json({
+      success: true,
+      message: counter
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: "not saved, server error."
+    });
+  }
+});
 
   //text-adv Route Handlers
     //saves
