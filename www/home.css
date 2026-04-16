@@ -21,7 +21,7 @@
   border: none;
 }
 
-.bigred {
+.bigred button{
   height: 6.0rem;
   width: 6.0rem;
   background-color: red;
@@ -29,7 +29,7 @@
   border-radius: 50%;
 }
 
-.bigred:active {
+.bigred button:active {
   background-color: darkred;
 }
 
