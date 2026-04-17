@@ -3,6 +3,8 @@
 	flex-direction: column;
 	background-color: #F08080;
 	color: white;
+	padding: 5.0rem;
+	margin: 10.0rem;
 }
 
 #choices span {
