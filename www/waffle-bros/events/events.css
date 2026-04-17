@@ -7,6 +7,7 @@
 }
 
 #top_title h1 {
+    margin: 0;
     padding: 1.0rem;
     font-size: 4.8rem;
     color: white;
