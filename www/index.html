@@ -69,7 +69,7 @@
         const res = await fetch("/api/increment", {
           method: "POST"
         });
-        const data = await res.JSON();
+        const data = await res.json();
 
         if (data.success) {
           if (data.message < 1000) {
