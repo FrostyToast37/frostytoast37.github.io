@@ -1,0 +1,10 @@
+#top_title {
+    background-color: navy;
+    width: 100%;
+}
+
+#top_title h1 {
+    padding: 1.0rem;
+    font-size: 4.2rem;
+    color: white;
+}
