@@ -1,6 +1,8 @@
 #top_title {
+    top: 0;
     background-color: navy;
     width: 100%;
+    height: 7.0rem
 }
 
 #top_title h1 {
