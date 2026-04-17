@@ -16,3 +16,32 @@ html {
   font-size: 62.5%;
   box-sizing: border-box;
 }
+
+#top-banner {
+  background-color: navy;
+  width: 100%;
+  top: 0;
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: row;
+  color: white;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 0;
+}
+
+#top-banner h2 {
+  font-size: 3.6rem;
+  background-color: navy;
+  color: white;
+  border: 4px solid navy;
+  border-radius: 1.6rem;
+  padding: 0.4rem;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  width: max-content;
+}
+
+#top-banner h2:hover {
+  background-color: white;
+  color: navy;
+}
