@@ -70,6 +70,7 @@
 
   #usuals, #weeklys {
     flex-direction: column;
+    justify-content: space-evenly;
   }
 
   #weeklys span, #usuals span {
