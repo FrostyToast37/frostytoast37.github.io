@@ -76,4 +76,8 @@
   #weeklys span, #usuals span {
     flex-direction: column;
   }
+
+  #top_banner , #top_banner h2{
+    display: none;
+  }
 }
