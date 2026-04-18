@@ -78,6 +78,7 @@
   }
 
   #top_banner , #top_banner h2{
+    visibility: hidden;
     display: none;
   }
 }
