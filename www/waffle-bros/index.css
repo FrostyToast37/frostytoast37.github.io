@@ -55,6 +55,7 @@
   align-items: center;
   padding: 1.0rem;
   margin: 1.6rem;
+  height: auto;
 }
 
 #flavors div span h1{
