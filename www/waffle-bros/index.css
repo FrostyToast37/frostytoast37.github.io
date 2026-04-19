@@ -40,6 +40,7 @@
   flex-grow: 1;
   justify-content: space-evenly;
   margin: 1.6rem;
+  width: 50%;
 }
 
 #weeklys {
