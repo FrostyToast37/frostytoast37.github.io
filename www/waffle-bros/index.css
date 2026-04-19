@@ -78,6 +78,11 @@
     flex-direction: column;
   }
 
+  #flavors div span h1{
+  margin: 0;
+  padding: 1.0rem;
+  }
+
   #top-banner , #top-banner h2{
     visibility: hidden;
     display: none;
