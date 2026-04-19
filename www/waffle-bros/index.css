@@ -71,7 +71,6 @@
   }
 
   #usuals, #weeklys {
-    height: 70rem;
     flex-direction: column;
     justify-content: space-evenly;
   }
