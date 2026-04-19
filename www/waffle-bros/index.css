@@ -78,7 +78,7 @@
     flex-direction: column;
   }
 
-  #flavors div span h1{
+  #flavors div span h1, #flavors div span p{
   margin: 0;
   padding: 1.0rem;
   }
