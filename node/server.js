@@ -4,9 +4,10 @@ const path = require("path");
 const express = require("express"); 
 const { createServer } = require('node:http');
 const { Server } = require("socket.io");
-let mysql = require("mysql2/promise");
-let bcrypt = require("bcrypt");
-let session = require("express-session");
+const mysql = require("mysql2/promise");
+const bcrypt = require("bcrypt");
+const session = require("express-session");
+const MySQLStore = require('express-mysql-session')(session);
 
 
 //consts
@@ -15,9 +16,23 @@ const PORT = process.env.PORT;
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
+const connFigs = {
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: "newtdb",
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    enableKeepAlive: true, 
+    keepAliveInitialDelay: 0
+  }
+const pool = mysql.createPool(connFigs);
+const sessionStore = new MySQLStore({}, pool);
 const sessionMiddleware = session({
   proxy: true,
   secret: SECRET,
+  store: sessionStore,
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -26,7 +41,8 @@ const sessionMiddleware = session({
     sameSite: "lax", 
     maxAge: 1000 * 60 * 60 * 24 //expires in 24 hours
   }
-})
+});
+
 
 let counter = 0;
 
@@ -36,9 +52,12 @@ io.engine.use(sessionMiddleware);
 
   //routes? connections? idk what to call these
 io.on('connection', (socket) => {
-  const sessionID = socket.request.session.id;
-  console.log('a user connected');
-  socket.join(sessionID)
+  const session = socket.request.session;
+  if (session && session.user) {
+    const username = session.user.username;
+    socket.join(username);
+    console.log(`${username} connected and is successfully in their own room`);
+  }
 
 
   //message recieved
@@ -298,24 +317,6 @@ app.post("/api/aMessage/logout", (req, res) => {
 
 
 //MYSQL------------------------------------------------------------------------------------------------------------------
-//consts
-//connect to sql database
-let pool;
-function connect() {
-    pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: "newtdb",
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
-    enableKeepAlive: true, 
-    keepAliveInitialDelay: 0
-  });
-}
-
-connect();
 
 
 //funcs
