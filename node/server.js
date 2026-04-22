@@ -81,7 +81,7 @@ app.set('trust proxy', 1)
 app.use(sessionMiddleware);
 app.use(express.json());
 
-  //ROUTE FUNCTIONS
+  //HELPFUL FUNCTIONS
     //checks if user is logged in
 function ensureAuthentication(req, res, next) {
   if (req.session.authenticated) {
@@ -91,6 +91,16 @@ function ensureAuthentication(req, res, next) {
     res.redirect('/aMessage/login.html');
   }
 }
+
+const saveSession = (req) => {
+  return new Promise((resolve, reject) => {
+    req.session.save((err) => {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
+};
+
 
   //ROUTE HANDLERS
 
@@ -127,6 +137,7 @@ app.post("/api/text-adv/save", async(req,res) =>{
     //*NOTE* 1 fixing typeError on textAdv.save because textAdv was never defined and then .save could not be used because could not read properties of null. Hopefully fixed now.
     req.session.user.textAdv.save = req.body;
     console.log(req.session.user.textAdv.save);
+    await saveSession(req);
     return res.status(200).json({
       success: true,
       message: "saved!"
