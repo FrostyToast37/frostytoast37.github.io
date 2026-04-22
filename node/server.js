@@ -64,7 +64,7 @@ io.on('connection', (socket) => {
   socket.on("msg", (message) => {
     socket.emit("rsp", 
       `message: ${message} recieved. Here is it backwards! ${message.split('').reverse().join('')}`
-    )
+    );
   })
 
   //disconnect signal
