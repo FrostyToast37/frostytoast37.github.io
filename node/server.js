@@ -81,7 +81,7 @@ app.set('trust proxy', 1)
 app.use(sessionMiddleware);
 app.use(express.json());
 
-  //HELPFUL FUNCTIONS
+//HELPFUL FUNCTIONS
     //checks if user is logged in
 function ensureAuthentication(req, res, next) {
   if (req.session.authenticated) {
@@ -91,7 +91,6 @@ function ensureAuthentication(req, res, next) {
     res.redirect('/aMessage/login.html');
   }
 }
-
 const saveSession = (req) => {
   return new Promise((resolve, reject) => {
     req.session.save((err) => {
@@ -101,8 +100,7 @@ const saveSession = (req) => {
   });
 };
 
-
-  //ROUTE HANDLERS
+//ROUTE HANDLERS
 
   //misc Routes
     //button click
@@ -132,12 +130,7 @@ app.post("/api/text-adv/save", async(req,res) =>{
         message: "You are not logged in."
       });
     }
-    console.log(req.body);
-    req.session.user.textAdv = req.session.user.textAdv || {};
-    //*NOTE* 1 fixing typeError on textAdv.save because textAdv was never defined and then .save could not be used because could not read properties of null. Hopefully fixed now.
-    req.session.user.textAdv.save = req.body;
-    console.log(req.session.user.textAdv.save);
-    await saveSession(req);
+    await insertTextAdvSave(req.session.user.username, req.body);
     return res.status(200).json({
       success: true,
       message: "saved!"
@@ -160,18 +153,21 @@ app.post("/api/text-adv/load", async(req,res) =>{
         message: "You are not logged in."
       });
     }
-    if(!req.session.user?.textAdv?.save) {
+    const saveData = await pullTextAdvSave(req.session.user.username);
+
+    if(!saveData) {
       return res.status(404).json({
         success: false,
         message: "You don't have a save."
       })
     }
-    return res.status(200).json(req.session.user.textAdv.save);
+
+    return res.status(200).json(saveData);
   } catch (err) {
     console.error(err);
     return res.status(500).json({
       success: false,
-      message: "not saved, server error."
+      message: "Error loading save data."
     });
   }
 });
@@ -287,7 +283,7 @@ app.get("/api/aMessage/main", ensureAuthentication, async(req, res) =>{
     });
   }
 });
-
+  //serve js to password protected route
 app.get("/api/aMessage/mainJS", ensureAuthentication, async(req, res) =>{
   try {
     res.sendFile(path.join(__dirname,"main.js"));
@@ -367,6 +363,40 @@ async function pullFromSQL(inputUser){
     }
 
     return hash;
+
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+async function insertTextAdvSave(username, saveData){
+  try {
+    const sql = "INSERT INTO textAdv (username, saveData) VALUES (?, ?) ON DUPLICATE KEY UPDATE saveData = ?";
+    //savedata is passed twice, once for insert and once for duplicate key
+    await pool.query(sql, [username, saveData, saveData]);
+    console.log("1 record inserted");  
+
+    return true;
+      
+  } catch (err) {
+    console.error(err);
+    throw err; 
+  }
+}
+
+async function pullTextAdvSave(username) {
+  try {
+    const sql = "SELECT saveData FROM textAdv WHERE username = ?";
+    //sql returns an array object that we gotta parse
+    const [rows] = await pool.query(sql, [username]);
+
+    if (rows.length === 0) {
+      return null;
+    }
+
+    const saveData = rows[0].saveData;
+    return saveData;
 
   } catch (err) {
     console.error(err);

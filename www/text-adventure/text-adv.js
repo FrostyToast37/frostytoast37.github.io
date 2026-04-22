@@ -440,6 +440,8 @@ async function save() {
   const data = await res.json();
   if(data.success) {
     rawOutput = `Saved at ${d.toTimeString()}`;
+  } else {
+    rawOutput = data.message;
   }
 }
 
@@ -448,11 +450,16 @@ async function loadSave() {
     method: "POST",
   });
 
-  const data = await res.json();
+  if (res.status === 404) {
+    rawOutput = "You don't have any save data yet. Run 'save' to keep progress";
+  } else if(res.ok) {
 
-  p_player.inventory = data.inventory.map(item => {return registry[item] || null;});
-  currentRoom = map[data.location[0]][data.location[1]][data.location[2]];
-  rawOutput = `Save loaded from ${data.time}\n\n${currentRoom.dialogue}`;
+    const data = await res.json();
+
+    p_player.inventory = data.inventory.map(item => {return registry[item] || null;});
+    currentRoom = map[data.location[0]][data.location[1]][data.location[2]];
+    rawOutput = `Save loaded from ${data.time}\n\n${currentRoom.dialogue}`;
+  } 
 }
 
 
