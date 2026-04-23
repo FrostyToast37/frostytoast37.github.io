@@ -443,7 +443,7 @@ async function save() {
   } else if (data) {
     rawOutput = data.message;
   } else {
-    rawOutput = "I don't know what happened but something broke."
+    rawOutput = "I don't know what happened but something broke.";
   }
 }
 
