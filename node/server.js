@@ -65,6 +65,26 @@ io.on('connection', (socket) => {
     socket.emit("rsp", 
       `message: ${message} recieved. Here is it backwards! ${message.split('').reverse().join('')}`
     );
+  });
+  //sending dms
+  socket.on("send_dm" (data) => {
+    const { to, message } = data;
+    const from = session.user.username;
+    try {
+      await saveMessage(from, to, message);
+
+      const payload = {
+            from,
+            message,
+            timestamp: new Date()
+      };
+      
+      io.to(to).to(from).emit("recieve_dm", payload);
+
+    } catch (error) {
+      console.error(`Message to ${to} Failed to Send`, err);
+      io.to(from).emit("error", `Message to ${to} Failed to Send`)
+    }
   })
 
   //disconnect signal
