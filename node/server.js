@@ -390,8 +390,9 @@ async function pullFromSQL(inputUser){
   }
 }
 
-async function insertTextAdvSave(username, saveData){
+async function insertTextAdvSave(username, saveDataJSON){
   try {
+    const saveData = JSON.stringify(saveDataJSON);
     const sql = "INSERT INTO textAdv (username, saveData) VALUES (?, ?) ON DUPLICATE KEY UPDATE saveData = ?";
     //savedata is passed twice, once for insert and once for duplicate key
     await pool.query(sql, [username, saveData, saveData]);
