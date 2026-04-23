@@ -440,8 +440,10 @@ async function save() {
   const data = await res.json();
   if(data.success) {
     rawOutput = `Saved at ${d.toTimeString()}`;
-  } else {
+  } else if (data) {
     rawOutput = data.message;
+  } else {
+    rawOutput = "I don't know what happened but something broke."
   }
 }
 
