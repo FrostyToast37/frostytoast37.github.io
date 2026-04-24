@@ -68,7 +68,7 @@ io.on('connection', (socket) => {
     );
   });
   //sending dms
-  socket.on("send_dm", (data) => {
+  socket.on("send_dm", async (data) => {
     const { to, message } = data;
     const from = session.user.username;
     try {
@@ -82,7 +82,7 @@ io.on('connection', (socket) => {
       
       io.to(to).to(from).emit("recieve_dm", payload);
 
-    } catch (error) {
+    } catch (err) {
       console.error(`Message to ${to} Failed to Send`, err);
       io.to(from).emit("error", `Message to ${to} Failed to Send`)
     }
@@ -453,7 +453,7 @@ async function readMessage(messageID) {
 }
 
 async function pullMessageLogs(from,to) {
-  
+
 }
 
 //BCRYPT------------------------------------------------------------------------------------------------------------------
