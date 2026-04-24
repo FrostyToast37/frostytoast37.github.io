@@ -52,13 +52,14 @@ io.engine.use(sessionMiddleware);
 
   //routes? connections? idk what to call these
 io.on('connection', (socket) => {
+  //pass express session to socket.io
   const session = socket.request.session;
+
   if (session && session.user) {
     const username = session.user.username;
     socket.join(username);
     console.log(`${username} connected and is successfully in their own room`);
   }
-
 
   //message recieved
   socket.on("msg", (message) => {
@@ -67,7 +68,7 @@ io.on('connection', (socket) => {
     );
   });
   //sending dms
-  socket.on("send_dm" (data) => {
+  socket.on("send_dm", (data) => {
     const { to, message } = data;
     const from = session.user.username;
     try {
@@ -346,7 +347,7 @@ app.post("/api/aMessage/logout", (req, res) => {
 //MYSQL------------------------------------------------------------------------------------------------------------------
 
 
-//funcs
+//helper funcs
 async function insertIntoSQL(inputUser, inputHash) {
   try {
     let sql = "SELECT EXISTS(SELECT 1 FROM logins WHERE username = ?) AS existsFlag";
@@ -423,6 +424,36 @@ async function pullTextAdvSave(username) {
     console.error(err);
     throw err;
   }
+}
+
+async function saveMessage(from, to, message) {
+  try {
+    const sql = "INSERT INTO messages (sender_username, receiver_username, message_content) VALUES (?, ?, ?)";
+    //insert params into sql query
+    const [result] = await pool.query(sql, [from, to, message]);
+    console.log("1 message inserted");
+
+    return result.insertId;
+      
+  } catch (err) {
+    console.error(err);
+    throw err; 
+  }
+}
+
+async function readMessage(messageID) {
+  try {
+    const sql = "UPDATE messages SET read_at = CURRENT_TIMESTAMP WHERE id = ?";
+    await pool.query(sql, [messageId]);
+
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
+async function pullMessageLogs(from,to) {
+  
 }
 
 //BCRYPT------------------------------------------------------------------------------------------------------------------
