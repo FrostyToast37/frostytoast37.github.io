@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
     console.log(`${username} connected and is successfully in their own room`);
   }
 
-  //message recieved
+  //test route
   socket.on("msg", (message) => {
     socket.emit("rsp", 
       `message: ${message} recieved. Here is it backwards! ${message.split('').reverse().join('')}`
@@ -70,13 +70,14 @@ io.on('connection', (socket) => {
   //sending dms
   socket.on("send_dm", async (data) => {
     const { to, message } = data;
-    const from = session.user.username;
+    const from = username;
     try {
-      await saveMessage(from, to, message);
+      const msg_id = await saveMessage(from, to, message);
 
       const payload = {
             from,
             message,
+            msg_id,
             timestamp: new Date()
       };
       
@@ -84,9 +85,24 @@ io.on('connection', (socket) => {
 
     } catch (err) {
       console.error(`Message to ${to} Failed to Send`, err);
-      io.to(from).emit("error", `Message to ${to} Failed to Send`)
+      socket.emit("error", `Message to ${to} Failed to Send`);
     }
-  })
+  });
+
+  //reading dms
+  socket.on("read", async (data) => {
+    const { messageID, messageSender} = data;
+
+    try {
+      const readTime = await readMessage(messageID, username);
+
+      io.to(messageSender).emit("readTime", readTime);
+    } catch (err) {
+      socket.emit("error", "Couldn't mark message as read.");
+      console.error("couldn't mark message as read: ", err);
+    }
+
+  });
 
   //disconnect signal
   socket.on('disconnect', () => {
@@ -307,6 +323,7 @@ app.get("/api/aMessage/main", ensureAuthentication, async(req, res) =>{
   //serve js to password protected route
 app.get("/api/aMessage/mainJS", ensureAuthentication, async(req, res) =>{
   try {
+    res.type('.js');
     res.sendFile(path.join(__dirname,"main.js"));
     // res.status(200).json({
     //   success: true,
@@ -441,10 +458,13 @@ async function saveMessage(from, to, message) {
   }
 }
 
-async function readMessage(messageID) {
+async function readMessage(messageID, username) {
   try {
-    const sql = "UPDATE messages SET read_at = CURRENT_TIMESTAMP WHERE id = ?";
-    await pool.query(sql, [messageId]);
+    const now = new Date();
+    const sql = "UPDATE messages SET read_at = ? WHERE id = ? AND reciever_username = ?";
+    await pool.query(sql, [now, messageID, username]);
+
+    return now;
 
   } catch (err) {
     console.error(err);
@@ -452,7 +472,17 @@ async function readMessage(messageID) {
   }
 }
 
-async function pullMessageLogs(from,to) {
+async function pullMessageLogs(user1, user2) {
+  try {
+    const sql = "SELECT id, sender_username, receiver_username, message_content, read_at, created_at FROM messages WHERE (sender_username = ? AND receiver_username = ?) OR (sender_username = ? AND receiver_username = ?) ORDER BY created_at ASC;";
+    const [logs] = pool.query(sql, [user1, user2, user2, user1]);
+
+    return logs; 
+    
+  } catch (err) {
+    console.error(err);
+    throw err; 
+  }
 
 }
 
