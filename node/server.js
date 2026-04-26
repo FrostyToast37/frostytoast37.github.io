@@ -55,11 +55,13 @@ io.on('connection', (socket) => {
   //pass express session to socket.io
   const session = socket.request.session;
 
-  if (session && session.user) {
-    const username = session.user.username;
-    socket.join(username);
-    console.log(`${username} connected and is successfully in their own room`);
+  if (!(session && session.user)) {
+    return;
   }
+
+  const username = session.user.username;
+  socket.join(username);
+  console.log(`${username} connected and is successfully in their own room`);
 
   //test route
   socket.on("msg", (message) => {
@@ -338,6 +340,28 @@ app.get("/api/aMessage/mainJS", ensureAuthentication, async(req, res) =>{
   }
 });
 
+  //loads message history
+app.get("/api/aMessage/loadMessages/:to", ensureAuthentication, async(req, res) => {
+  try {
+    const from = req.session.user.username;
+    const { to } = req.params;
+    const logs = await pullMessageLogs(to, from);
+
+    return res.status(200).json({
+      success: true,
+      logs: logs
+    });
+    
+
+  } catch (err) {
+    console.error("failed to fetch messages: ", err)
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch messages"
+    })
+  }
+});
+
     //logs user out
 app.post("/api/aMessage/logout", (req, res) => {
   const sessionID = req.session.id;
@@ -461,7 +485,7 @@ async function saveMessage(from, to, message) {
 async function readMessage(messageID, username) {
   try {
     const now = new Date();
-    const sql = "UPDATE messages SET read_at = ? WHERE id = ? AND reciever_username = ?";
+    const sql = "UPDATE messages SET read_at = ? WHERE id = ? AND receiver_username = ?";
     await pool.query(sql, [now, messageID, username]);
 
     return now;
@@ -475,7 +499,7 @@ async function readMessage(messageID, username) {
 async function pullMessageLogs(user1, user2) {
   try {
     const sql = "SELECT id, sender_username, receiver_username, message_content, read_at, created_at FROM messages WHERE (sender_username = ? AND receiver_username = ?) OR (sender_username = ? AND receiver_username = ?) ORDER BY created_at ASC;";
-    const [logs] = pool.query(sql, [user1, user2, user2, user1]);
+    const [logs] = await pool.query(sql, [user1, user2, user2, user1]);
 
     return logs; 
     
