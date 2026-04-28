@@ -1,5 +1,5 @@
 let test = document.getElementById("test");
-const form = document.getElementById("chatdocumnet_form");
+const form = document.getElementById("chat_form");
 const input = document.getElementById("chat_input");
 
 const receivedMessages = document.getElementById("received_messages");
