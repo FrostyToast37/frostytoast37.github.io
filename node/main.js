@@ -2,7 +2,7 @@ let test = document.getElementById("test");
 const form = document.getElementById("chatdocumnet_form");
 const input = document.getElementById("chat_input");
 
-const recievedMessages = document.getElementById("received_messages");
+const receivedMessages = document.getElementById("received_messages");
 const dmForm = document.getElementById("dm_form");
 const dmAddress = document.getElementById("dm_address");
 const dmContent = document.getElementById("dm_content");
@@ -33,19 +33,25 @@ socket.on("rsp", (res) => {
 
 //dms
   //senders func
-  function sendDM(to, content) {
-    const data = { to, content };
+  function sendDM(to, message) {
+    const data = { to, message };
     socket.emit("send_dm", data);
   }
   function readDM(ID, to) {
-    const data = { ID, to }
+    const data = { messageID, messageSender }
     socket.emit("read", data);
   }
 
   //listeners
   socket.on("receive_dm", (data) => {
     const { from, message, msg_id, timestamp } = data;
-    recievedMessages.innerHTML += `<p data-id="${msg_id}">${timestamp}:\n${from} said: ${message}</p>`;
+
+    const p = document.createElement("p");
+    p.setAttribute("data-id", msg_id);
+    // textContent treats everything as plain text, neutralizing scripts
+    p.textContent = `${timestamp}: ${from} said: ${message}`;
+
+    receivedMessages.appendChild(p);
   });
 
 form.addEventListener("submit", (event) => {

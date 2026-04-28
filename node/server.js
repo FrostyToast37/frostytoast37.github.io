@@ -364,7 +364,7 @@ app.get("/api/aMessage/loadMessages/:to", ensureAuthentication, async(req, res) 
 
     //logs user out
 app.post("/api/aMessage/logout", (req, res) => {
-  const sessionID = req.session.id;
+  const username = req.session.user.username;
   
   req.session.destroy((err) => {
     if (err) {
@@ -375,7 +375,7 @@ app.post("/api/aMessage/logout", (req, res) => {
       });
     }
     
-    io.in(sessionID).disconnectSockets();
+    io.in(username).disconnectSockets();
     res.clearCookie("connect.sid");
     return res.status(200).json({
       success: true,
