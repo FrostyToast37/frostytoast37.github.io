@@ -45,7 +45,7 @@ socket.on("rsp", (res) => {
   //listeners
   socket.on("receive_dm", (data) => {
     const { from, message, msg_id, timestamp } = data;
-    recievedMessages.innerHTML += `<p data-id="${msg_id}">${timestamp}:\n${from} said: ${message}</p>`
+    recievedMessages.innerHTML += `<p data-id="${msg_id}">${timestamp}:\n${from} said: ${message}</p>`;
   });
 
 form.addEventListener("submit", (event) => {
