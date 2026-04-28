@@ -37,7 +37,7 @@ socket.on("rsp", (res) => {
     const data = { to, message };
     socket.emit("send_dm", data);
   }
-  function readDM(ID, to) {
+  function readDM(messageID, messageSender) {
     const data = { messageID, messageSender }
     socket.emit("read", data);
   }
