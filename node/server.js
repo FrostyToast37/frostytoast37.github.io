@@ -1,535 +1,541 @@
 //imports
-const fs = require("fs");
-const path = require("path");
-const express = require("express"); 
-const { createServer } = require('node:http');
-const { Server } = require("socket.io");
-const mysql = require("mysql2/promise");
-const bcrypt = require("bcrypt");
-const session = require("express-session");
-const MySQLStore = require('express-mysql-session')(session);
-
+  const fs = require("fs");
+  const path = require("path");
+  const express = require("express"); 
+  const { createServer } = require('node:http');
+  const { Server } = require("socket.io");
+  const mysql = require("mysql2/promise");
+  const bcrypt = require("bcrypt");
+  const session = require("express-session");
+  const MySQLStore = require('express-mysql-session')(session);
 
 //consts
-const SECRET = process.env.SESSION_SECRET
-const PORT = process.env.PORT;
-const app = express();
-const server = createServer(app);
-const io = new Server(server);
-const connFigs = {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: "newtdb",
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
-    enableKeepAlive: true, 
-    keepAliveInitialDelay: 0
-  }
-const pool = mysql.createPool(connFigs);
-const sessionStore = new MySQLStore({}, pool);
-const sessionMiddleware = session({
-  proxy: true,
-  secret: SECRET,
-  store: sessionStore,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: false,
-    httpOnly: true, 
-    sameSite: "lax", 
-    maxAge: 1000 * 60 * 60 * 24 //expires in 24 hours
-  }
-});
-
-
-let counter = 0;
+  const SECRET = process.env.SESSION_SECRET
+  const PORT = process.env.PORT;
+  const app = express();
+  const server = createServer(app);
+  const io = new Server(server);
+  const connFigs = {
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: "newtdb",
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0,
+      enableKeepAlive: true, 
+      keepAliveInitialDelay: 0
+    }
+  const pool = mysql.createPool(connFigs);
+  const sessionStore = new MySQLStore({}, pool);
+  const sessionMiddleware = session({
+    proxy: true,
+    secret: SECRET,
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false,
+      httpOnly: true, 
+      sameSite: "lax", 
+      maxAge: 1000 * 60 * 60 * 24 //expires in 24 hours
+    }
+  });
+  let counter = 0;
 
 //SOCKET.IO--------------------------------------------------------------------------------------------------------------
-  //socket.io middleware configs
-io.engine.use(sessionMiddleware);
+    //socket.io middleware configs
+  io.engine.use(sessionMiddleware);
 
-  //routes? connections? idk what to call these
-io.on('connection', (socket) => {
-  //pass express session to socket.io
-  const session = socket.request.session;
+    //routes? connections? idk what to call these
+  io.on('connection', (socket) => {
+    //pass express session to socket.io
+    const session = socket.request.session;
 
-  if (!(session && session.user)) {
-    return;
-  }
-
-  const username = session.user.username;
-  socket.join(username);
-  console.log(`${username} connected and is successfully in their own room`);
-
-  //test route
-  socket.on("msg", (message) => {
-    socket.emit("rsp", 
-      `message: ${message} received. Here is it backwards! ${message.split('').reverse().join('')}`
-    );
-  });
-  //sending dms
-  socket.on("send_dm", async (data) => {
-    const { to, message } = data;
-    const from = username;
-    try {
-      const msg_id = await saveMessage(from, to, message);
-
-      const payload = {
-            from,
-            message,
-            msg_id,
-            timestamp: new Date()
-      };
-      
-      io.to(to).to(from).emit("receive_dm", payload);
-
-    } catch (err) {
-      console.error(`Message to ${to} Failed to Send`, err);
-      socket.emit("error", `Message to ${to} Failed to Send`);
-    }
-  });
-
-  //reading dms
-  socket.on("read", async (data) => {
-    const { messageID, messageSender} = data;
-
-    try {
-      const readTime = await readMessage(messageID, username);
-
-      io.to(messageSender).emit("readTime", readTime);
-    } catch (err) {
-      socket.emit("error", "Couldn't mark message as read.");
-      console.error("couldn't mark message as read: ", err);
+    if (!(session && session.user)) {
+      return;
     }
 
-  });
+    const username = session.user.username;
+    socket.join(username);
+    console.log(`${username} connected and is successfully in their own room`);
 
-  //disconnect signal
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+    //test route
+    socket.on("msg", (message) => {
+      socket.emit("rsp", 
+        `message: ${message} received. Here is it backwards! ${message.split('').reverse().join('')}`
+      );
+    });
+    //sending dms
+    socket.on("send_dm", async (data) => {
+      const { to, message } = data;
+      const from = username;
+      try {
+        const msg_id = await saveMessage(from, to, message);
+
+        const payload = {
+              from,
+              message,
+              msg_id,
+              timestamp: new Date()
+        };
+        
+        io.to(to).to(from).emit("receive_dm", payload);
+
+      } catch (err) {
+        console.error(`Message to ${to} Failed to Send`, err);
+        socket.emit("error", `Message to ${to} Failed to Send`);
+      }
+    });
+
+    //reading dms
+    socket.on("read", async (data) => {
+      const { messageID, messageSender} = data;
+
+      try {
+        const readTime = await readMessage(messageID, username);
+
+        io.to(messageSender).emit("readTime", readTime);
+      } catch (err) {
+        socket.emit("error", "Couldn't mark message as read.");
+        console.error("couldn't mark message as read: ", err);
+      }
+
+    });
+
+    //disconnect signal
+    socket.on('disconnect', () => {
+      console.log('user disconnected');
+    });
   });
-});
 
 //EXPRESS----------------------------------------------------------------------------------------------------------------
   //express middleware configs
 
-app.set('trust proxy', 1)
+  app.set('trust proxy', 1)
 
-app.use(sessionMiddleware);
-app.use(express.json());
+  app.use(sessionMiddleware);
+  app.use(express.json());
 
-//HELPFUL FUNCTIONS
-    //checks if user is logged in
-function ensureAuthentication(req, res, next) {
-  if (req.session.authenticated) {
-    res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-    return next();
-  } else {
-    res.redirect('/aMessage/login.html');
+  //HELPFUL FUNCTIONS
+      //checks if user is logged in
+  function ensureAuthentication(req, res, next) {
+    if (req.session.authenticated) {
+      res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+      return next();
+    } else {
+      res.redirect('/aMessage/login.html');
+    }
   }
-}
-const saveSession = (req) => {
-  return new Promise((resolve, reject) => {
-    req.session.save((err) => {
-      if (err) return reject(err);
-      resolve();
+  const saveSession = (req) => {
+    return new Promise((resolve, reject) => {
+      req.session.save((err) => {
+        if (err) return reject(err);
+        resolve();
+      });
     });
-  });
-};
+  };
 
-//ROUTE HANDLERS
+//ROUTE HANDLERS---------------------------------------------------------------------------------------------------------
 
   //misc Routes
     //button click
-app.post("/api/increment", async(req,res) =>{
-  try {
-    counter++;
-    res.status(200).json({
-      success: true,
-      message: counter
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      success: false,
-      message: "not saved, server error."
-    });
-  }
-});
-
-  //text-adv Route Handlers
-    //saves
-app.post("/api/text-adv/save", async(req,res) =>{
-  try {
-    if(!req.session.user) {
-      return res.status(401).json({
-        success: false,
-        message: "You are not logged in."
+  app.post("/api/increment", async(req,res) =>{
+    try {
+      counter++;
+      res.status(200).json({
+        success: true,
+        message: counter
       });
-    }
-    await insertTextAdvSave(req.session.user.username, req.body);
-    return res.status(200).json({
-      success: true,
-      message: "saved!"
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      success: false,
-      message: "not saved, server error."
-    });
-  }
-});
-
-    //loads
-app.post("/api/text-adv/load", async(req,res) =>{
-  try {
-    if(!req.session.user) {
-      return res.status(401).json({
-        success: false,
-        message: "You are not logged in."
-      });
-    }
-    const saveData = await pullTextAdvSave(req.session.user.username);
-
-    if(!saveData) {
-      return res.status(404).json({
-        success: false,
-        message: "You don't have a save."
-      })
-    }
-
-    return res.status(200).json(saveData);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      success: false,
-      message: "Error loading save data."
-    });
-  }
-});
-
-  //aMessage Route Handlers
-    //get username and password and put them into the sql database "newtdb" under the table "logins" in columns called "username" and "password"
-app.post("/api/aMessage/signUp", async(req, res) => {
-  try{
-    const { username, password } = req.body;
-
-    if (!username || !password) {
-      return res.status(400).json({ success: false, message: "Missing credentials" });
-    }
-
-
-    const hash = await encrypt(password);
-    
-    
-    if (!await insertIntoSQL(username, hash)) {
-      return res.status(409).json({
-        success: false,
-        message: "Username Taken"
-      })
-    }
-    
-    return res.status(200).json({
-      success: true,
-      message: "Password input"
-    });
-
     } catch (err) {
       console.error(err);
       return res.status(500).json({
         success: false,
-        message: "Server error:" + err.message
+        message: "not saved, server error."
       });
     }
-});
+  });
 
-    //checks the sent password against the username and hash stored in newtdb
-app.post("/api/aMessage/login", async(req, res) => {
-  try {
-    const { username, password } = req.body;
-    const hash = await pullFromSQL(username);
-    
-
-    if(!hash) {
-      return res.status(401).json({
-        success: false,
-        message: "User doesn't exist"
-      })
-    }
-    const result = await check(hash,password);
-    if (result) {
-      //log in to the session
-      req.session.authenticated = true;
-      req.session.user = { username };
-
-      //I hate callbacks so this just makes session.save a promise
-      await new Promise((resolve, reject) => {
-        req.session.save((err) => {
-          if (err) return reject(err);
-          resolve(); 
+    //text-adv Route Handlers
+      //saves
+  app.post("/api/text-adv/save", async(req,res) =>{
+    try {
+      if(!req.session.user) {
+        return res.status(401).json({
+          success: false,
+          message: "You are not logged in."
         });
-      });
-
+      }
+      await insertTextAdvSave(req.session.user.username, req.body);
       return res.status(200).json({
         success: true,
-        message: "Logged In"
+        message: "saved!"
       });
-    } else {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid Password"
-      });
-    }
-    
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
-  }
-});
-
-    //currently this route just is for testing
-app.post("/api/aMessage/main", async(req, res) => {
-  try {
-    return res.status(200).json({username: req.session.user.username});
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      success: false,
-      message: "Server error"
-    });
-  }
-});
-
-    //serves the file only if authenticated
-app.get("/api/aMessage/main", ensureAuthentication, async(req, res) =>{
-  try {
-    res.sendFile(path.join(__dirname,"main.html"));
-    // res.status(200).json({
-    //   success: true,
-    //   message: "Successful login"
-    // })
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      success: false,
-      message: "Server error" + err.message
-    });
-  }
-});
-  //serve js to password protected route
-app.get("/api/aMessage/mainJS", ensureAuthentication, async(req, res) =>{
-  try {
-    res.type('.js');
-    res.sendFile(path.join(__dirname,"main.js"));
-    // res.status(200).json({
-    //   success: true,
-    //   message: "Successful login"
-    // })
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      success: false,
-      message: "Server error" + err.message
-    });
-  }
-});
-
-  //loads message history
-app.get("/api/aMessage/loadMessages/:to", ensureAuthentication, async(req, res) => {
-  try {
-    const from = req.session.user.username;
-    const { to } = req.params;
-    const logs = await pullMessageLogs(to, from);
-
-    return res.status(200).json({
-      success: true,
-      logs: logs
-    });
-    
-
-  } catch (err) {
-    console.error("failed to fetch messages: ", err)
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch messages"
-    })
-  }
-});
-
-    //logs user out
-app.post("/api/aMessage/logout", (req, res) => {
-  const username = req.session.user.username;
-  
-  req.session.destroy((err) => {
-    if (err) {
+    } catch (err) {
       console.error(err);
       return res.status(500).json({
         success: false,
-        message: "Server error, could not log out."
+        message: "not saved, server error."
       });
     }
+  });
+
+      //loads
+  app.post("/api/text-adv/load", async(req,res) =>{
+    try {
+      if(!req.session.user) {
+        return res.status(401).json({
+          success: false,
+          message: "You are not logged in."
+        });
+      }
+      const saveData = await pullTextAdvSave(req.session.user.username);
+
+      if(!saveData) {
+        return res.status(404).json({
+          success: false,
+          message: "You don't have a save."
+        })
+      }
+
+      return res.status(200).json(saveData);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Error loading save data."
+      });
+    }
+  });
+
+    //aMessage Route Handlers
+      //get username and password and put them into the sql database "newtdb" under the table "logins" in columns called "username" and "password"
+  app.post("/api/aMessage/signUp", async(req, res) => {
+    try{
+      const { username, password } = req.body;
+
+      if (!username || !password) {
+        return res.status(400).json({ success: false, message: "Missing credentials" });
+      }
+
+
+      const hash = await encrypt(password);
+      
+      
+      if (!await insertIntoSQL(username, hash)) {
+        return res.status(409).json({
+          success: false,
+          message: "Username Taken"
+        })
+      }
+      
+      return res.status(200).json({
+        success: true,
+        message: "Password input"
+      });
+
+      } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+          success: false,
+          message: "Server error:" + err.message
+        });
+      }
+  });
+
+      //checks the sent password against the username and hash stored in newtdb
+  app.post("/api/aMessage/login", async(req, res) => {
+    try {
+      const { username, password } = req.body;
+      const hash = await pullFromSQL(username);
+      
+
+      if(!hash) {
+        return res.status(401).json({
+          success: false,
+          message: "User doesn't exist"
+        })
+      }
+      const result = await check(hash,password);
+      if (result) {
+        //log in to the session
+        req.session.authenticated = true;
+        req.session.user = { username };
+
+        //I hate callbacks so this just makes session.save a promise
+        await new Promise((resolve, reject) => {
+          req.session.save((err) => {
+            if (err) return reject(err);
+            resolve(); 
+          });
+        });
+
+        return res.status(200).json({
+          success: true,
+          message: "Logged In"
+        });
+      } else {
+        return res.status(401).json({
+          success: false,
+          message: "Invalid Password"
+        });
+      }
+      
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Server error"
+      });
+    }
+  });
+
+      //currently this route just is for testing
+  app.post("/api/aMessage/main", async(req, res) => {
+    try {
+      return res.status(200).json({username: req.session.user.username});
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Server error"
+      });
+    }
+  });
+
+      //serves the file only if authenticated
+  app.get("/api/aMessage/main", ensureAuthentication, async(req, res) =>{
+    try {
+      res.sendFile(path.join(__dirname,"main.html"));
+      // res.status(200).json({
+      //   success: true,
+      //   message: "Successful login"
+      // })
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Server error" + err.message
+      });
+    }
+  });
+    //serve js to password protected route
+  app.get("/api/aMessage/mainJS", ensureAuthentication, async(req, res) =>{
+    try {
+      res.type('.js');
+      res.sendFile(path.join(__dirname,"main.js"));
+      // res.status(200).json({
+      //   success: true,
+      //   message: "Successful login"
+      // })
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        message: "Server error" + err.message
+      });
+    }
+  });
+
+    //loads message history
+  app.get("/api/aMessage/loadMessages/:to", ensureAuthentication, async(req, res) => {
+    try {
+      const from = req.session.user.username;
+      const { to } = req.params;
+      const logs = await pullMessageLogs(to, from);
+
+      return res.status(200).json({
+        success: true,
+        logs: logs
+      });
+      
+
+    } catch (err) {
+      console.error("failed to fetch messages: ", err)
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch messages"
+      })
+    }
+  });
+
+      //logs user out
+  app.post("/api/aMessage/logout", (req, res) => {
+    const username = req.session.user.username;
     
-    io.in(username).disconnectSockets();
-    res.clearCookie("connect.sid");
-    return res.status(200).json({
-      success: true,
-      message: "logged out and cookies cleared!"
+    req.session.destroy((err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({
+          success: false,
+          message: "Server error, could not log out."
+        });
+      }
+      
+      io.in(username).disconnectSockets();
+      res.clearCookie("connect.sid");
+      return res.status(200).json({
+        success: true,
+        message: "logged out and cookies cleared!"
+      });
     });
   });
-});
+    //get session data
+  app.get("/api/aMessage/sessionData", (req, res) => {
+    if (req.session && req.session.user) {
+      res.json(req.session.user);
+    } else {
+      // Send an empty object or an error so the client doesn't hang
+      res.status(401).json({ error: "No session found" });
+    }
+  });
 
 
 //MYSQL------------------------------------------------------------------------------------------------------------------
 
 
-//helper funcs
-async function insertIntoSQL(inputUser, inputHash) {
-  try {
-    let sql = "SELECT EXISTS(SELECT 1 FROM logins WHERE username = ?) AS existsFlag";
-    const [rows] = await pool.query(sql, [inputUser]);
+  //helper funcs
+  async function insertIntoSQL(inputUser, inputHash) {
+    try {
+      let sql = "SELECT EXISTS(SELECT 1 FROM logins WHERE username = ?) AS existsFlag";
+      const [rows] = await pool.query(sql, [inputUser]);
 
-    if (rows[0].existsFlag === 1) {
-      console.log("Username already taken.");
-      return false;
-    }
-    
-    sql = "INSERT INTO logins (username, password) VALUES (?, ?)";
-    await pool.query(sql, [inputUser, inputHash]);
-    console.log("1 record inserted");  
-
-    return true;
-     
-  } catch (err) {
-    console.error(err);
-    throw err; 
-  }
-}
-
-async function pullFromSQL(inputUser){
-  try {
-    let hash;
-    let sql = "SELECT password FROM logins WHERE username = ?";
-    const [rows] = await pool.query(sql, [inputUser]);
-    console.log("Hash found");
-    if(rows.length > 0) {
-      hash = rows[0].password;
-    } else {
-      console.log("No user found");
-      return null;
-    }
-
-    return hash;
-
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-}
-
-async function insertTextAdvSave(username, saveDataJSON){
-  try {
-    const saveData = JSON.stringify(saveDataJSON);
-    const sql = "INSERT INTO textAdv (username, saveData) VALUES (?, ?) ON DUPLICATE KEY UPDATE saveData = ?";
-    //savedata is passed twice, once for insert and once for duplicate key
-    await pool.query(sql, [username, saveData, saveData]);
-    console.log("1 record inserted");  
-
-    return true;
+      if (rows[0].existsFlag === 1) {
+        console.log("Username already taken.");
+        return false;
+      }
       
-  } catch (err) {
-    console.error(err);
-    throw err; 
+      sql = "INSERT INTO logins (username, password) VALUES (?, ?)";
+      await pool.query(sql, [inputUser, inputHash]);
+      console.log("1 record inserted");  
+
+      return true;
+      
+    } catch (err) {
+      console.error(err);
+      throw err; 
+    }
   }
-}
 
-async function pullTextAdvSave(username) {
-  try {
-    const sql = "SELECT saveData FROM textAdv WHERE username = ?";
-    //sql returns an array object that we gotta parse
-    const [rows] = await pool.query(sql, [username]);
+  async function pullFromSQL(inputUser){
+    try {
+      let hash;
+      let sql = "SELECT password FROM logins WHERE username = ?";
+      const [rows] = await pool.query(sql, [inputUser]);
+      console.log("Hash found");
+      if(rows.length > 0) {
+        hash = rows[0].password;
+      } else {
+        console.log("No user found");
+        return null;
+      }
 
-    if (rows.length === 0) {
-      return null;
+      return hash;
+
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  async function insertTextAdvSave(username, saveDataJSON){
+    try {
+      const saveData = JSON.stringify(saveDataJSON);
+      const sql = "INSERT INTO textAdv (username, saveData) VALUES (?, ?) ON DUPLICATE KEY UPDATE saveData = ?";
+      //savedata is passed twice, once for insert and once for duplicate key
+      await pool.query(sql, [username, saveData, saveData]);
+      console.log("1 record inserted");  
+
+      return true;
+        
+    } catch (err) {
+      console.error(err);
+      throw err; 
+    }
+  }
+
+  async function pullTextAdvSave(username) {
+    try {
+      const sql = "SELECT saveData FROM textAdv WHERE username = ?";
+      //sql returns an array object that we gotta parse
+      const [rows] = await pool.query(sql, [username]);
+
+      if (rows.length === 0) {
+        return null;
+      }
+
+      const saveData = rows[0].saveData;
+      return saveData;
+
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  async function saveMessage(from, to, message) {
+    try {
+      const sql = "INSERT INTO messages (sender_username, receiver_username, message_content) VALUES (?, ?, ?)";
+      //insert params into sql query
+      const [result] = await pool.query(sql, [from, to, message]);
+      console.log("1 message inserted");
+
+      return result.insertId;
+        
+    } catch (err) {
+      console.error(err);
+      throw err; 
+    }
+  }
+
+  async function readMessage(messageID, username) {
+    try {
+      const now = new Date();
+      const sql = "UPDATE messages SET read_at = ? WHERE id = ? AND receiver_username = ?";
+      await pool.query(sql, [now, messageID, username]);
+
+      return now;
+
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  async function pullMessageLogs(user1, user2) {
+    try {
+      const sql = "SELECT id, sender_username, receiver_username, message_content, read_at, created_at FROM messages WHERE (sender_username = ? AND receiver_username = ?) OR (sender_username = ? AND receiver_username = ?) ORDER BY created_at ASC;";
+      const [logs] = await pool.query(sql, [user1, user2, user2, user1]);
+
+      return logs; 
+      
+    } catch (err) {
+      console.error(err);
+      throw err; 
     }
 
-    const saveData = rows[0].saveData;
-    return saveData;
-
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-}
-
-async function saveMessage(from, to, message) {
-  try {
-    const sql = "INSERT INTO messages (sender_username, receiver_username, message_content) VALUES (?, ?, ?)";
-    //insert params into sql query
-    const [result] = await pool.query(sql, [from, to, message]);
-    console.log("1 message inserted");
-
-    return result.insertId;
-      
-  } catch (err) {
-    console.error(err);
-    throw err; 
-  }
-}
-
-async function readMessage(messageID, username) {
-  try {
-    const now = new Date();
-    const sql = "UPDATE messages SET read_at = ? WHERE id = ? AND receiver_username = ?";
-    await pool.query(sql, [now, messageID, username]);
-
-    return now;
-
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-}
-
-async function pullMessageLogs(user1, user2) {
-  try {
-    const sql = "SELECT id, sender_username, receiver_username, message_content, read_at, created_at FROM messages WHERE (sender_username = ? AND receiver_username = ?) OR (sender_username = ? AND receiver_username = ?) ORDER BY created_at ASC;";
-    const [logs] = await pool.query(sql, [user1, user2, user2, user1]);
-
-    return logs; 
-    
-  } catch (err) {
-    console.error(err);
-    throw err; 
   }
 
-}
+//BCRYPT-----------------------------------------------------------------------------------------------------------------
+  //consts
+  const saltRounds = 10;
 
-//BCRYPT------------------------------------------------------------------------------------------------------------------
-//consts
-const saltRounds = 10;
+  //encryption
+  async function encrypt(inputPassword){
+    //returns salted and hashed password
+    return await bcrypt.hash(inputPassword, saltRounds);
+  }
 
-//encryption
-async function encrypt(inputPassword){
-  //returns salted and hashed password
-  return await bcrypt.hash(inputPassword, saltRounds);
-}
+  async function check(hash, inputPassword){
+    //returns boolean true or false for the password match to the stored hash
+    return await bcrypt.compare(inputPassword, hash);
+  }
 
-async function check(hash, inputPassword){
-  //returns boolean true or false for the password match to the stored hash
-  return await bcrypt.compare(inputPassword, hash);
-}
-
-//STARTS THE SERVER------------------------------------------/\/\/\/\/\/\/\/\/\\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+//STARTS THE SERVER\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
   //express needs to listen on port whatever, this starts the server
   //socket.io also needs to be attached to the parent server
   //MAKE SURE THIS STAYS AT THE BOTTOM OF THE PAGE (just to prevent routes defined after the listen)
 
-server.listen(PORT, "127.0.0.1", () => {
-  console.log(`API listening on port ${PORT}`);
-});
+  server.listen(PORT, "127.0.0.1", () => {
+    console.log(`API listening on port ${PORT}`);
+  });

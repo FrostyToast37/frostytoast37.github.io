@@ -9,28 +9,38 @@ const dmContent = document.getElementById("dm_content");
 
 const socket = io();
 
-//testing
-async function testFunc() {
+let user;
+
+//get session data
   try {
-    const res = await fetch("/api/aMessage/main", {
-      method: "POST",
-    });
-
-    const data = await res.json();
-    const user = data.username;
-
-    test.innerHTML = `Hey ${user}! You successfully logged in!`;
+    const sessionRes = await fetch("/api/aMessage/sessionData", {
+    method: "GET",
+    credentials: "include"});
+    user = await sessionRes.json(); 
   } catch (err) {
-      console.error(err);
+    test.innerHTML = "Error: " + err.message;
   }
-}
-function sendChat(message) {
-  socket.emit("msg", message);
-}
-socket.on("rsp", (res) => {
-  test.innerText = res; // world
-});
+//testing
+  async function testFunc() {
+    try {
+      const res = await fetch("/api/aMessage/main", {
+        method: "POST",
+      });
 
+      const data = await res.json();
+      const user = data.username;
+
+      test.innerHTML = `Hey ${user}! You successfully logged in!`;
+    } catch (err) {
+        console.error(err);
+    }
+  }
+  function sendChat(message) {
+    socket.emit("msg", message);
+  }
+  socket.on("rsp", (res) => {
+    test.innerText = res; // world
+  });
 //dms
   //senders func
   function sendDM(to, message) {
@@ -48,20 +58,27 @@ socket.on("rsp", (res) => {
 
     const p = document.createElement("p");
     p.setAttribute("data-id", msg_id);
-    // textContent treats everything as plain text, neutralizing scripts
-    p.textContent = `${timestamp}: ${from} said: ${message}`;
+    // textContent treats everything as plain text, preventing XSS
+    if (from == user.username) {
+      p.textContent = `${timestamp}: You said: ${message}`;
+      p.setAttribute("class", "sent");
+    } else {
+      p.textContent = `${timestamp}: ${from} said: ${message}`;
+      p.setAttribute("class", "received");
+    }
 
     receivedMessages.appendChild(p);
   });
 
-form.addEventListener("submit", (event) => {
-  event.preventDefault();
-  sendChat(input.value);
-})
+//form listeners
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    sendChat(input.value);
+  })
 
-dmForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  sendDM(dmAddress.value, dmContent.value);
-  dmContent.value = "";
-  dmAddress.scrollIntoView({ behavior: "smooth", block: "end" });
-});
+  dmForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    sendDM(dmAddress.value, dmContent.value);
+    dmContent.value = "";
+    dmAddress.scrollIntoView({ behavior: "smooth", block: "end" });
+  });
