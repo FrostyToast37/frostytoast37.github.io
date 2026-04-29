@@ -62,4 +62,6 @@ form.addEventListener("submit", (event) => {
 dmForm.addEventListener("submit", (event) => {
   event.preventDefault();
   sendDM(dmAddress.value, dmContent.value);
+  dmContent.value = "";
+  dmAddress.scrollIntoView({ behavior: "smooth", block: "end" });
 });
