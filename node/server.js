@@ -66,7 +66,7 @@ io.on('connection', (socket) => {
   //test route
   socket.on("msg", (message) => {
     socket.emit("rsp", 
-      `message: ${message} recieved. Here is it backwards! ${message.split('').reverse().join('')}`
+      `message: ${message} received. Here is it backwards! ${message.split('').reverse().join('')}`
     );
   });
   //sending dms
@@ -83,7 +83,7 @@ io.on('connection', (socket) => {
             timestamp: new Date()
       };
       
-      io.to(to).to(from).emit("recieve_dm", payload);
+      io.to(to).to(from).emit("receive_dm", payload);
 
     } catch (err) {
       console.error(`Message to ${to} Failed to Send`, err);
