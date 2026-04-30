@@ -59,6 +59,21 @@ const socket = io();
     const data = { messageID, messageSender }
     socket.emit("read", data);
   }
+  async function loadMessages(to) {
+    const from = user;
+    const res = await fetch(`/api/aMessage/loadMessages/${to}`, {
+      method: "GET",
+      credentials: "include"
+    });
+
+    const data = await res.json()
+
+    if (data.success) { 
+      data.logs.forEach(msg => {
+        const { id, sender_username, receiver_username, message_content, read_at, created_at } = msg;
+      });
+    }
+  }
 
   //listeners
   socket.on("receive_dm", (data) => {
@@ -71,7 +86,7 @@ const socket = io();
       p.textContent = `${timestamp}: You --> ${to}: ${message}`;
       p.setAttribute("class", "sent");
     } else {
-      p.textContent = `${timestamp}: ${from} said: ${message}`;
+      p.textContent = `${timestamp}: ${from} --> You: ${message}`;
       p.setAttribute("class", "received");
     }
 

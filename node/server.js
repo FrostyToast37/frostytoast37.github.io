@@ -505,10 +505,10 @@
 
   async function pullMessageLogs(user1, user2) {
     try {
-      const sql = "SELECT id, sender_username, receiver_username, message_content, read_at, created_at FROM messages WHERE (sender_username = ? AND receiver_username = ?) OR (sender_username = ? AND receiver_username = ?) ORDER BY created_at ASC;";
+      const sql = "SELECT id, sender_username, receiver_username, message_content, read_at, created_at FROM messages WHERE (sender_username = ? AND receiver_username = ?) OR (sender_username = ? AND receiver_username = ?) ORDER BY created_at DESC LIMIT 50;";
       const [logs] = await pool.query(sql, [user1, user2, user2, user1]);
 
-      return logs; 
+      return logs.reverse(); 
       
     } catch (err) {
       console.error(err);
