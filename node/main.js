@@ -9,17 +9,21 @@ const dmContent = document.getElementById("dm_content");
 
 const socket = io();
 
-let user;
 
 //get session data
-  try {
-    const sessionRes = await fetch("/api/aMessage/sessionData", {
-    method: "GET",
-    credentials: "include"});
-    user = await sessionRes.json(); 
-  } catch (err) {
-    test.innerHTML = "Error: " + err.message;
+  async function getSession() {
+    try {
+      const sessionRes = await fetch("/api/aMessage/sessionData", {
+      method: "GET",
+      credentials: "include"});
+      return await sessionRes.json(); 
+    } catch (err) {
+      test.innerHTML = "Error: " + err.message;
+      return null;
+    } 
   }
+  const user = getSession();
+
 //testing
   async function testFunc() {
     try {
