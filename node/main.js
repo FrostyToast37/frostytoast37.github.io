@@ -22,7 +22,11 @@ const socket = io();
       return null;
     } 
   }
-  const user = getSession();
+  let user = null;
+  async function init() {
+    user = getSession();
+  }
+  init();
 
 //testing
   async function testFunc() {
@@ -63,7 +67,7 @@ const socket = io();
     const p = document.createElement("p");
     p.setAttribute("data-id", msg_id);
     // textContent treats everything as plain text, preventing XSS
-    if (from == user.username) {
+    if (from === user.username) {
       p.textContent = `${timestamp}: You said: ${message}`;
       p.setAttribute("class", "sent");
     } else {
