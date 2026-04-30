@@ -24,7 +24,7 @@ const socket = io();
   }
   let user = null;
   async function init() {
-    user = getSession();
+    user = await getSession();
   }
   init();
 
