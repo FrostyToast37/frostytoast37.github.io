@@ -74,6 +74,7 @@
         const msg_id = await saveMessage(from, to, message);
 
         const payload = {
+              to,
               from,
               message,
               msg_id,

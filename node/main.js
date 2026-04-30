@@ -62,13 +62,13 @@ const socket = io();
 
   //listeners
   socket.on("receive_dm", (data) => {
-    const { from, message, msg_id, timestamp } = data;
+    const { to, from, message, msg_id, timestamp } = data;
 
     const p = document.createElement("p");
     p.setAttribute("data-id", msg_id);
     // textContent treats everything as plain text, preventing XSS
     if (from === user.username) {
-      p.textContent = `${timestamp}: You said: ${message}`;
+      p.textContent = `${timestamp}: You --> ${to}: ${message}`;
       p.setAttribute("class", "sent");
     } else {
       p.textContent = `${timestamp}: ${from} said: ${message}`;
