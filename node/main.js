@@ -64,6 +64,7 @@ const socket = io();
     socket.emit("read", data);
   }
   async function loadMessages(to) {
+    receivedMessages.innerHTML = "";
     const from = user.username;
     const res = await fetch(`/api/aMessage/loadMessages/${to}`, {
       method: "GET",
