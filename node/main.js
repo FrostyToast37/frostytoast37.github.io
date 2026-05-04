@@ -26,8 +26,6 @@ const socket = io();
   async function init() {
     user = await getSession();
   }
-  init();
-
 //testing
   async function testFunc() {
     try {
@@ -71,6 +69,17 @@ const socket = io();
     if (data.success) { 
       data.logs.forEach(msg => {
         const { id, sender_username, receiver_username, message_content, read_at, created_at } = msg;
+        
+        const p = document.createElement("p");
+        p.setAttribute("data-id", id);
+        // textContent treats everything as plain text, preventing XSS
+        if (from === user.username) {
+          p.textContent = `${created_at}: You --> ${receiver_username}: ${message_content}`;
+          p.setAttribute("class", "sent");
+        } else {
+          p.textContent = `${created_at}: ${sender_username} --> You: ${message_content}`;
+          p.setAttribute("class", "received");
+        }
       });
     }
   }
@@ -105,3 +114,7 @@ const socket = io();
     dmContent.value = "";
     dmAddress.scrollIntoView({ behavior: "smooth", block: "end" });
   });
+
+//init funcs
+  init();
+  loadMessages();
