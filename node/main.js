@@ -1,18 +1,20 @@
 let test = document.getElementById("test");
 
-/*
+/* THIS WAS TESTING
 const form = document.getElementById("chat_form");
 const input = document.getElementById("chat_input");
 */
-const loadForm = document.getElementById("load_form");
-const loadInput = document.getElementById("load_input");
+
+const toForm = document.getElementById("to_form");
+const toInput = document.getElementById("to_input");
 
 const receivedMessages = document.getElementById("received_messages");
 const dmForm = document.getElementById("dm_form");
-const dmAddress = document.getElementById("dm_address");
 const dmContent = document.getElementById("dm_content");
 
 const socket = io();
+
+let messagesTo = null;
 
 //get session data
   async function getSession() {
@@ -121,14 +123,19 @@ const socket = io();
   });
   */
 
-  dmForm.addEventListener("submit", (event) => {
+  toForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    sendDM(dmAddress.value, dmContent.value);
-    dmContent.value = "";
-    dmForm.scrollIntoView({ behavior: "smooth", block: "end" });
+    await loadMessages(toInput.value);
+    messagesTo = toInput.value;
   });
 
-  loadForm.addEventListener("submit", async (event) => {
+  dmForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    await loadMessages(loadInput.value);
+    if (messagesTo) {
+      sendDM(messagesTo, dmContent.value);
+      dmContent.value = "";
+      dmForm.scrollIntoView({ behavior: "smooth", block: "end" });
+    } else {
+      receivedMessages.innerHTML = "You have no receiver selected"
+    }
   });
