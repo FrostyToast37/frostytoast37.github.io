@@ -2,6 +2,9 @@ let test = document.getElementById("test");
 const form = document.getElementById("chat_form");
 const input = document.getElementById("chat_input");
 
+const loadForm = document.getElementById("load_form");
+const loadInput = document.getElementById("load_input");
+
 const receivedMessages = document.getElementById("received_messages");
 const dmForm = document.getElementById("dm_form");
 const dmAddress = document.getElementById("dm_address");
@@ -113,10 +116,14 @@ const socket = io();
     sendChat(input.value);
   })
 
-  dmForm.addEventListener("submit", async (event) => {
+  dmForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    await loadMessages(dmAddress.value);
     sendDM(dmAddress.value, dmContent.value);
     dmContent.value = "";
-    dmAddress.scrollIntoView({ behavior: "smooth", block: "end" });
+    dmForm.scrollIntoView({ behavior: "smooth", block: "end" });
   });
+
+  loadForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await loadMessages(loadInput.value);
+  })
