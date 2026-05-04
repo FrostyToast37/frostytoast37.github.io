@@ -108,8 +108,9 @@ const socket = io();
     sendChat(input.value);
   })
 
-  dmForm.addEventListener("submit", (event) => {
+  dmForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+    await loadMessages(dmAddress.value);
     sendDM(dmAddress.value, dmContent.value);
     dmContent.value = "";
     dmAddress.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -117,4 +118,3 @@ const socket = io();
 
 //init funcs
   init();
-  loadMessages();
