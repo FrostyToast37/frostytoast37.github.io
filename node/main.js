@@ -1,7 +1,9 @@
 let test = document.getElementById("test");
+
+/*
 const form = document.getElementById("chat_form");
 const input = document.getElementById("chat_input");
-
+*/
 const loadForm = document.getElementById("load_form");
 const loadInput = document.getElementById("load_input");
 
@@ -112,10 +114,12 @@ const socket = io();
   });
 
 //form listeners
+  /* THIS WAS TESTING
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     sendChat(input.value);
-  })
+  });
+  */
 
   dmForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -127,4 +131,4 @@ const socket = io();
   loadForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     await loadMessages(loadInput.value);
-  })
+  });
