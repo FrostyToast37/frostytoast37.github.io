@@ -61,7 +61,7 @@ const socket = io();
     socket.emit("read", data);
   }
   async function loadMessages(to) {
-    const from = user;
+    const from = user.username;
     const res = await fetch(`/api/aMessage/loadMessages/${to}`, {
       method: "GET",
       credentials: "include"
@@ -76,13 +76,15 @@ const socket = io();
         const p = document.createElement("p");
         p.setAttribute("data-id", id);
         // textContent treats everything as plain text, preventing XSS
-        if (from === user.username) {
+        if (sender_username === user.username) {
           p.textContent = `${created_at}: You --> ${receiver_username}: ${message_content}`;
           p.setAttribute("class", "sent");
         } else {
           p.textContent = `${created_at}: ${sender_username} --> You: ${message_content}`;
           p.setAttribute("class", "received");
         }
+
+        receivedMessages.appendChild(p);
       });
     }
   }
