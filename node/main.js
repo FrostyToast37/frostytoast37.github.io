@@ -9,7 +9,6 @@ const dmContent = document.getElementById("dm_content");
 
 const socket = io();
 
-
 //get session data
   async function getSession() {
     try {
@@ -26,6 +25,10 @@ const socket = io();
   async function init() {
     user = await getSession();
   }
+
+  //init funcs
+  init();
+  
 //testing
   async function testFunc() {
     try {
@@ -115,6 +118,3 @@ const socket = io();
     dmContent.value = "";
     dmAddress.scrollIntoView({ behavior: "smooth", block: "end" });
   });
-
-//init funcs
-  init();
