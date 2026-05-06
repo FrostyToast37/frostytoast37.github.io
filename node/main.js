@@ -16,7 +16,7 @@ const socket = io();
 
 let messagesTo = null;
 
-//get session data
+//get user data
   async function getSession() {
     try {
       const sessionRes = await fetch("/api/aMessage/sessionData", {
@@ -27,6 +27,29 @@ let messagesTo = null;
       test.innerHTML = "Error: " + err.message;
       return null;
     } 
+  }
+  async function getContacts() {
+    try {
+      const res = await fetch(`/api/aMessage/getContacts`, {
+        method: "GET",
+        credentials: "include"
+      });
+
+      const data = await res.json();
+      
+      data.forEach( async (contact) => {
+        //Create the button element
+        const btn = document.createElement('button');
+        btn.textContent = contact; 
+        btn.addEventListener('click', () => {
+          messagesTo = contact; 
+          await loadMessages(messagesTo);
+        });
+        document.body.prepend(btn);
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
   let user = null;
   async function init() {
