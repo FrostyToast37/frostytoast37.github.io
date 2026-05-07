@@ -20,10 +20,10 @@ let messagesTo = null;
 
 //console error logging for debugging purposes:
   window.onerror = function(message, source, lineno, colno, error) {
-    errorLog.innerText = `Error message: ${message}`;
-    errorLog.innerText = `Source URL: ${source}`;
-    errorLog.innerText = `Line: ${lineno}, Column: ${colno}`; 
-    errorLog.innerText = `Error Object: ${error}`;  
+    errorLog.innerText +=`Error message: ${message} \n
+                          Source URL: ${source} \n
+                          Line: ${lineno}, Column: ${colno} \n
+                          Error Object: ${error}`;
     // Returning true prevents the default browser error alert/logging
     return true; 
   };
@@ -38,7 +38,7 @@ let messagesTo = null;
       credentials: "include"});
       return await sessionRes.json(); 
     } catch (err) {
-      test.innerHTML = "Error: " + err.message;
+      errorLog.innerHTML = `: " + ${err.message}`;
       return null;
     } 
   }
@@ -63,7 +63,7 @@ let messagesTo = null;
         document.body.prepend(btn);
       });
     } catch (err) {
-      received_messages.innerText = err;
+      errorLog.innerText += `Thrown from getContacts: ${err.message || err}`;
       console.error(err);
     }
   }
@@ -108,32 +108,36 @@ let messagesTo = null;
     socket.emit("read", data);
   }
   async function loadMessages(to) {
-    receivedMessages.innerHTML = "";
-    const from = user.username;
-    const res = await fetch(`/api/aMessage/loadMessages/${to}`, {
-      method: "GET",
-      credentials: "include"
-    });
-
-    const data = await res.json()
-
-    if (data.success) { 
-      data.logs.forEach(msg => {
-        const { id, sender_username, receiver_username, message_content, read_at, created_at } = msg;
-        
-        const p = document.createElement("p");
-        p.setAttribute("data-id", id);
-        // textContent treats everything as plain text, preventing XSS
-        if (sender_username === user.username) {
-          p.textContent = `${created_at}: You --> ${receiver_username}: ${message_content}`;
-          p.setAttribute("class", "sent");
-        } else {
-          p.textContent = `${created_at}: ${sender_username} --> You: ${message_content}`;
-          p.setAttribute("class", "received");
-        }
-
-        receivedMessages.appendChild(p);
+    try {
+      receivedMessages.innerHTML = "";
+      const from = user.username;
+      const res = await fetch(`/api/aMessage/loadMessages/${to}`, {
+        method: "GET",
+        credentials: "include"
       });
+
+      const data = await res.json()
+
+      if (data.success) { 
+        data.logs.forEach(msg => {
+          const { id, sender_username, receiver_username, message_content, read_at, created_at } = msg;
+          
+          const p = document.createElement("p");
+          p.setAttribute("data-id", id);
+          // textContent treats everything as plain text, preventing XSS
+          if (sender_username === user.username) {
+            p.textContent = `${created_at}: You --> ${receiver_username}: ${message_content}`;
+            p.setAttribute("class", "sent");
+          } else {
+            p.textContent = `${created_at}: ${sender_username} --> You: ${message_content}`;
+            p.setAttribute("class", "received");
+          }
+
+          receivedMessages.appendChild(p);
+        });
+      }
+    } catch (err) {
+      errorLog.innerText += `Thrown from loadMessages: ${err.message || err}`;
     }
   }
 
