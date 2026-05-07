@@ -5,6 +5,8 @@ const form = document.getElementById("chat_form");
 const input = document.getElementById("chat_input");
 */
 
+const errorLog = document.getElementById("error_log");
+
 const toForm = document.getElementById("to_form");
 const toInput = document.getElementById("to_input");
 
@@ -18,14 +20,13 @@ let messagesTo = null;
 
 //console error logging for debugging purposes:
   window.onerror = function(message, source, lineno, colno, error) {
-  document.getElementById("error_log").innerText = `Error message: ${message}`
-  console.log("Source URL: " + source);
-  console.log("Line: " + lineno + ", Column: " + colno);
-  console.log("Error Object: ", error); // Often includes the stack trace
-
-  // Returning true prevents the default browser error alert/logging
-  return true; 
-};
+    errorLog.innerText = `Error message: ${message}`;
+    errorLog.innerText = `Source URL: ${source}`;
+    errorLog.innerText = `Line: ${lineno}, Column: ${colno}`; 
+    errorLog.innerText = `Error Object: ${error}`;  
+    // Returning true prevents the default browser error alert/logging
+    return true; 
+  };
 
 
 
