@@ -16,6 +16,19 @@ const socket = io();
 
 let messagesTo = null;
 
+//console error logging for debugging purposes:
+  window.onerror = function(message, source, lineno, colno, error) {
+  document.getElementById("error_log").innerText = `Error message: ${message}`
+  console.log("Source URL: " + source);
+  console.log("Line: " + lineno + ", Column: " + colno);
+  console.log("Error Object: ", error); // Often includes the stack trace
+
+  // Returning true prevents the default browser error alert/logging
+  return true; 
+};
+
+
+
 //get user data
   async function getSession() {
     try {
@@ -37,23 +50,26 @@ let messagesTo = null;
 
       const data = await res.json();
       
-      data.forEach( async (contact) => {
+      data.forEach( contact => {
         //Create the button element
         const btn = document.createElement('button');
         btn.textContent = contact; 
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async (event) => {
+          event.preventDefault();
           messagesTo = contact; 
           await loadMessages(messagesTo);
         });
         document.body.prepend(btn);
       });
     } catch (err) {
+      received_messages.innerText = err;
       console.error(err);
     }
   }
   let user = null;
   async function init() {
     user = await getSession();
+    await getContacts();
   }
 
   //init funcs
