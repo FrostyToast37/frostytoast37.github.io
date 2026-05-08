@@ -1,9 +1,9 @@
 let test = document.getElementById("test");
 
 /* THIS WAS TESTING
-const form = document.getElementById("chat_form");
-const input = document.getElementById("chat_input");
-*/
+  const form = document.getElementById("chat_form");
+  const input = document.getElementById("chat_input");
+  */
 
 const errorLog = document.getElementById("error_log");
 
