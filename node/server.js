@@ -292,7 +292,7 @@
   });
 
       //currently this route just is for testing
-  app.post("/api/aMessage/main", async(req, res) => {
+  app.post("/api/aMessage/test", async(req, res) => {
     try {
       return res.status(200).json({username: req.session.user.username});
     } catch (err) {
@@ -382,12 +382,25 @@
     });
   });
     //get session data
-  app.get("/api/aMessage/sessionData", (req, res) => {
+  app.get("/api/aMessage/sessionData", ensureAuthentication, (req, res) => {
     if (req.session && req.session.user) {
       res.json(req.session.user);
     } else {
       // Send an empty object or an error so the client doesn't hang
       res.status(401).json({ error: "No session found" });
+    }
+  });
+
+    //get user's contacts
+  app.get("/api/aMessage/getContacts", ensureAuthentication, (req, res) => {
+    try {
+      //gettingContacts
+    } catch (err) {
+      console.error("failed to get contacts: ", err)
+      return res.status(500).json({
+        success: false,
+        message: "Failed to fetch contacts: " + err
+      });
     }
   });
 

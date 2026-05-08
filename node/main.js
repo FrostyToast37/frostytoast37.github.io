@@ -79,7 +79,7 @@ let messagesTo = null;
 //testing
   async function testFunc() {
     try {
-      const res = await fetch("/api/aMessage/main", {
+      const res = await fetch("/api/aMessage/test", {
         method: "POST",
       });
 
