@@ -7,6 +7,8 @@ let test = document.getElementById("test");
 
 const errorLog = document.getElementById("error_log");
 
+const buttons = document.getElementById("buttons");
+
 const toForm = document.getElementById("to_form");
 const toInput = document.getElementById("to_input");
 
@@ -44,6 +46,7 @@ let messagesTo = null;
   }
   async function getContacts() {
     try {
+      buttons.innerHTML = "";
       const res = await fetch(`/api/aMessage/getContacts`, {
         method: "GET",
         credentials: "include"
@@ -61,8 +64,9 @@ let messagesTo = null;
           messagesTo = userContact; 
           await loadMessages(messagesTo);
         });
-        document.body.prepend(btn);
+        buttons.prepend(btn);
       });
+      await getContacts();
     } catch (err) {
       errorLog.innerText += `Thrown from getContacts: ${err.message || err}`;
       console.error(err);
@@ -143,7 +147,7 @@ let messagesTo = null;
   }
 
   //listeners
-  socket.on("receive_dm", (data) => {
+  socket.on("receive_dm", async (data) => {
     const { to, from, message, msg_id, timestamp } = data;
 
     const p = document.createElement("p");
@@ -158,6 +162,7 @@ let messagesTo = null;
     }
 
     receivedMessages.appendChild(p);
+    await getContacts(user);
   });
 
 //form listeners
