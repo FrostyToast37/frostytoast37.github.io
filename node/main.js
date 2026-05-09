@@ -52,7 +52,7 @@ let messagesTo = null;
       const data = await res.json();
       
       data.forEach( contactObj => {
-        userContact = contactObj.contact;
+        const userContact = contactObj.contact;
         //Create the button element
         const btn = document.createElement('button');
         btn.textContent = userContact; 
