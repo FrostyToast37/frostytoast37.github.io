@@ -530,6 +530,20 @@
 
   }
 
+  async function getContacts(user) {
+    try {
+      const sql = "SELECT sender_username AS contacts FROM messages WHERE receiver_username = ? UNION SELECT receiver_username FROM messages WHERE sender_username = ?"
+
+      const [rows] = await pool.query(sql, [user, user])
+      
+      return rows;
+      
+    } catch (err) {
+      console.error(err)
+      throw err;
+    }
+  }
+
 //BCRYPT-----------------------------------------------------------------------------------------------------------------
   //consts
   const saltRounds = 10;
