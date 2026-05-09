@@ -66,7 +66,6 @@ let messagesTo = null;
         });
         buttons.prepend(btn);
       });
-      await getContacts();
     } catch (err) {
       errorLog.innerText += `Thrown from getContacts: ${err.message || err}`;
       console.error(err);
@@ -104,9 +103,10 @@ let messagesTo = null;
   });
 //dms
   //senders func
-  function sendDM(to, message) {
+  async function sendDM(to, message) {
     const data = { to, message };
     socket.emit("send_dm", data);
+    await getContacts();
   }
   function readDM(messageID, messageSender) {
     const data = { messageID, messageSender }
