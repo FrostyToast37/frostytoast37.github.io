@@ -392,9 +392,10 @@
   });
 
     //get user's contacts
-  app.get("/api/aMessage/getContacts", ensureAuthentication, (req, res) => {
+  app.get("/api/aMessage/getContacts", ensureAuthentication, async (req, res) => {
     try {
-      //gettingContacts
+      const contacts = await getContacts(req.session.user.username);
+      res.status(200).json(contacts);
     } catch (err) {
       console.error("failed to get contacts: ", err)
       return res.status(500).json({
@@ -537,7 +538,7 @@
       const [rows] = await pool.query(sql, [user, user])
       
       return rows;
-      
+
     } catch (err) {
       console.error(err)
       throw err;
