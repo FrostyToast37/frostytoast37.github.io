@@ -51,13 +51,14 @@ let messagesTo = null;
 
       const data = await res.json();
       
-      data.forEach( contact => {
+      data.forEach( contactObj => {
+        userContact = contactObj.contact;
         //Create the button element
         const btn = document.createElement('button');
-        btn.textContent = contact; 
+        btn.textContent = userContact; 
         btn.addEventListener('click', async (event) => {
           event.preventDefault();
-          messagesTo = contact; 
+          messagesTo = userContact; 
           await loadMessages(messagesTo);
         });
         document.body.prepend(btn);
