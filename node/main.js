@@ -106,7 +106,6 @@ let messagesTo = null;
   async function sendDM(to, message) {
     const data = { to, message };
     socket.emit("send_dm", data);
-    await getContacts();
   }
   function readDM(messageID, messageSender) {
     const data = { messageID, messageSender }
@@ -177,6 +176,7 @@ let messagesTo = null;
     event.preventDefault();
     await loadMessages(toInput.value);
     messagesTo = toInput.value;
+    await getContacts();
   });
 
   dmForm.addEventListener("submit", (event) => {
