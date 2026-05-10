@@ -165,14 +165,15 @@ let contactsList = [];
 
     receivedMessages.appendChild(p);
     if (!contactsList.includes(from)) {
-        const btn = document.createElement('button');
-        btn.textContent = from;
-        btn.addEventListener('click', async (event) => {
-          event.preventDefault();
-          messagesTo = from; 
-          await loadMessages(messagesTo);
-        });
-        buttons.prepend(btn);
+      contactsList.push(from);
+      const btn = document.createElement('button');
+      btn.textContent = from;
+      btn.addEventListener('click', async (event) => {
+        event.preventDefault();
+        messagesTo = from; 
+        await loadMessages(messagesTo);
+      });
+      buttons.prepend(btn);
     }
   });
 
@@ -189,6 +190,7 @@ let contactsList = [];
     await loadMessages(toInput.value);
     messagesTo = toInput.value;
     if (!contactsList.includes(messagesTo)) {
+      contactsList.push(messagesTo);
       const btn = document.createElement('button');
       btn.textContent = messagesTo;
       btn.addEventListener('click', async (event) => {
