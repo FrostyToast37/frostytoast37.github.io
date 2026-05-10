@@ -19,6 +19,7 @@ const dmContent = document.getElementById("dm_content");
 const socket = io();
 
 let messagesTo = null;
+let contactsList = [];
 
 //console error logging for debugging purposes:
   window.onerror = function(message, source, lineno, colno, error) {
@@ -56,6 +57,8 @@ let messagesTo = null;
       
       data.forEach( contactObj => {
         const userContact = contactObj.contact;
+        //appends user to global list of contacts
+        contactsList.push(userContact);
         //Create the button element
         const btn = document.createElement('button');
         btn.textContent = userContact; 
@@ -161,7 +164,16 @@ let messagesTo = null;
     }
 
     receivedMessages.appendChild(p);
-    await getContacts(user);
+    if (!contactsList.includes(from)) {
+        const btn = document.createElement('button');
+        btn.textContent = from;
+        btn.addEventListener('click', async (event) => {
+          event.preventDefault();
+          messagesTo = from; 
+          await loadMessages(messagesTo);
+        });
+        buttons.prepend(btn);
+    }
   });
 
 //form listeners
@@ -176,7 +188,15 @@ let messagesTo = null;
     event.preventDefault();
     await loadMessages(toInput.value);
     messagesTo = toInput.value;
-    await getContacts();
+    if (!contactsList.includes(messagesTo)) {
+      const btn = document.createElement('button');
+      btn.textContent = messagesTo;
+      btn.addEventListener('click', async (event) => {
+        event.preventDefault();
+        await loadMessages(messagesTo);
+      });
+      buttons.prepend(btn);
+    }
   });
 
   dmForm.addEventListener("submit", (event) => {
