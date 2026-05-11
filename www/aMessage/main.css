@@ -8,6 +8,6 @@
     left: 0;
 }
 #received_messages p.sent{
-    background-color: #16F529;
+    background-color: blueviolet;
     right: 0;
 }
