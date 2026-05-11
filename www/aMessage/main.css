@@ -1,5 +1,5 @@
 #received_messages p{
-    border-radius: 20%;
+    border-radius: 1.0rem;
     color: white;
     width: fit-content;
 }
