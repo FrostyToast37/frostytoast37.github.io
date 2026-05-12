@@ -75,10 +75,31 @@ let contactsList = [];
       console.error(err);
     }
   }
+
+  //notifications
+    async function requestPermission() {
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        console.log('Notification permission granted.');
+      }
+    }
+
+    //im putting this notif function in the user data section bc idk where else to
+    function showNotification(message) {
+      if (Notification.permission === 'granted') {
+        const options = {
+          body: message,
+          icon: '/images/favicon.svg'
+        };
+        new Notification('aMessage', options);
+      }
+    }
+
   let user = null;
   async function init() {
     user = await getSession();
     await getContacts();
+    await requestPermission();
   }
 
   //init funcs
