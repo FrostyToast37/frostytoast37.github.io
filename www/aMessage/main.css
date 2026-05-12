@@ -3,11 +3,12 @@
     left: 0;
     display: flex;
     flex-direction: column;
-    width: 30%;
+    width: 20%;
 }
 
 #buttons button {
     border-radius: 1.0rem;
+    width: fit-content;
 }
 
 #received_messages p{
