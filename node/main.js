@@ -106,7 +106,7 @@ let contactsList = [];
   socket.on("rsp", (res) => {
     test.innerText = res; // world
   });
-  * /
+  */
 
 //dms
   //senders func
