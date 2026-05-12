@@ -180,6 +180,10 @@ let contactsList = [];
       });
       buttons.prepend(btn);
     }
+    receivedMessages.scrollTo({
+      top: receivedMessages.scrollHeight,
+      behavior: 'smooth'
+    });
   });
 
 //form listeners
@@ -211,7 +215,10 @@ let contactsList = [];
     if (messagesTo) {
       sendDM(messagesTo, dmContent.value);
       dmContent.value = "";
-      dmForm.scrollIntoView({ behavior: "smooth", block: "end" });
+      receivedMessages.scrollTo({
+        top: receivedMessages.scrollHeight,
+        behavior: 'smooth'
+      });
     } else {
       receivedMessages.innerHTML = "You have no receiver selected"
     }
