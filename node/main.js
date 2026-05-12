@@ -143,8 +143,12 @@ let contactsList = [];
             p.textContent = `${message_content}`;
             p.setAttribute("class", "received");
           }
-
           receivedMessages.appendChild(p);
+
+          receivedMessages.scrollTo({
+            top: receivedMessages.scrollHeight,
+            behavior: 'smooth'
+          });
         });
       }
     } catch (err) {
@@ -161,14 +165,15 @@ let contactsList = [];
     const p = document.createElement("p");
     p.setAttribute("data-id", msg_id);
     // textContent treats everything as plain text, preventing XSS
-    if (from === user.username) {
+    if (from == user.username && to == messagesTo) {
       p.textContent = `${message}`;
       p.setAttribute("class", "sent");
-    } else if (from === messagesTo) {
+      receivedMessages.appendChild(p);
+    } else if (from == messagesTo) {
       p.textContent = `${message}`;
       p.setAttribute("class", "received");
+      receivedMessages.appendChild(p);
     }
-    receivedMessages.appendChild(p);
     receivedMessages.scrollTo({
       top: receivedMessages.scrollHeight,
       behavior: 'smooth'
