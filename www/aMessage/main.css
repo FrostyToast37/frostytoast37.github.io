@@ -1,13 +1,18 @@
 #received_messages p{
-    border-radius: 1.0rem;
-    color: white;
+    border-radius: 1.5rem;
     width: fit-content;
+    max-width: 90%;
+    padding: 3.0rem;
+    margin: 3.0rem;
 }
 #received_messages p.received{
-    background-color: grey;
+    background-color: black;
+    border-color: white;
+    color: white;
     left: 0;
 }
 #received_messages p.sent{
-    background-color: blueviolet;
+    background-color: white;
+    color: black;
     right: 0;
 }
