@@ -26,6 +26,7 @@
 
 #dm_form {
     position: fixed;
+    bottom: 5%;
     right: 0;
     margin: 1.0 3.0;
     border-top: 1px solid white; 
