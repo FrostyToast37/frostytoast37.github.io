@@ -1,3 +1,8 @@
+#to_form {
+    position: fixed;
+    right: 50%
+}
+
 #buttons {
     position: fixed;
     left: 0;
