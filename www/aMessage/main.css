@@ -19,6 +19,8 @@
 }
 
 #received_messages {
+    position: fixed;
+    bottom: 10.0rem; 
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -36,6 +38,9 @@
     border: 2px solid black;
     border-radius: 1.0rem;
     padding: 1.0rem;
+    width: fit-content;
+    min-width: 20.0rem;
+    max-width: 90%;
 }
 
 #dm_form input:focus {
