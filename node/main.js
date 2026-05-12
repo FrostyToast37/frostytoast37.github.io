@@ -157,25 +157,23 @@ let contactsList = [];
   socket.on("receive_dm", async (data) => {
     const { to, from, message, msg_id, timestamp } = data;
 
-    if(from === messagesTo) {
-      //create HTML element for instant messaging if that person is selected
-      const p = document.createElement("p");
-      p.setAttribute("data-id", msg_id);
-      // textContent treats everything as plain text, preventing XSS
-      if (from === user.username) {
-        p.textContent = `${message}`;
-        p.setAttribute("class", "sent");
-      } else {
-        p.textContent = `${message}`;
-        p.setAttribute("class", "received");
-      }
-      receivedMessages.appendChild(p);
-      receivedMessages.scrollTo({
-        top: receivedMessages.scrollHeight,
-        behavior: 'smooth'
-      });
+    //create HTML element for instant messaging if that person is selected
+    const p = document.createElement("p");
+    p.setAttribute("data-id", msg_id);
+    // textContent treats everything as plain text, preventing XSS
+    if (from === user.username) {
+      p.textContent = `${message}`;
+      p.setAttribute("class", "sent");
+    } else if (from === messagesTo) {
+      p.textContent = `${message}`;
+      p.setAttribute("class", "received");
     }
-
+    receivedMessages.appendChild(p);
+    receivedMessages.scrollTo({
+      top: receivedMessages.scrollHeight,
+      behavior: 'smooth'
+    });
+    
     if (!contactsList.includes(from)) {
       contactsList.push(from);
       const btn = document.createElement('button');
