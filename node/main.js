@@ -1,11 +1,8 @@
-let test = document.getElementById("test");
-
 /* THIS WAS TESTING
+  let test = document.getElementById("test");
   const form = document.getElementById("chat_form");
   const input = document.getElementById("chat_input");
   */
-
-const errorLog = document.getElementById("error_log");
 
 const buttons = document.getElementById("buttons");
 
@@ -18,16 +15,18 @@ const dmContent = document.getElementById("dm_content");
 
 const socket = io();
 
+let errorLog;
 let messagesTo = null;
 let contactsList = [];
 
 //console error logging for debugging purposes:
   window.onerror = function(message, source, lineno, colno, error) {
-    errorLog.innerText +=`Error message: ${message} \n
-                          Source URL: ${source} \n
-                          Line: ${lineno}, Column: ${colno} \n
-                          Error Object: ${error}`;
+    errorLog =`Error message: ${message} \n
+                Source URL: ${source} \n
+                Line: ${lineno}, Column: ${colno} \n
+                Error Object: ${error}`;
     // Returning true prevents the default browser error alert/logging
+    alert(errorLog);
     return true; 
   };
 
@@ -41,7 +40,8 @@ let contactsList = [];
       credentials: "include"});
       return await sessionRes.json(); 
     } catch (err) {
-      errorLog.innerHTML = `: " + ${err.message}`;
+      errorLog = `: " + ${err.message}`;
+      alert(errorLog);
       return null;
     } 
   }
@@ -70,7 +70,8 @@ let contactsList = [];
         buttons.prepend(btn);
       });
     } catch (err) {
-      errorLog.innerText += `Thrown from getContacts: ${err.message || err}`;
+      errorLog = `Thrown from getContacts: ${err.message || err}`;
+      alert(errorLog);
       console.error(err);
     }
   }
@@ -84,6 +85,7 @@ let contactsList = [];
   init();
   
 //testing
+  /*
   async function testFunc() {
     try {
       const res = await fetch("/api/aMessage/test", {
@@ -104,6 +106,8 @@ let contactsList = [];
   socket.on("rsp", (res) => {
     test.innerText = res; // world
   });
+  * /
+
 //dms
   //senders func
   async function sendDM(to, message) {
@@ -144,7 +148,8 @@ let contactsList = [];
         });
       }
     } catch (err) {
-      errorLog.innerText += `Thrown from loadMessages: ${err.message || err}`;
+      errorLog = `Thrown from loadMessages: ${err.message || err}`;
+      alert(errorLog);
     }
   }
 

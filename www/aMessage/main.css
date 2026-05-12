@@ -1,3 +1,15 @@
+#buttons {
+    position: fixed;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+}
+
+#buttons button {
+    border-radius: 1.0rem;
+}
+
 #received_messages p{
     border-radius: 1.0rem;
     width: fit-content;
@@ -21,9 +33,10 @@
 #received_messages {
     position: fixed;
     bottom: 10.0rem; 
+    right: 0;
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 70%;
     z-index: -1;
     overflow-y: auto;
     height: 80%;
