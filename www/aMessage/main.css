@@ -25,10 +25,22 @@
 }
 
 #dm_form {
-    position: absolute;
+    position: fixed;
     right: 0;
     margin: 1.0 3.0;
     border-top: 1px solid white; 
+}
+
+#dm_form input {
+    border: 2px solid black;
+    border-radius: 1.0rem;
+    padding: 1.0rem;
+}
+
+#dm_form input:focus {
+    outline: none;       
+    border-color: black;  
+    box-shadow: none;    
 }
 
 #dm_form button {
