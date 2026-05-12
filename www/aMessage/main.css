@@ -1,18 +1,25 @@
 #received_messages p{
-    border-radius: 1.5rem;
+    border-radius: 1.0rem;
     width: fit-content;
     max-width: 90%;
-    padding: 3.0rem;
-    margin: 3.0rem;
+    padding: 1.0rem;
+    margin: 0.5rem 2.0rem;
 }
 #received_messages p.received{
     background-color: black;
-    border-color: white;
+    border: 2px solid white;
     color: white;
-    left: 0;
+    align-self: flex-start;
 }
 #received_messages p.sent{
     background-color: white;
     color: black;
-    right: 0;
+    border: 2px solid black;
+    align-self: flex-end;
+}
+
+#received_messages {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
