@@ -161,10 +161,10 @@ let contactsList = [];
     p.setAttribute("data-id", msg_id);
     // textContent treats everything as plain text, preventing XSS
     if (from === user.username) {
-      p.textContent = `${timestamp}: You --> ${to}: ${message}`;
+      p.textContent = `${message}`;
       p.setAttribute("class", "sent");
     } else {
-      p.textContent = `${timestamp}: ${from} --> You: ${message}`;
+      p.textContent = `${message}`;
       p.setAttribute("class", "received");
     }
 
