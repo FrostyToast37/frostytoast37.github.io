@@ -194,7 +194,7 @@ let contactsList = [];
       p.textContent = `${message}`;
       p.setAttribute("class", "received");
       receivedMessages.appendChild(p);
-    }
+    } 
     receivedMessages.scrollTo({
       top: receivedMessages.scrollHeight,
       behavior: 'smooth'
@@ -211,6 +211,11 @@ let contactsList = [];
       });
       buttons.prepend(btn);
     }
+
+    if (document.visibilityState === "hidden" || from !== messagesTo) {
+      showNotification(`You have a new message from ${from}`);
+    }
+
   });
 
 //form listeners
