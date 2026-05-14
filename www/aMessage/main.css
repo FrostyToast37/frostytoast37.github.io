@@ -3,8 +3,10 @@
 }
 
 #to_form {
+    display: flex;
     position: fixed;
-    right: 50%
+    right: 50%;
+    align-items: center;
 }
 
 #buttons {
