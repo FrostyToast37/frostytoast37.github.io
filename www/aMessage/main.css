@@ -69,6 +69,8 @@
     border-radius: 1.0rem;
     width: fit-content;
     max-width: 100%;
+    word-wrap: break-word;
+    white-space: normal;
 }
 
 #received_messages {
