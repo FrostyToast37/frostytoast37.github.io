@@ -59,7 +59,7 @@
 }
 
 #buttons {
-    flex: 3;
+    flex: 20;
     display: flex;
     flex-direction: column;
     z-index: 2;
@@ -75,7 +75,7 @@
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-    flex: 7;
+    flex: 80;
 }
 
 #received_messages p{
