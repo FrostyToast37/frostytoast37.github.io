@@ -60,7 +60,6 @@
 
 #buttons {
     flex: 3;
-    position: fixed;
     display: flex;
     flex-direction: column;
     z-index: 2;
