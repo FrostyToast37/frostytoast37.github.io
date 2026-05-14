@@ -84,9 +84,9 @@
 }
 
 #received_messages {
-    margin-top: 5.0rem;
+    margin-top: 10.0rem;
     position: fixed;
-    bottom: 15%;
+    bottom: 13%;
     right: 0;
     display: flex;
     flex-direction: column;
