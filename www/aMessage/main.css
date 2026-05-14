@@ -15,7 +15,7 @@
 
 #to_form {
     margin: 1.0rem 3.0rem;
-    border-top: 1px solid white;
+    border-bottom: 1px solid white;
     height: 8%;
 }
 
@@ -99,7 +99,7 @@
     bottom: 0;
     right: 0;
     margin: 1.0rem 3.0rem;
-    border-bottom: 1px solid white;
+    border-top: 1px solid white;
     height: 10%;
 }
 
