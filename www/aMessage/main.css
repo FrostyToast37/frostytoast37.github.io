@@ -10,6 +10,7 @@
     justify-content: center;
     position: fixed;
     z-index: 1;
+    border: 1px solid rgb(74, 74, 74);
 }
 
 
@@ -66,6 +67,7 @@
     min-height: 0;
     overflow-y: auto;
     min-width: 0;
+    border: 1px solid rgb(74, 74, 74);
 }
 
 #buttons button {
@@ -112,6 +114,7 @@
     margin: 1.0rem 3.0rem;
     border-top: 1px solid white;
     height: 10%;
+    border: 1px solid rgb(74, 74, 74);
 }
 
 #dm_form input {
