@@ -16,6 +16,7 @@
 
 #to_form {
     margin: 1.0rem 3.0rem;
+    margin-bottom: 0;
     border-bottom: 1px solid white;
     height: 8%;
 }
@@ -115,6 +116,7 @@
     border-top: 1px solid white;
     height: 10%;
     border: 1px solid rgb(74, 74, 74);
+    background-color: rgb(74, 74, 74);
 }
 
 #dm_form input {
