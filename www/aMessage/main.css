@@ -10,15 +10,14 @@
     justify-content: center;
     position: fixed;
     z-index: 1;
-    border: 1px solid rgb(74, 74, 74);
-    border: 1px solid rgb(74, 74, 74);
-    background-color: rgb(74, 74, 74);
+    border: 1px solid rgb(40, 40, 40);
+    background-color: rgb(40, 40, 40);
 }
 
 
 #to_form {
     margin: 1.0rem 3.0rem;
-    margin-bottom: 0;
+    margin-bottom: 0.5rem;
     border-bottom: 1px solid white;
     height: 8%;
 }
@@ -70,7 +69,7 @@
     min-height: 0;
     overflow-y: auto;
     min-width: 0;
-    border: 1px solid rgb(74, 74, 74);
+    border: 1px solid rgb(40, 40, 40);
 }
 
 #buttons button {
