@@ -84,6 +84,7 @@
 }
 
 #received_messages {
+    margin-top: 5.0rem;
     position: fixed;
     bottom: 15%;
     right: 0;
