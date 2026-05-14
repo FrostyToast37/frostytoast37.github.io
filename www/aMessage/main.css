@@ -65,6 +65,7 @@
     z-index: 2;
     min-height: 0;
     overflow-y: auto;
+    min-width: 0;
 }
 
 #buttons button {
