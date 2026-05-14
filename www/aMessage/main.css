@@ -2,11 +2,46 @@
     box-sizing: border-box;
 }
 
-#to_form {
+#top {
     display: flex;
-    position: fixed;
-    right: 50%;
     align-items: center;
+    position: fixed;
+}
+
+
+#to_form {
+    margin: 1.0 3.0;
+    border-top: 1px solid white;
+    height: 8%;
+}
+
+#to_form input {
+    border: 2px solid black;
+    border-radius: 0.8rem;
+    padding: 0.8rem;
+    width: fit-content;
+    min-width: 15.0rem;
+    max-width: 90%;
+}
+
+#to_form input:focus {
+    outline: none;       
+    border-color: black;  
+    box-shadow: none;    
+}
+
+#to_form button {
+    border: 2px solid black;
+    border-radius: 1.0rem;
+    background-color: white;
+    color: black;
+}
+
+#to_form button:hover {
+    border-color: white;
+    background-color: black;
+    color: white;
+    box-shadow: 0 0 0.4rem 0.8rem #16f5298a;
 }
 
 #buttons {
