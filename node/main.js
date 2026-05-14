@@ -212,7 +212,7 @@ let contactsList = [];
       buttons.prepend(btn);
     }
 
-    if (document.visibilityState === "hidden" || from !== messagesTo) {
+    if ((document.visibilityState === "hidden" || from !== messagesTo) && from !== user.username) {
       showNotification(`You have a new message from ${from}`);
     }
 
