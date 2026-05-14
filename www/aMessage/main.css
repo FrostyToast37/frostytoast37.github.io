@@ -48,12 +48,21 @@
     box-shadow: 0 0 0.4rem 0.8rem #16f5298a;
 }
 
-#buttons {
+#container {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10.0rem;
     position: fixed;
-    left: 0;
+    bottom: 13%;
+    height: 80%;
+    width: 100%;
+}
+
+#buttons {
+    flex: 3;
+    position: fixed;
     display: flex;
     flex-direction: column;
-    width: 20%;
     z-index: 2;
 }
 
@@ -61,6 +70,13 @@
     border-radius: 1.0rem;
     width: fit-content;
     max-width: 100%;
+}
+
+#received_messages {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex: 7;
 }
 
 #received_messages p{
@@ -71,28 +87,18 @@
     margin: 0.5rem 2.0rem;
 }
 #received_messages p.received{
+    margin-right: 10%;
     background-color: black;
     border: 2px solid white;
     color: white;
     align-self: flex-start;
 }
 #received_messages p.sent{
+    margin-left: 10%;
     background-color: white;
     color: black;
     border: 2px solid black;
     align-self: flex-end;
-}
-
-#received_messages {
-    margin-top: 10.0rem;
-    position: fixed;
-    bottom: 13%;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-    width: 70%;
-    overflow-y: auto;
-    height: 80%;
 }
 
 #dm_form {
@@ -124,4 +130,8 @@
     border-radius: 1.0rem;
     background-color: white;
     color: black;
+}
+
+@media (max-width: 48rem) {
+ 
 }
