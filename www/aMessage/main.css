@@ -23,7 +23,6 @@
 }
 
 #to_form input {
-    border: 2px solid black;
     border-radius: 0.8rem;
     padding: 0.8rem;
     width: fit-content;
