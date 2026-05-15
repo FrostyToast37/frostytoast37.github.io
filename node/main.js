@@ -258,7 +258,7 @@ let contactsList = [];
     }
   });
 
-  openContacts.addEventListener("click", (event) => {
+  openContacts.addEventListener("click", () => {
     openContacts.classList.toggle("open");
     contactsContainer.classList.toggle("open");
   });
