@@ -5,7 +5,8 @@
 #top {
     flex-direction: row;
     top: 0;
-    width: 100%;
+    right: 0;
+    left: 0;
     display: flex;
     justify-content: center;
     position: fixed;
@@ -126,6 +127,7 @@
     position: fixed;
     bottom: 0;
     right: 0;
+    left: 0;
     margin: 1.0rem 3.0rem;
     border-top: 1px solid white;
     height: 10%;
@@ -174,18 +176,25 @@
     }
 
     #received_messages {
-        flex-basis: 100%;
+        flex: 1;
     }
 
     #contacts_container {
-        flex-basis: 0;
+        flex: 0;
+        display: none;
     }
 
     #received_messages.open {
-        flex-basis: 0;
+        flex: 0;
+        display: none;
     }
 
     #contacts_container.open {
-        flex-basis: 100%;
+        flex: 1;
+    }
+
+    #to_form input, #dm_form input {
+        min-width: 0;
+        width: 100%;
     }
 }
