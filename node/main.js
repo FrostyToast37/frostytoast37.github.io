@@ -5,7 +5,6 @@
   */
 
 const contactsContainer = document.getElementById("contacts_container");
-const openButton = document.getElementById("open");
 const buttons = document.getElementById("buttons");
 const openContacts = document.getElementById("open");
 
@@ -259,7 +258,7 @@ let contactsList = [];
     }
   });
 
-  openButton.addEventListener("click", (event) => {
+  openContacts.addEventListener("click", (event) => {
     openContacts.classList.toggle("open");
-    openButton.document.getElementById("open").classList.toggle("open");
+    contactsContainer.classList.toggle("open");
   });
