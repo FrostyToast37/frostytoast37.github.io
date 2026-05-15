@@ -71,28 +71,17 @@
 }
 
 #open {
-    font-size: 3.0rem;
-    border: solid;
-    border-color: #16f529;
-    padding: 0.5rem;
-    display: grid;
-    place-items: center;
-    cursor: pointer;
-    transition: rotate 0.5s ease-in-out;
-    rotate: 0deg;
-    box-sizing: border-box;
-    width: 6rem;
-    height: 5rem;
-}
-
-#open.open {
-    rotate: 180deg;
+    display: none;
+    width: 0;
+    flex-basis: 0;
 }
 
 #buttons {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    min-height: 0;
+    min-width: 0;
 }
 
 #buttons button {
@@ -165,5 +154,22 @@
 }
 
 @media (max-width: 48rem) {
- 
+    #open {
+        font-size: 3.0rem;
+        border: solid;
+        border-color: #16f529;
+        padding: 0.5rem;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transition: rotate 0.5s ease-in-out;
+        rotate: 0deg;
+        box-sizing: border-box;
+        width: 6rem;
+        height: 5rem;
+    }
+
+    #open.open {
+        rotate: 180deg;
+    }
 }
