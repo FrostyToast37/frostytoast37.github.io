@@ -63,16 +63,36 @@
     flex: 20;
     display: flex;
     flex-direction: row-reverse;
+    align-items: center;
     z-index: 2;
     min-height: 0;
-    overflow-y: auto;
     min-width: 0;
     border: 1px solid rgb(40, 40, 40);
+}
+
+#open {
+    font-size: 3.0rem;
+    border: solid;
+    border-color: #16f529;
+    padding: 0.5rem;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: rotate 0.5s ease-in-out;
+    rotate: 180deg;
+    box-sizing: border-box;
+    width: 6rem;
+    height: 5rem;
+}
+
+#open.open {
+    rotate: 0deg;
 }
 
 #buttons {
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
 }
 
 #buttons button {
