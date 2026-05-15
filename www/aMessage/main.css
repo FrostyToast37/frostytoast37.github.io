@@ -1,3 +1,9 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; 
+}
+
 * {
     box-sizing: border-box;
 }
@@ -53,10 +59,9 @@
 #container {
     display: flex;
     flex-direction: row;
-    margin-top: 10.0rem;
     position: fixed;
     bottom: 13%;
-    height: 80%;
+    top: 10.0rem;
     width: 100%;
 }
 
@@ -180,7 +185,8 @@
     }
 
     #contacts_container {
-        flex: 0;
+        flex: none;
+        width: max-content;
         display: flex;
         border: none;
     }
