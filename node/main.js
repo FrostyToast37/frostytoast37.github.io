@@ -4,7 +4,9 @@
   const input = document.getElementById("chat_input");
   */
 
+const contactsContainer = document.getElementById("contacts_container");
 const buttons = document.getElementById("buttons");
+const openContacts = document.getElementById("open");
 
 const toForm = document.getElementById("to_form");
 const toInput = document.getElementById("to_input");
@@ -218,7 +220,7 @@ let contactsList = [];
 
   });
 
-//form listeners
+//event listeners
   /* THIS WAS TESTING
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -254,4 +256,8 @@ let contactsList = [];
     } else {
       receivedMessages.innerHTML = "You have no receiver selected"
     }
+  });
+
+  openContacts.addEventListener("click", (event) => {
+    contactsContainer.classList.toggle("open");
   });
