@@ -182,21 +182,7 @@ html, body {
 
     #received_messages {
         flex: 1;
-    }
-
-    #contacts_container {
-        flex: none;
-        width: max-content;
-        display: flex;
-        border: none;
-    }
-
-    #buttons {
-        display: none;
-    }
-
-    #buttons.open {
-        display: flex;
+        transition: flex 0.5s ease-in-out;
     }
 
     #received_messages.open {
@@ -204,10 +190,22 @@ html, body {
         display: none;
     }
 
-    #contacts_container.open {
+    #contacts_container {
+        transition: flex 0.5s ease-in-out;
+        flex: 0;
+        width: max-content;
         display: flex;
+        border: none;
+        overflow: hidden;
+    }
+
+    #contacts_container.open {
         flex: 1;
         border: 1px solid rgb(40, 40, 40);
+    }
+
+    #buttons {
+        display: flex;
     }
 
     #to_form input, #dm_form input {
