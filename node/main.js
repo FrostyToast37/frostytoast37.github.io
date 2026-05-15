@@ -261,4 +261,5 @@ let contactsList = [];
   openContacts.addEventListener("click", () => {
     openContacts.classList.toggle("open");
     contactsContainer.classList.toggle("open");
+    receivedMessages.classList.toggle("open");
   });
