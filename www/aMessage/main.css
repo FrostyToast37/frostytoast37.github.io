@@ -181,7 +181,16 @@
 
     #contacts_container {
         flex: 0;
+        display: flex;
+        border: none;
+    }
+
+    #buttons {
         display: none;
+    }
+
+    #buttons.open {
+        display: flex;
     }
 
     #received_messages.open {
@@ -190,7 +199,9 @@
     }
 
     #contacts_container.open {
+        display: flex;
         flex: 1;
+        border: 1px solid rgb(40, 40, 40);
     }
 
     #to_form input, #dm_form input {

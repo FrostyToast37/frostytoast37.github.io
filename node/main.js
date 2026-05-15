@@ -262,4 +262,5 @@ let contactsList = [];
     openContacts.classList.toggle("open");
     contactsContainer.classList.toggle("open");
     receivedMessages.classList.toggle("open");
+    buttons.classList.toggle("open");
   });
