@@ -145,7 +145,8 @@ let contactsList = [];
     try {
       receivedMessages.innerHTML = "";
       const from = user.username;
-      const res = await fetch(`/api/aMessage/loadMessages/${to}`, {
+      const URIencodedTo = encodeURIComponent(to);
+      const res = await fetch(`/api/aMessage/loadMessages/${URIencodedTo}`, {
         method: "GET",
         credentials: "include"
       });
