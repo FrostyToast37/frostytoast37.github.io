@@ -82,7 +82,8 @@ html, body {
     flex-basis: 0;
 }
 
-#buttons {
+#buttons { 
+    align-self: flex-start;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
