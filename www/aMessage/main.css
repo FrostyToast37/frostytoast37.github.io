@@ -68,7 +68,7 @@ html, body {
 #contacts_container {
     flex: 20;
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     z-index: 2;
     min-height: 0;
     min-width: 0;
@@ -83,7 +83,7 @@ html, body {
 }
 
 #buttons { 
-    align-self: flex-end;
+    align-self: flex-start;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -192,6 +192,7 @@ html, body {
     }
 
     #contacts_container {
+        flex-direction: row-reverse;
         transition: flex 0.5s ease-in-out;
         flex: 0;
         width: max-content;
