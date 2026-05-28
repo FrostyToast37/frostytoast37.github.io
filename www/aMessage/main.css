@@ -83,7 +83,7 @@ html, body {
 }
 
 #buttons { 
-    align-self: flex-start;
+    align-self: flex-end;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
