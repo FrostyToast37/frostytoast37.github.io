@@ -68,6 +68,9 @@ let contactsList = [];
           event.preventDefault();
           messagesTo = userContact; 
           await loadMessages(messagesTo);
+          openContacts.classList.toggle("open");
+          contactsContainer.classList.toggle("open");
+          buttons.classList.toggle("open");
         });
         buttons.prepend(btn);
       });
@@ -99,6 +102,9 @@ let contactsList = [];
 
   let user = null;
   async function init() {
+    openContacts.classList.toggle("open");
+    contactsContainer.classList.toggle("open");
+    buttons.classList.toggle("open");
     user = await getSession();
     await getContacts();
     await requestPermission();
@@ -262,6 +268,5 @@ let contactsList = [];
   openContacts.addEventListener("click", () => {
     openContacts.classList.toggle("open");
     contactsContainer.classList.toggle("open");
-    receivedMessages.classList.toggle("open");
     buttons.classList.toggle("open");
   });
