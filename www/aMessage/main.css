@@ -185,26 +185,25 @@ html, body {
 
     #received_messages {
         flex: 1;
-        transition: flex 0.5s ease-in-out;
-    }
-
-    #received_messages.open {
-        flex: 0;
-        display: none;
+        padding-left: 6.5rem;
     }
 
     #contacts_container {
-        flex-direction: row-reverse;
-        transition: flex 0.5s ease-in-out;
-        flex: 0 0 6rem;
-        width: 6rem;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 10;
+        width: 6rem; 
+        transition: width 0.5s ease-in-out;
         display: flex;
+        flex-direction: row-reverse;
         border: none;
         overflow: hidden;
+        background-color: rgb(20, 20, 20);
     }
 
     #contacts_container.open {
-        flex: 1;
         width: 100%;
         border: 1px solid rgb(40, 40, 40);
     }
