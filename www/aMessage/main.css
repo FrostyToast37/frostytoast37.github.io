@@ -175,6 +175,7 @@ html, body {
         box-sizing: border-box;
         width: 6rem;
         height: 5rem;
+        flex-basis: auto;
     }
 
     #open.open {
@@ -194,8 +195,8 @@ html, body {
     #contacts_container {
         flex-direction: row-reverse;
         transition: flex 0.5s ease-in-out;
-        flex: 0;
-        width: max-content;
+        flex: 0 0 6rem;
+        width: 6rem;
         display: flex;
         border: none;
         overflow: hidden;
@@ -203,11 +204,13 @@ html, body {
 
     #contacts_container.open {
         flex: 1;
+        width: 100%;
         border: 1px solid rgb(40, 40, 40);
     }
 
     #buttons {
         display: flex;
+        flex-grow: 1;
     }
 
     #to_form input, #dm_form input {
