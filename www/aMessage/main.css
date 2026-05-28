@@ -176,6 +176,7 @@ html, body {
         width: 6rem;
         height: 5rem;
         flex-basis: auto;
+        flex-shrink: 0;
     }
 
     #open.open {
