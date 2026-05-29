@@ -60,8 +60,15 @@ function moveCheckLoop() {
     if (Math.abs(speedX) < 0.1) speedX = 0;
   }
 
-	playerX += speedX;
-	playerY += speedY;
+	let currentSpeed = Math.sqrt(speedX * speedX + speedY * speedY);	
+	
+  if (currentSpeed > maxSpeed) {
+    speedX = (speedX / currentSpeed) * maxSpeed;
+    speedY = (speedY / currentSpeed) * maxSpeed;
+  }
+
+  playerX += speedX;
+  playerY += speedY;
 
 	//this line means it loops
 	requestAnimationFrame(moveCheckLoop);
