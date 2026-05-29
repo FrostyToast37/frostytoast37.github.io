@@ -13,7 +13,7 @@ const playerCircle = new fabric.Circle({
 	stroke: 'black',     // Border color
 	strokeWidth: 3,      // Border width
 	left: 100,           // X-coordinate position from the left
-	bottom: 100,         // Y-coordinate position from the bottom
+	top: 100,         // Y-coordinate position from the top
 	selectable: true     // Allows the user to move/resize the circle
 });
 
