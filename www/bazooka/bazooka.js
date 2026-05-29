@@ -16,6 +16,7 @@ const playerCircle = new fabric.Circle({
 	top: 100,         // Y-coordinate position from the top
 	selectable: true     // Allows the user to move/resize the circle
 });
+canvas.add(playerCircle);
 
 
 //MOVEMENT
@@ -25,7 +26,7 @@ let playerX = 100;
 let playerY = 100;
 const maxSpeed = 20;
 const speedConst = 5;
-const friction = 2;
+const friction = 0.5;
 
 //an array for all key states
 const keysPressed = {};
