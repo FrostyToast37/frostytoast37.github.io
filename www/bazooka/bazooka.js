@@ -32,9 +32,11 @@ const keysPressed = {};
 
 window.addEventListener('keydown', (event) => {
 	keysPressed[event.code] = true;
+	event.preventDefault();
 });
 window.addEventListener('keyup', (event) => {
 	keysPressed[event.code] = false;
+	event.preventDefault();
 });
 
 function moveCheckLoop() {
