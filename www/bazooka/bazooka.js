@@ -7,7 +7,7 @@ const canvas = new fabric.StaticCanvas("myCanvas");
 const helloWorld = new fabric.FabricText('Hello world!');
 canvas.add(helloWorld);
 canvas.centerObject(helloWorld);
-const circle = new fabric.Circle({
+const playerCircle = new fabric.Circle({
 	radius: 20,          // Radius of the circle
 	fill: 'tomato',      // Inner color
 	stroke: 'black',     // Border color
@@ -61,7 +61,7 @@ function moveCheckLoop() {
   }
 
 	let currentSpeed = Math.sqrt(speedX * speedX + speedY * speedY);	
-	
+
   if (currentSpeed > maxSpeed) {
     speedX = (speedX / currentSpeed) * maxSpeed;
     speedY = (speedY / currentSpeed) * maxSpeed;
@@ -69,6 +69,9 @@ function moveCheckLoop() {
 
   playerX += speedX;
   playerY += speedY;
+
+	playerCircle.set({ left: playerX, top: playerY });
+	canvas.renderAll();
 
 	//this line means it loops
 	requestAnimationFrame(moveCheckLoop);
