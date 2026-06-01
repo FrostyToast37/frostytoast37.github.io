@@ -11,7 +11,7 @@ canvasDOM.height = window.innerHeight;
 	//playerCircle
 		const playerCircle = new fabric.Circle({
 			radius: 20,          // Radius of the circle
-			fill: "tomato",      // Inner color
+			fill: "orange",      // Inner color
 			stroke: "black",     // Border color
 			strokeWidth: 3,      // Border width
 			left: 100,           // X-coordinate position from the left
@@ -21,7 +21,7 @@ canvasDOM.height = window.innerHeight;
 		canvas.add(playerCircle);
 	//aimLine
 		const aimLine = new fabric.Line([100, 100, 0, 0], {
-			stroke: "red",
+			stroke: "gold",
 			strokeWidth: 2,
 			strokeDashArray: [2,5]
 		});
@@ -37,9 +37,9 @@ let playerX = 100;
 let playerY = 100;
 let mouseX = 0;
 let mouseY = 0;
-const maxSpeed = 30;
-const speedConst = 5;
-const friction = 0.9;
+const maxSpeed = 25;
+const speedConst = 3.5;
+const friction = 0.85;
 
 //an array for all key states
 const keysPressed = {};
@@ -57,41 +57,52 @@ window.addEventListener("mousemove", (event) => {
 	mouseY = event.clientY;
 	mouseX = event.clientX;
 });
+window.addEventListener("onclick", (event) => {
+	shoot();
+});
 
-function moveCheckLoop() {
-	if (keysPressed["KeyW"] || keysPressed["ArrowUp"]) {
-		if(speedY > -maxSpeed) {speedY -= speedConst;}
+//function defs
+	function move() {
+		if (keysPressed["KeyW"] || keysPressed["ArrowUp"]) {
+			if(speedY > -maxSpeed) {speedY -= speedConst;}
+		}
+		if (keysPressed["KeyA"] || keysPressed["ArrowLeft"]) {
+			if(speedX > -maxSpeed) {speedX -= speedConst;}
+		}
+		if (keysPressed["KeyS"] || keysPressed["ArrowDown"]) {
+			if(speedY < maxSpeed) {speedY += speedConst;}
+		}
+		if (keysPressed["KeyD"] || keysPressed["ArrowRight"]) {
+			if(speedX < maxSpeed) {speedX += speedConst;}
+		}
+
+		if (!keysPressed["KeyW"] && !keysPressed["ArrowUp"] && !keysPressed["KeyS"] && !keysPressed["ArrowDown"]) {
+			speedY *= friction; 
+			if (Math.abs(speedY) < 0.1) speedY = 0; // Stop micro-drifting
+		}
+		if (!keysPressed["KeyA"] && !keysPressed["ArrowLeft"] && !keysPressed["KeyD"] && !keysPressed["ArrowRight"]) {
+			speedX *= friction;
+			if (Math.abs(speedX) < 0.1) speedX = 0;
+		}
+
+		let currentSpeed = Math.sqrt(speedX * speedX + speedY * speedY);	
+
+		if (currentSpeed > maxSpeed) {
+			speedX = (speedX / currentSpeed) * maxSpeed;
+			speedY = (speedY / currentSpeed) * maxSpeed;
+		}
+
+		playerX += speedX;
+		playerY += speedY;
+
+		playerCircle.set({ left: playerX, top: playerY });
 	}
-	if (keysPressed["KeyA"] || keysPressed["ArrowLeft"]) {
-		if(speedX > -maxSpeed) {speedX -= speedConst;}
-	}
-	if (keysPressed["KeyS"] || keysPressed["ArrowDown"]) {
-		if(speedY < maxSpeed) {speedY += speedConst;}
-	}
-	if (keysPressed["KeyD"] || keysPressed["ArrowRight"]) {
-		if(speedX < maxSpeed) {speedX += speedConst;}
+	function shoot() {
+		//make shoot here
 	}
 
-	if (!keysPressed["KeyW"] && !keysPressed["ArrowUp"] && !keysPressed["KeyS"] && !keysPressed["ArrowDown"]) {
-    speedY *= friction; 
-    if (Math.abs(speedY) < 0.1) speedY = 0; // Stop micro-drifting
-  }
-  if (!keysPressed["KeyA"] && !keysPressed["ArrowLeft"] && !keysPressed["KeyD"] && !keysPressed["ArrowRight"]) {
-    speedX *= friction;
-    if (Math.abs(speedX) < 0.1) speedX = 0;
-  }
-
-	let currentSpeed = Math.sqrt(speedX * speedX + speedY * speedY);	
-
-  if (currentSpeed > maxSpeed) {
-    speedX = (speedX / currentSpeed) * maxSpeed;
-    speedY = (speedY / currentSpeed) * maxSpeed;
-  }
-
-  playerX += speedX;
-  playerY += speedY;
-
-	playerCircle.set({ left: playerX, top: playerY });
+function animate() {
+	move();
 	aimLine.set({
 		x1: playerX,
     y1: playerY,
@@ -102,8 +113,8 @@ function moveCheckLoop() {
 	canvas.renderAll();
 
 	//this line means it loops
-	requestAnimationFrame(moveCheckLoop);
+	requestAnimationFrame(animate);
 }
 
 //starts loop
-requestAnimationFrame(moveCheckLoop);
+requestAnimationFrame(animate);
