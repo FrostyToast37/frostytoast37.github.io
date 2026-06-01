@@ -92,7 +92,13 @@ function moveCheckLoop() {
   playerY += speedY;
 
 	playerCircle.set({ left: playerX, top: playerY });
-	aimLine.setCoords([playerX, playerY, mouseX, mouseY]);
+	aimLine.set({
+		x1: playerX,
+    y1: playerY,
+    x2: mouseX,
+    y2: mouseY
+  });
+  aimLine.setCoords();
 	canvas.renderAll();
 
 	//this line means it loops
