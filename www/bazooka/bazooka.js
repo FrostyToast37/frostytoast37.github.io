@@ -37,9 +37,9 @@ let playerX = 100;
 let playerY = 100;
 let mouseX = 0;
 let mouseY = 0;
-const maxSpeed = 20;
-const speedConst = 2;
-const friction = 0.8;
+const maxSpeed = 30;
+const speedConst = 5;
+const friction = 0.9;
 
 //an array for all key states
 const keysPressed = {};
