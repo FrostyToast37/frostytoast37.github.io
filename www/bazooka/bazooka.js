@@ -25,8 +25,8 @@ class laser {
 		//magnitude
 		const magV = Math.sqrt(dx * dx + dy * dy);
 		//unit vectors themselves
-		const ux = dx / magV;
-		const uy = dy / magV;
+		this.ux = dx / magV;
+		this.uy = dy / magV;
 
 		this.dTraveled = 0;
 		this.frame = 0;
@@ -82,9 +82,6 @@ let playerX = 100;
 let playerY = 100;
 let mouseX = 0;
 let mouseY = 0;
-const k_maxSpeed = 25;
-const k_speedConst = 3;
-const k_friction = 0.8;
 //an array for all key states
 const keysPressed = {};
 
@@ -142,7 +139,7 @@ window.addEventListener("onclick", (event) => {
 		playerCircle.set({ left: playerX, top: playerY });
 	}
 	function shoot() {
-		const 
+		//
 	}
 
 function animate() {
