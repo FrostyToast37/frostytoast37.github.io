@@ -23,7 +23,7 @@ class laser {
 		const dx = x2 - x1;
 		const dy = y2 - y1;
 		//magnitude
-		const magV = Math.sqrt(dx * dx + dy * dy);
+		this.magV = Math.sqrt(dx * dx + dy * dy);
 		//unit vectors themselves
 		this.ux = dx / magV;
 		this.uy = dy / magV;
@@ -39,10 +39,14 @@ class laser {
 	}
 	step() {
 		this.dTraveled += k_laserSpeed;
-		this.Xf = ((dTraveled * ux) > this.x2) ? this.x2 : (dTraveled * ux);
-		this.Yf = ((dTraveled * uy) > this.y2) ? this.x2 : (dTraveled * ux);
-		this.Xb = (dTraveled - k_laserLength) * ux;
-		this.Yb = (dTraveled - k_laserLength) * uy;
+		if (dTraveled < this.magV) {
+			this.Xf = dTraveled * ux;
+			this.Yf = dTraveled * uy;
+			this.Xb = (dTraveled - k_laserLength) * ux;
+			this.Yb = (dTraveled - k_laserLength) * uy;
+		} else {
+			
+		}
 
 	}
 }
