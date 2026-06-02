@@ -1,6 +1,51 @@
+//DOM elements
 const canvasDOM = document.getElementById("myCanvas");
 canvasDOM.width = window.innerWidth;
 canvasDOM.height = window.innerHeight;
+
+//game constants (marked by k_)
+const k_maxSpeed = 25;
+const k_speedConst = 3;
+const k_friction = 0.8;
+const k_laserSpeed = 5; //starting this slow for testing purposes
+const k_laserLength = 5;
+
+class laser {
+	constructor(x1, y1, x2, y2) {
+		//starting coords and destination coords
+		this.x1 = x1;
+		this.y1 = y1;
+		this.x2 = x2;
+		this.y2 = y2;
+
+		//calculating unit vectors
+		//distances
+		const dx = x2 - x1;
+		const dy = y2 - y1;
+		//magnitude
+		const magV = Math.sqrt(dx * dx + dy * dy);
+		//unit vectors themselves
+		const ux = dx / magV;
+		const uy = dy / magV;
+
+		this.dTraveled = 0;
+		this.frame = 0;
+		//coords of front of laser
+		this.Xf = x1;
+		this.Yf = y1;
+		//coords of backk of laser
+		this.Xb = x1;
+		this.Yb = y1;
+	}
+	step() {
+		this.dTraveled += k_laserSpeed;
+		this.Xf = ((dTraveled * ux) > this.x2) ? this.x2 : (dTraveled * ux);
+		this.Yf = ((dTraveled * uy) > this.y2) ? this.x2 : (dTraveled * ux);
+		this.Xb = (dTraveled - k_laserLength) * ux;
+		this.Yb = (dTraveled - k_laserLength) * uy;
+
+	}
+}
 
 //CANVAS
 	//helloWorld
@@ -21,9 +66,9 @@ canvasDOM.height = window.innerHeight;
 		canvas.add(playerCircle);
 	//aimLine
 		const aimLine = new fabric.Line([100, 100, 0, 0], {
-			stroke: "gold",
+			stroke: "red",
 			strokeWidth: 2,
-			strokeDashArray: [2,5]
+			strokeDashArray: [3,6]
 		});
 		canvas.add(aimLine);
 
@@ -37,10 +82,9 @@ let playerX = 100;
 let playerY = 100;
 let mouseX = 0;
 let mouseY = 0;
-const maxSpeed = 25;
-const speedConst = 3.5;
-const friction = 0.85;
-
+const k_maxSpeed = 25;
+const k_speedConst = 3;
+const k_friction = 0.8;
 //an array for all key states
 const keysPressed = {};
 
@@ -64,32 +108,32 @@ window.addEventListener("onclick", (event) => {
 //function defs
 	function move() {
 		if (keysPressed["KeyW"] || keysPressed["ArrowUp"]) {
-			if(speedY > -maxSpeed) {speedY -= speedConst;}
+			if(speedY > -k_maxSpeed) {speedY -= k_speedConst;}
 		}
 		if (keysPressed["KeyA"] || keysPressed["ArrowLeft"]) {
-			if(speedX > -maxSpeed) {speedX -= speedConst;}
+			if(speedX > -k_maxSpeed) {speedX -= k_speedConst;}
 		}
 		if (keysPressed["KeyS"] || keysPressed["ArrowDown"]) {
-			if(speedY < maxSpeed) {speedY += speedConst;}
+			if(speedY < k_maxSpeed) {speedY += k_speedConst;}
 		}
 		if (keysPressed["KeyD"] || keysPressed["ArrowRight"]) {
-			if(speedX < maxSpeed) {speedX += speedConst;}
+			if(speedX < k_maxSpeed) {speedX += k_speedConst;}
 		}
 
 		if (!keysPressed["KeyW"] && !keysPressed["ArrowUp"] && !keysPressed["KeyS"] && !keysPressed["ArrowDown"]) {
-			speedY *= friction; 
+			speedY *= k_friction; 
 			if (Math.abs(speedY) < 0.1) speedY = 0; // Stop micro-drifting
 		}
 		if (!keysPressed["KeyA"] && !keysPressed["ArrowLeft"] && !keysPressed["KeyD"] && !keysPressed["ArrowRight"]) {
-			speedX *= friction;
+			speedX *= k_friction;
 			if (Math.abs(speedX) < 0.1) speedX = 0;
 		}
 
 		let currentSpeed = Math.sqrt(speedX * speedX + speedY * speedY);	
 
-		if (currentSpeed > maxSpeed) {
-			speedX = (speedX / currentSpeed) * maxSpeed;
-			speedY = (speedY / currentSpeed) * maxSpeed;
+		if (currentSpeed > k_maxSpeed) {
+			speedX = (speedX / currentSpeed) * k_maxSpeed;
+			speedY = (speedY / currentSpeed) * k_maxSpeed;
 		}
 
 		playerX += speedX;
@@ -98,7 +142,7 @@ window.addEventListener("onclick", (event) => {
 		playerCircle.set({ left: playerX, top: playerY });
 	}
 	function shoot() {
-		//make shoot here
+		const 
 	}
 
 function animate() {
