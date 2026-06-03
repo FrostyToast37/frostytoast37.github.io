@@ -10,7 +10,9 @@ const k_friction = 0.8;
 const k_laserSpeed = 5; //starting this slow for testing purposes
 const k_laserLength = 5;
 
-class laser {
+let activeLasers = [];
+
+class Laser {
 	constructor(x1, y1, x2, y2) {
 		//starting coords and destination coords
 		this.x1 = x1;
@@ -36,6 +38,8 @@ class laser {
 		//coords of backk of laser
 		this.Xb = x1;
 		this.Yb = y1;
+
+		this.isActive = true;
 	}
 	step() {
 		this.dTraveled += k_laserSpeed;
@@ -45,7 +49,7 @@ class laser {
 			this.Xb = (dTraveled - k_laserLength) * ux;
 			this.Yb = (dTraveled - k_laserLength) * uy;
 		} else {
-			
+			this.isActive = false;
 		}
 
 	}
@@ -143,10 +147,18 @@ window.addEventListener("onclick", (event) => {
 		playerCircle.set({ left: playerX, top: playerY });
 	}
 	function shoot() {
-		//
+		const m_tempLaser = new Laser(playerX, playerY, mouseX, mouseY);
+		activeLasers.push(tempLaser);
 	}
 
 function animate() {
+	activeLasers.forEach(m_laser => {
+		m_laser.step();
+		if (m_laser.isActive === false) {
+			m_laser = null;
+		}
+	});
+	
 	move();
 	aimLine.set({
 		x1: playerX,
