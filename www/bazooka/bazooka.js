@@ -27,8 +27,8 @@ class Laser {
 		//magnitude
 		this.magV = Math.sqrt(dx * dx + dy * dy);
 		//unit vectors themselves
-		this.ux = dx / magV;
-		this.uy = dy / magV;
+		this.ux = dx / this.magV;
+		this.uy = dy / this.magV;
 
 		this.dTraveled = 0;
 		this.frame = 0;
@@ -43,11 +43,11 @@ class Laser {
 	}
 	step() {
 		this.dTraveled += k_laserSpeed;
-		if (dTraveled < this.magV) {
-			this.Xf = dTraveled * ux;
-			this.Yf = dTraveled * uy;
-			this.Xb = (dTraveled - k_laserLength) * ux;
-			this.Yb = (dTraveled - k_laserLength) * uy;
+		if (this.dTraveled < this.magV) {
+			this.Xf = (this.dTraveled * this.ux) + this.x1;
+			this.Yf = (this.dTraveled * this.uy) + this.y1;
+			this.Xb = ((this.dTraveled - k_laserLength) * this.ux) + this.x1;
+			this.Yb = ((this.dTraveled - k_laserLength) * this.uy) + this.y1;
 		} else {
 			this.isActive = false;
 		}
@@ -106,7 +106,7 @@ window.addEventListener("mousemove", (event) => {
 	mouseY = event.clientY;
 	mouseX = event.clientX;
 });
-window.addEventListener("onclick", (event) => {
+window.addEventListener("click", (event) => {
 	shoot();
 });
 
@@ -152,9 +152,9 @@ window.addEventListener("onclick", (event) => {
 			stroke: "red",
 			strokeWidth: 5,
 		});
-		canvas.add(aimLine);
+		canvas.add(tempCanvasLaser);
 		const tempEntry = [m_tempLaser, tempCanvasLaser]
-		activeLaser.push(tempEntry);
+		activeLasers.push(tempEntry);
 	}
 
 function animate() {
@@ -165,8 +165,8 @@ function animate() {
 			canvas.remove(canvasLaser);
 		}
 	});
-	activeLaser.filter(laserEntry => laserEntry[0].isActive !== false);
-	activeLaser.forEach(laserEntry => {
+	activeLasers = activeLasers.filter(laserEntry => laserEntry[0].isActive !== false);
+	activeLasers.forEach(laserEntry => {
 		const [m_laser, canvasLaser] = laserEntry;
 		canvasLaser.set({
 			x1: m_laser.Xf,
