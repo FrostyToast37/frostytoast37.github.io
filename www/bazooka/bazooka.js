@@ -148,15 +148,32 @@ window.addEventListener("onclick", (event) => {
 	}
 	function shoot() {
 		const m_tempLaser = new Laser(playerX, playerY, mouseX, mouseY);
-		activeLasers.push(tempLaser);
+		const tempCanvasLaser = new fabric.Line([m_tempLaser.Xf, m_tempLaser.Yf, m_tempLaser.Xb, m_tempLaser.Yb], {
+			stroke: "red",
+			strokeWidth: 5,
+		});
+		canvas.add(aimLine);
+		const tempEntry = [m_tempLaser, tempCanvasLaser]
+		activeLaser.push(tempEntry);
 	}
 
 function animate() {
-	activeLasers.forEach(m_laser => {
+	activeLasers.forEach(laserEntry => {
+		const [m_laser, canvasLaser] = laserEntry;
 		m_laser.step();
-		if (m_laser.isActive === false) {
-			m_laser = null;
+		if( m_laser.isActive === false) {
+			canvas.remove(canvasLaser);
 		}
+	});
+	activeLaser.filter(laserEntry => laserEntry[0].isActive !== false);
+	activeLaser.forEach(laserEntry => {
+		const [m_laser, canvasLaser] = laserEntry;
+		canvasLaser.set({
+			x1: playerX,
+			y1: playerY,
+			x2: mouseX,
+			y2: mouseY //here!
+		});
 	});
 	
 	move();
