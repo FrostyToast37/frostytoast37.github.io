@@ -169,10 +169,10 @@ function animate() {
 	activeLaser.forEach(laserEntry => {
 		const [m_laser, canvasLaser] = laserEntry;
 		canvasLaser.set({
-			x1: playerX,
-			y1: playerY,
-			x2: mouseX,
-			y2: mouseY //here!
+			x1: m_laser.Xf,
+			y1: m_laser.Yf,
+			x2: m_laser.Xb,
+			y2: m_laser.Yb //here!
 		});
 	});
 	
