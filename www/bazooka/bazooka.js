@@ -4,7 +4,7 @@ canvasDOM.width = window.innerWidth;
 canvasDOM.height = window.innerHeight;
 
 //game constants (marked by k_)
-const k_maxSpeed = 25;
+const k_maxSpeed = 20;
 const k_speedConst = 3;
 const k_friction = 0.8;
 const k_laserSpeed = 25; //starting this slow for testing purposes
