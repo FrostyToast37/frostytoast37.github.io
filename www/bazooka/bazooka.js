@@ -7,8 +7,8 @@ canvasDOM.height = window.innerHeight;
 const k_maxSpeed = 25;
 const k_speedConst = 3;
 const k_friction = 0.8;
-const k_laserSpeed = 5; //starting this slow for testing purposes
-const k_laserLength = 5;
+const k_laserSpeed = 25; //starting this slow for testing purposes
+const k_laserLength = 50;
 
 let activeLasers = [];
 
