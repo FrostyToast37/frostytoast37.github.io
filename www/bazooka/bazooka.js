@@ -4,6 +4,7 @@ canvasDOM.width = window.innerWidth;
 canvasDOM.height = window.innerHeight;
 
 //game constants (marked by k_)
+const k_collisionEnergy = 0.9
 const k_maxSpeed = 30;
 const k_speedConst = 3;
 const k_friction = 0.83;
@@ -145,11 +146,11 @@ window.addEventListener("click", (event) => {
 		playerY += speedY;
 
 		if( ((playerX - 10) <= 0) || ((playerX + 10) >= canvasDOM.width) ) {
-			speedX = -speedX * k_friction;
+			speedX = -speedX * k_collisionEnergy;
 			playerX += speedX;
 		}
 		if( ((playerY - 10) <= 0) || ((playerY + 10) >= canvasDOM.height) ) {
-			speedY = -speedY * k_friction;
+			speedY = -speedY * k_collisionEnergy;
 			playerY += speedY;
 		}
 
