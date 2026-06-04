@@ -4,7 +4,7 @@ canvasDOM.width = window.innerWidth;
 canvasDOM.height = window.innerHeight;
 
 //game constants (marked by k_)
-const k_collisionEnergy = 0.9; //1=perfectly elastic
+const k_collisionEnergy = 0.75; //1=perfectly elastic
 const k_maxSpeed = 30;
 const k_speedConst = 3;
 const k_friction = 0.83;
