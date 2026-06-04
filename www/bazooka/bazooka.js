@@ -144,6 +144,13 @@ window.addEventListener("click", (event) => {
 		playerX += speedX;
 		playerY += speedY;
 
+		if( ((playerX - 10) <= 0) || ((playerX + 10) >= canvasDOM.width) ) {
+			speedX = -speedX;
+		}
+		if( ((playerY - 10) <= 0) || ((playerY + 10) >= canvasDOM.height) ) {
+			speedY = -speedY;
+		}
+
 		playerCircle.set({ left: playerX, top: playerY });
 	}
 	function shoot() {
