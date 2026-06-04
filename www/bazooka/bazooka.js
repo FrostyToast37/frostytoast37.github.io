@@ -4,8 +4,8 @@ canvasDOM.width = window.innerWidth;
 canvasDOM.height = window.innerHeight;
 
 //game constants (marked by k_)
-const k_maxSpeed = 10;
-const k_speedConst = 1.5;
+const k_maxSpeed = 30;
+const k_speedConst = 3;
 const k_friction = 0.83;
 const k_laserSpeed = 25; //starting this slow for testing purposes
 const k_laserLength = 50;
@@ -146,9 +146,11 @@ window.addEventListener("click", (event) => {
 
 		if( ((playerX - 10) <= 0) || ((playerX + 10) >= canvasDOM.width) ) {
 			speedX = -speedX;
+			playerX += speedX;
 		}
 		if( ((playerY - 10) <= 0) || ((playerY + 10) >= canvasDOM.height) ) {
 			speedY = -speedY;
+			playerY += speedY;
 		}
 
 		playerCircle.set({ left: playerX, top: playerY });
