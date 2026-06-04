@@ -145,11 +145,11 @@ window.addEventListener("click", (event) => {
 		playerY += speedY;
 
 		if( ((playerX - 10) <= 0) || ((playerX + 10) >= canvasDOM.width) ) {
-			speedX = ((-speedX * k_friction) < 0.1) ? 0 : (-speedX * k_friction);
+			speedX = -speedX * k_friction;
 			playerX += speedX;
 		}
 		if( ((playerY - 10) <= 0) || ((playerY + 10) >= canvasDOM.height) ) {
-			speedY = ((-speedY * k_friction) < 0.1) ? 0 : (-speedY * k_friction);
+			speedY = -speedY * k_friction;
 			playerY += speedY;
 		}
 
