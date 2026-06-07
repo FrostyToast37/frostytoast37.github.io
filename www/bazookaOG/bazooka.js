@@ -10,7 +10,6 @@ const k_speedConst = 2;
 const k_friction = 0.83;
 const k_laserSpeed = 25; //starting this slow for testing purposes
 const k_laserLength = 50;
-const g = 1;
 
 let activeLasers = [];
 
@@ -88,7 +87,6 @@ class Laser {
 //MOVEMENT
 let speedX = 0;
 let speedY = 0;
-let speedYgrav = 0;
 let playerX = 100;
 let playerY = 100;
 let mouseX = 0;
@@ -144,16 +142,12 @@ window.addEventListener("click", (event) => {
 			speedY = (speedY / currentSpeed) * k_maxSpeed;
 		}
 
-		speedY = speedY - g;
-
 		if( (((playerX + speedX) - 10) <= 0) || (((playerX + speedX) + 10) >= canvasDOM.width) ) {
 			speedX = -speedX * k_collisionEnergy;
 		}
 		if( (((playerY + speedY) - 10) <= 0) || (((playerY + speedY) + 10) >= canvasDOM.height) ) {
 			speedY = -speedY * k_collisionEnergy;
 		}
-
-		speedY = speedY - g;
 
 		playerX += speedX;
 		playerY += speedY;
