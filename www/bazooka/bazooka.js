@@ -144,7 +144,7 @@ window.addEventListener("click", (event) => {
 			speedY = (speedY / currentSpeed) * k_maxSpeed;
 		}
 
-		speedY = speedY - g;
+		speedY = speedY + g;
 
 		if( (((playerX + speedX) - 10) <= 0) || (((playerX + speedX) + 10) >= canvasDOM.width) ) {
 			speedX = -speedX * k_collisionEnergy;
@@ -152,8 +152,6 @@ window.addEventListener("click", (event) => {
 		if( (((playerY + speedY) - 10) <= 0) || (((playerY + speedY) + 10) >= canvasDOM.height) ) {
 			speedY = -speedY * k_collisionEnergy;
 		}
-
-		speedY = speedY - g;
 
 		playerX += speedX;
 		playerY += speedY;
