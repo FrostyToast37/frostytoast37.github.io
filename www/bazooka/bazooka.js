@@ -6,11 +6,12 @@ canvasDOM.height = window.innerHeight;
 //game constants (marked by k_)
 const k_collisionEnergy = 0.9; //1=perfectly elastic
 const k_maxSpeed = 20;
+const k_jumpHeight = 20;
 const k_speedConst = 2;
 const k_friction = 0.83;
 const k_laserSpeed = 25; //starting this slow for testing purposes
 const k_laserLength = 50;
-const g = 1;
+const g = 3;
 
 let activeLasers = [];
 
@@ -93,6 +94,7 @@ let playerX = 100;
 let playerY = 100;
 let mouseX = 0;
 let mouseY = 0;
+let grounded = true;
 //an array for all key states
 const keysPressed = {};
 
@@ -115,8 +117,11 @@ window.addEventListener("click", (event) => {
 
 //function defs
 	function move() {
-		if (keysPressed["KeyW"] || keysPressed["ArrowUp"]) {
-			if(speedY > -k_maxSpeed) {speedY -= k_speedConst;}
+		if (keysPressed["KeyW"] || keysPressed["ArrowUp"]  || keysPressed["Space"]) {
+			if(grounded === true) {
+				speedY -= k_speedConst;
+				grounded = false;
+			}
 		}
 		if (keysPressed["KeyA"] || keysPressed["ArrowLeft"]) {
 			if(speedX > -k_maxSpeed) {speedX -= k_speedConst;}
@@ -135,13 +140,6 @@ window.addEventListener("click", (event) => {
 		if (!keysPressed["KeyA"] && !keysPressed["ArrowLeft"] && !keysPressed["KeyD"] && !keysPressed["ArrowRight"]) {
 			speedX *= k_friction;
 			if (Math.abs(speedX) < 0.1) speedX = 0;
-		}
-
-		let currentSpeed = Math.sqrt(speedX * speedX + speedY * speedY);	
-
-		if (currentSpeed > k_maxSpeed) {
-			speedX = (speedX / currentSpeed) * k_maxSpeed;
-			speedY = (speedY / currentSpeed) * k_maxSpeed;
 		}
 
 		speedY = speedY + g;
