@@ -93,6 +93,7 @@ let playerX = 100;
 let playerY = 100;
 let mouseX = 0;
 let mouseY = 0;
+let grounded = true;
 //an array for all key states
 const keysPressed = {};
 
@@ -115,37 +116,25 @@ window.addEventListener("click", (event) => {
 
 //function defs
 	function move() {
-		if (keysPressed["KeyW"] || keysPressed["ArrowUp"]) {
-			if(speedY > -k_maxSpeed) {speedY -= k_speedConst;}
+		if (keysPressed["KeyW"] || keysPressed["ArrowUp"] || keysPressed["Space"]) {
+			if(grounded == true) { }
+		}
+		if (keysPressed["KeyS"] || keysPressed["ArrowDown"]) {
+			if(grounded = false) {
+				speedY -= k_speedConst;
+			}
+			else if (grounded == true) {
+
+			};
 		}
 		if (keysPressed["KeyA"] || keysPressed["ArrowLeft"]) {
 			if(speedX > -k_maxSpeed) {speedX -= k_speedConst;}
-		}
-		if (keysPressed["KeyS"] || keysPressed["ArrowDown"]) {
-			if(speedY < k_maxSpeed) {speedY += k_speedConst;}
 		}
 		if (keysPressed["KeyD"] || keysPressed["ArrowRight"]) {
 			if(speedX < k_maxSpeed) {speedX += k_speedConst;}
 		}
 
-		if (!keysPressed["KeyW"] && !keysPressed["ArrowUp"] && !keysPressed["KeyS"] && !keysPressed["ArrowDown"]) {
-			speedY *= k_friction; 
-			if (Math.abs(speedY) < 0.1) speedY = 0; // Stop micro-drifting
-		}
-		if (!keysPressed["KeyA"] && !keysPressed["ArrowLeft"] && !keysPressed["KeyD"] && !keysPressed["ArrowRight"]) {
-			speedX *= k_friction;
-			if (Math.abs(speedX) < 0.1) speedX = 0;
-		}
-
-		let currentSpeed = Math.sqrt(speedX * speedX + speedY * speedY);	
-
-		if (currentSpeed > k_maxSpeed) {
-			speedX = (speedX / currentSpeed) * k_maxSpeed;
-			speedY = (speedY / currentSpeed) * k_maxSpeed;
-		}
-
-		speedY = speedY + g;
-
+		//wall collisions
 		if( (((playerX + speedX) - 10) <= 0) || (((playerX + speedX) + 10) >= canvasDOM.width) ) {
 			speedX = -speedX * k_collisionEnergy;
 		}
@@ -153,6 +142,7 @@ window.addEventListener("click", (event) => {
 			speedY = -speedY * k_collisionEnergy;
 		}
 
+		//change position
 		playerX += speedX;
 		playerY += speedY;
 
