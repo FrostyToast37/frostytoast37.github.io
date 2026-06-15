@@ -67,8 +67,8 @@ class Laser {
 	//playerCircle
 		const playerCircle = new fabric.Circle({
 			radius: 20,          // Radius of the circle
-			fill: "blue",      // Inner color
-			stroke: "orange",     // Border color
+			fill: "orange",      // Inner color
+			stroke: "black",     // Border color
 			strokeWidth: 3,      // Border width
 			left: 100,           // X-coordinate position from the left
 			top: 100,         // Y-coordinate position from the top
