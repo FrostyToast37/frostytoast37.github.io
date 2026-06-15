@@ -142,19 +142,25 @@ window.addEventListener("click", (event) => {
 		// 	speedY *= k_friction; 
 		// 	if (Math.abs(speedY) < 0.1) speedY = 0; // Stop micro-drifting
 		// }
-		// if (!keysPressed["KeyA"] && !keysPressed["ArrowLeft"] && !keysPressed["KeyD"] && !keysPressed["ArrowRight"]) {
-		// 	speedX *= k_friction;
-		// 	if (Math.abs(speedX) < 0.1) speedX = 0;
-		// }
+		if (!keysPressed["KeyA"] && !keysPressed["ArrowLeft"] && !keysPressed["KeyD"] && !keysPressed["ArrowRight"]) {
+			speedX *= k_friction;
+			if (Math.abs(speedX) < 0.1) speedX = 0;
+		}
 
 		speedY = speedY + g;
 
 		if( (((playerX + speedX) - 10) <= 0) || (((playerX + speedX) + 10) >= canvasDOM.width) ) {
 			speedX = -speedX * k_collisionEnergy;
+			if (speedX <= 0.1) {
+				speedX = 0;
+			}
 		}
 		if( (((playerY + speedY) - 10) <= 0) || (((playerY + speedY) + 10) >= canvasDOM.height) ) {
 			speedY = -speedY * k_collisionEnergy;
 			grounded = true;
+			if (speedY <= 0.1) {
+				speedY = 0;
+			}
 		}
 
 		//change position
