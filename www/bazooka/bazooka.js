@@ -4,7 +4,7 @@ canvasDOM.width = window.innerWidth;
 canvasDOM.height = window.innerHeight;
 
 //game constants (marked by k_)
-const k_collisionEnergy = 0.7; //1=perfectly elastic
+const k_collisionEnergy = 0.8; //1=perfectly elastic
 const k_maxSpeed = 20;
 const k_jumpHeight = 40;
 const k_speedConst = 2;
@@ -67,7 +67,7 @@ class Laser {
 	//playerCircle
 		const playerCircle = new fabric.Circle({
 			radius: 20,          // Radius of the circle
-			fill: "orange",      // Inner color
+			fill: "blue",      // Inner color
 			stroke: "black",     // Border color
 			strokeWidth: 3,      // Border width
 			left: 100,           // X-coordinate position from the left
