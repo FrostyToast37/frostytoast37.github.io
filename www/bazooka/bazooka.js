@@ -11,7 +11,7 @@ const k_speedConst = 2;
 const k_friction = 0.83;
 const k_laserSpeed = 25; //starting this slow for testing purposes
 const k_laserLength = 50;
-const g = 1;
+const g = 2;
 
 let activeLasers = [];
 
@@ -119,8 +119,8 @@ window.addEventListener("click", (event) => {
 	function move() {
 		if (keysPressed["KeyW"] || keysPressed["ArrowUp"] || keysPressed["Space"]) {
 			if(grounded === true) {
-				speedY -= k_speedConst;
-				grounded = false;
+				speedY -= k_jumpHeight;
+				grounded = false; //possibly comment out for testing
 			}
 		}
 		if (keysPressed["KeyS"] || keysPressed["ArrowDown"]) {
@@ -154,6 +154,7 @@ window.addEventListener("click", (event) => {
 		}
 		if( (((playerY + speedY) - 10) <= 0) || (((playerY + speedY) + 10) >= canvasDOM.height) ) {
 			speedY = -speedY * k_collisionEnergy;
+			grounded = true;
 		}
 
 		//change position
