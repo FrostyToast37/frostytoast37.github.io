@@ -4,14 +4,14 @@ canvasDOM.width = window.innerWidth;
 canvasDOM.height = window.innerHeight;
 
 //game constants (marked by k_)
-const k_collisionEnergy = 0.9; //1=perfectly elastic
+const k_collisionEnergy = 0.6; //1=perfectly elastic
 const k_maxSpeed = 20;
-const k_jumpHeight = 35;
+const k_jumpHeight = 40;
 const k_speedConst = 2;
 const k_friction = 0.83;
 const k_laserSpeed = 25; //starting this slow for testing purposes
 const k_laserLength = 50;
-const g = 4;
+const g = 3;
 
 let activeLasers = [];
 
