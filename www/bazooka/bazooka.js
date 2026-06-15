@@ -4,11 +4,11 @@ canvasDOM.width = window.innerWidth;
 canvasDOM.height = window.innerHeight;
 
 //game constants (marked by k_)
-const k_collisionEnergy = 0.8; //1=perfectly elastic
+const k_collisionEnergy = 0.7; //1=perfectly elastic
 const k_maxSpeed = 20;
 const k_jumpHeight = 40;
 const k_speedConst = 2;
-const k_friction = 0.8;
+const k_friction = 0.87;
 const k_laserSpeed = 25; //starting this slow for testing purposes
 const k_laserLength = 50;
 const g = 3;
@@ -68,7 +68,7 @@ class Laser {
 		const playerCircle = new fabric.Circle({
 			radius: 20,          // Radius of the circle
 			fill: "blue",      // Inner color
-			stroke: "black",     // Border color
+			stroke: "orange",     // Border color
 			strokeWidth: 3,      // Border width
 			left: 100,           // X-coordinate position from the left
 			top: 100,         // Y-coordinate position from the top
@@ -151,14 +151,14 @@ window.addEventListener("click", (event) => {
 
 		if( (((playerX + speedX) - 10) <= 0) || (((playerX + speedX) + 10) >= canvasDOM.width) ) {
 			speedX = -speedX * k_collisionEnergy;
-			if (speedX <= 0.05) {
+			if (Math.abs(speedX) <= 0.1) {
 				speedX = 0;
 			}
 		}
 		if( (((playerY + speedY) - 10) <= 0) || (((playerY + speedY) + 10) >= canvasDOM.height) ) {
 			speedY = -speedY * k_collisionEnergy;
 			grounded = true;
-			if (speedY <= 0.05) {
+			if (Math.abs(speedY) <= 0.1) {
 				speedY = 0;
 			}
 		}
