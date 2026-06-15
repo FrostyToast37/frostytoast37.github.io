@@ -6,12 +6,12 @@ canvasDOM.height = window.innerHeight;
 //game constants (marked by k_)
 const k_collisionEnergy = 0.9; //1=perfectly elastic
 const k_maxSpeed = 20;
-const k_jumpHeight = 50;
+const k_jumpHeight = 35;
 const k_speedConst = 2;
 const k_friction = 0.83;
 const k_laserSpeed = 25; //starting this slow for testing purposes
 const k_laserLength = 50;
-const g = 2;
+const g = 4;
 
 let activeLasers = [];
 
@@ -138,14 +138,14 @@ window.addEventListener("click", (event) => {
 			if(speedX < k_maxSpeed) {speedX += k_speedConst;}
 		}
 
-		if (!keysPressed["KeyW"] && !keysPressed["ArrowUp"] && !keysPressed["KeyS"] && !keysPressed["ArrowDown"]) {
-			speedY *= k_friction; 
-			if (Math.abs(speedY) < 0.1) speedY = 0; // Stop micro-drifting
-		}
-		if (!keysPressed["KeyA"] && !keysPressed["ArrowLeft"] && !keysPressed["KeyD"] && !keysPressed["ArrowRight"]) {
-			speedX *= k_friction;
-			if (Math.abs(speedX) < 0.1) speedX = 0;
-		}
+		// if (!keysPressed["KeyW"] && !keysPressed["ArrowUp"] && !keysPressed["KeyS"] && !keysPressed["ArrowDown"]) {
+		// 	speedY *= k_friction; 
+		// 	if (Math.abs(speedY) < 0.1) speedY = 0; // Stop micro-drifting
+		// }
+		// if (!keysPressed["KeyA"] && !keysPressed["ArrowLeft"] && !keysPressed["KeyD"] && !keysPressed["ArrowRight"]) {
+		// 	speedX *= k_friction;
+		// 	if (Math.abs(speedX) < 0.1) speedX = 0;
+		// }
 
 		speedY = speedY + g;
 
