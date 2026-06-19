@@ -4,7 +4,7 @@ canvasDOM.width = window.innerWidth;
 canvasDOM.height = window.innerHeight;
 
 //game constants (marked by k_)
-const k_collisionEnergy = 0.6; //1=perfectly elastic
+const k_collisionEnergy = 0.5; //1=perfectly elastic
 const k_maxSpeed = 18;
 const k_jumpHeight = 35;
 const k_speedConst = 2;
@@ -158,7 +158,11 @@ window.addEventListener("click", (event) => {
 			speedX = -speedX * k_collisionEnergy;
 			if (Math.abs(speedX) <= 0.5) speedX = 0;
 		}
-		if ((nextY - 20 <= 0) || (nextY + 20 >= canvasDOM.height)) {
+		if ((nextY - 20 <= 0)) {
+			speedY = -speedY * k_collisionEnergy;
+			if (Math.abs(speedY) <= 0.5) speedY = 0;
+		}
+		if ((nextY + 20 >= canvasDOM.height)) {
 			speedY = -speedY * k_collisionEnergy;
 			grounded = true;
 			if (Math.abs(speedY) <= 0.5) speedY = 0;
