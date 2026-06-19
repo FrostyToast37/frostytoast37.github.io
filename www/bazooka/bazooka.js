@@ -13,6 +13,8 @@ const k_laserSpeed = 25; //starting this slow for testing purposes
 const k_laserLength = 50;
 const g = 3;
 
+//global declerations
+let lastTime = 0;
 let activeLasers = [];
 
 class Laser {
@@ -45,7 +47,7 @@ class Laser {
 		this.isActive = true;
 	}
 	step(dt) {
-		this.dTraveled += (k_laserSpeed * dt);
+		this.dTraveled += (k_laserSpeed  * (dt * 60));
 		if (this.dTraveled < this.magV) {
 			this.Xf = (this.dTraveled * this.ux) + this.x1;
 			this.Yf = (this.dTraveled * this.uy) + this.y1;
@@ -71,7 +73,9 @@ class Laser {
 			stroke: "black",     // Border color
 			strokeWidth: 3,      // Border width
 			left: 100,           // X-coordinate position from the left
-			top: 100,         // Y-coordinate position from the top
+			top: 100,			 // Y-coordinate position from the top
+			originX: "center",   //Aligns Fabric with your physics center
+    		originY: "center",   // '
 			selectable: true     // Allows the user to move/resize the circle
 		});
 		canvas.add(playerCircle);
@@ -118,55 +122,51 @@ window.addEventListener("click", (event) => {
 //function defs
 
 	function move(dt) {
+		const timeScale = dt * 60;
+
 		if (keysPressed["KeyW"] || keysPressed["ArrowUp"] || keysPressed["Space"]) {
 			if(grounded === true) {
-				speedY -= k_jumpHeight;
-				grounded = false; //possibly comment out for testing
+				speedY -= k_jumpHeight; // Instant impulse, no dt needed
+				grounded = false; 
 			}
 		}
 		if (keysPressed["KeyS"] || keysPressed["ArrowDown"]) {
 			if(grounded === false) {
-				speedY -= k_speedConst;
+				speedY -= k_speedConst * timeScale;
 			}
-			else if (grounded === true) {
-
-			};
 		}
 		if (keysPressed["KeyA"] || keysPressed["ArrowLeft"]) {
-			if(speedX > -k_maxSpeed) {speedX -= k_speedConst;}
+			if(speedX > -k_maxSpeed) { speedX -= k_speedConst * timeScale; }
 		}
 		if (keysPressed["KeyD"] || keysPressed["ArrowRight"]) {
-			if(speedX < k_maxSpeed) {speedX += k_speedConst;}
+			if(speedX < k_maxSpeed) { speedX += k_speedConst * timeScale; }
 		}
 
-		// if (!keysPressed["KeyW"] && !keysPressed["ArrowUp"] && !keysPressed["KeyS"] && !keysPressed["ArrowDown"]) {
-		// 	speedY *= k_friction; 
-		// 	if (Math.abs(speedY) < 0.1) speedY = 0; // Stop micro-drifting
-		// }
 		if (!keysPressed["KeyA"] && !keysPressed["ArrowLeft"] && !keysPressed["KeyD"] && !keysPressed["ArrowRight"]) {
-			speedX *= k_friction;
+			speedX *= Math.pow(k_friction, timeScale);
 			if (Math.abs(speedX) < 0.05) speedX = 0;
 		}
 
-		speedY = speedY + g;
+		speedY = speedY + (g * timeScale);
 
-		if( (((playerX + speedX) - 10) <= 0) || (((playerX + speedX) + 10) >= canvasDOM.width) ) {
+		//predict positions
+		let nextX = playerX + (speedX * timeScale);
+		let nextY = playerY + (speedY * timeScale);
+
+		//collision calcs
+		if ((nextX - 20 <= 0) || (nextX + 20 >= canvasDOM.width)) {
 			speedX = -speedX * k_collisionEnergy;
-			if (Math.abs(speedX) <= 0.5) {
-				speedX = 0;
-			}
+			if (Math.abs(speedX) <= 0.5) speedX = 0;
 		}
-		if( (((playerY + speedY) - 10) <= 0) || (((playerY + speedY) + 10) >= canvasDOM.height) ) {
+		if ((nextY - 20 <= 0) || (nextY + 20 >= canvasDOM.height)) {
 			speedY = -speedY * k_collisionEnergy;
 			grounded = true;
-			if (Math.abs(speedY) <= 0.5) {
-				speedY = 0;
-			}
+			if (Math.abs(speedY) <= 0.5) speedY = 0;
 		}
 
-		//change position
-		playerX += (speedX * dt);
-		playerY += (speedY * dt);
+		//change pos based on dt
+		playerX += speedX * timeScale;
+		playerY += speedY * timeScale;
 
 		playerCircle.set({ left: playerX, top: playerY });
 	}
@@ -182,7 +182,7 @@ window.addEventListener("click", (event) => {
 	}
 //gameloop
 
-function animate() {
+function animate(currentTime) {
 	let dt = (currentTime - lastTime) / 1000;
     //cap dt to prevent massive jumps if the user switches tabs
     if (dt > 0.1) dt = 0.1; 
