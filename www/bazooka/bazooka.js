@@ -44,8 +44,8 @@ class Laser {
 
 		this.isActive = true;
 	}
-	step() {
-		this.dTraveled += k_laserSpeed;
+	step(dt) {
+		this.dTraveled += (k_laserSpeed * dt);
 		if (this.dTraveled < this.magV) {
 			this.Xf = (this.dTraveled * this.ux) + this.x1;
 			this.Yf = (this.dTraveled * this.uy) + this.y1;
@@ -116,7 +116,8 @@ window.addEventListener("click", (event) => {
 });
 
 //function defs
-	function move() {
+
+	function move(dt) {
 		if (keysPressed["KeyW"] || keysPressed["ArrowUp"] || keysPressed["Space"]) {
 			if(grounded === true) {
 				speedY -= k_speedConst;
@@ -157,8 +158,8 @@ window.addEventListener("click", (event) => {
 		}
 
 		//change position
-		playerX += speedX;
-		playerY += speedY;
+		playerX += (speedX * dt);
+		playerY += (speedY * dt);
 
 		playerCircle.set({ left: playerX, top: playerY });
 	}
@@ -172,34 +173,41 @@ window.addEventListener("click", (event) => {
 		const tempEntry = [m_tempLaser, tempCanvasLaser]
 		activeLasers.push(tempEntry);
 	}
+//gameloop
 
 function animate() {
-	activeLasers.forEach(laserEntry => {
-		const [m_laser, canvasLaser] = laserEntry;
-		m_laser.step();
-		if( m_laser.isActive === false) {
-			canvas.remove(canvasLaser);
-		}
-	});
-	activeLasers = activeLasers.filter(laserEntry => laserEntry[0].isActive !== false);
-	activeLasers.forEach(laserEntry => {
-		const [m_laser, canvasLaser] = laserEntry;
-		canvasLaser.set({
-			x1: m_laser.Xf,
-			y1: m_laser.Yf,
-			x2: m_laser.Xb,
-			y2: m_laser.Yb //here!
+	let dt = (currentTime - lastTime) / 1000;
+    //cap dt to prevent massive jumps if the user switches tabs
+    if (dt > 0.1) dt = 0.1; 
+    lastTime = currentTime;
+
+	//lasers
+		activeLasers.forEach(laserEntry => {
+			const [m_laser, canvasLaser] = laserEntry;
+			m_laser.step(dt);
+			if( m_laser.isActive === false) {
+				canvas.remove(canvasLaser);
+			}
 		});
-	});
+		activeLasers = activeLasers.filter(laserEntry => laserEntry[0].isActive !== false);
+		activeLasers.forEach(laserEntry => {
+			const [m_laser, canvasLaser] = laserEntry;
+			canvasLaser.set({
+				x1: m_laser.Xf,
+				y1: m_laser.Yf,
+				x2: m_laser.Xb,
+				y2: m_laser.Yb //here!
+			});
+		});
 	
-	move();
+	move(dt);
 	aimLine.set({
 		x1: playerX,
-    y1: playerY,
-    x2: mouseX,
-    y2: mouseY
-  });
-  aimLine.setCoords();
+		y1: playerY,
+		x2: mouseX,
+		y2: mouseY
+	});
+	aimLine.setCoords();
 	canvas.renderAll();
 
 	//this line means it loops
@@ -207,4 +215,7 @@ function animate() {
 }
 
 //starts loop
-requestAnimationFrame(animate);
+requestAnimationFrame((time) => {
+	lastTime = time;
+	requestAnimationFrame(animate);
+});
