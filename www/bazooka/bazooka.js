@@ -16,6 +16,8 @@ const g = 3;
 //global declerations
 let lastTime = 0;
 let activeLasers = [];
+let activeBullets = [];
+let selectedAmmo = "lasers";
 
 class Laser {
 	constructor(x1, y1, x2, y2) {
@@ -57,6 +59,32 @@ class Laser {
 			this.isActive = false;
 		}
 
+	}
+}
+
+class Bullet { //fix this
+	constructor(x1, y1, x2, y2) {
+		//starting coords and destination coords
+		this.x1 = x1;
+		this.y1 = y1;
+		this.x2 = x2;
+		this.y2 = y2;
+
+		//calculating vectors
+		this.vx = 0;//velocity in the x direction
+		this.vy = 0;//velocity in the y direction
+
+		this.frame = 0;
+		//coords of front of laser
+		this.x = x1;
+		this.y = y1;
+
+		this.isActive = true;
+	}
+	step(dt) {
+		this.vy += g;
+		this.x += vx;
+		this.y += vy;
 	}
 }
 
@@ -120,7 +148,6 @@ window.addEventListener("click", (event) => {
 });
 
 //function defs
-
 	function move(dt) {
 		const timeScale = dt * 60;
 
@@ -175,22 +202,49 @@ window.addEventListener("click", (event) => {
 		playerCircle.set({ left: playerX, top: playerY });
 	}
 	function shoot() {
-		const m_tempLaser = new Laser(playerX, playerY, mouseX, mouseY);
-		const tempCanvasLaser = new fabric.Line([m_tempLaser.Xf, m_tempLaser.Yf, m_tempLaser.Xb, m_tempLaser.Yb], {
-			stroke: "red",
-			strokeWidth: 5,
-		});
-		canvas.add(tempCanvasLaser);
-		const tempEntry = [m_tempLaser, tempCanvasLaser]
-		activeLasers.push(tempEntry);
+		if (selectedAmmo === "lasers" ){
+			const m_tempLaser = new Laser(playerX, playerY, mouseX, mouseY);
+			const tempCanvasLaser = new fabric.Line([m_tempLaser.Xf, m_tempLaser.Yf, m_tempLaser.Xb, m_tempLaser.Yb], {
+				stroke: "red",
+				strokeWidth: 5,
+			});
+			canvas.add(tempCanvasLaser);
+			const tempEntry = [m_tempLaser, tempCanvasLaser]
+			activeLasers.push(tempEntry);
+		}
+		if (selectedAmmo === "bullets" ){
+			const m_tempBullet = new Bullet(playerX, playerY, mouseX, mouseY);
+			const tempCanvasBullet = new fabric.Circle({
+				radius: 2,
+				fill: "black",
+				stroke: "black",
+				strokeWidth: 2,
+				left: 100,         
+				top: 100,		
+				originX: "center", 
+				originY: "center",
+				selectable: false
+			});
+			canvas.add(tempCanvasBullet);
+			const tempEntry = [m_tempBullet, tempCanvasBullet]
+			activeBullets.push(tempEntry);
+		}
 	}
 //gameloop
 
 function animate(currentTime) {
-	let dt = (currentTime - lastTime) / 1000;
-    //cap dt to prevent massive jumps if the user switches tabs
-    if (dt > 0.1) dt = 0.1; 
-    lastTime = currentTime;
+	//deltatime
+		let dt = (currentTime - lastTime) / 1000;
+		//cap dt to prevent massive jumps if the user switches tabs
+		if (dt > 0.1) dt = 0.1; 
+		lastTime = currentTime;
+	//place to check for key presses
+		if (keysPressed["Digit1"]) {
+			selectedAmmo = "lasers";
+		}
+		if (keysPressed["Digit2"]) {
+			selectedAmmo = "bullets";
+		}
 
 	//lasers
 		activeLasers.forEach(laserEntry => {
