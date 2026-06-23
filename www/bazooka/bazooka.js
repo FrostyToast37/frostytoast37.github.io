@@ -13,11 +13,14 @@
 	const k_laserLength = 50;
 	const k_bulletSpeed = 35;
 	const k_bulletGrav = 0.2;
+	const k_magSize = 5;
 	const g = 3;
 
 //global declerations
 	let lastTime = 0;
 	let activeAmmo = [];
+	let mag = k_magSize;
+	let loaded = true;
 	let selectedAmmo = "lasers";
 
 //ammo classes
@@ -251,10 +254,18 @@
 			activeAmmo.push(m_tempLaser);
 		}
 		if (selectedAmmo === "bullets" ){
-			const m_tempBullet = new Bullet(playerX, playerY, mouseX, mouseY);
-			m_tempBullet.draw();
-			const tempEntry = m_tempBullet;
-			activeAmmo.push(tempEntry);
+			if (mag > 0) {
+				mag--;
+				const m_tempBullet = new Bullet(playerX, playerY, mouseX, mouseY);
+				m_tempBullet.draw();
+				activeAmmo.push(m_tempBullet);
+			} else {
+				loaded = false;
+				setTimeout(() => {
+					mag = 5;
+					loaded = true;
+				}, 3000);
+			}
 		}
 	}
 //gameloop
