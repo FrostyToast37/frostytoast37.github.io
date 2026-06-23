@@ -254,7 +254,7 @@
 			activeAmmo.push(m_tempLaser);
 		}
 		if (selectedAmmo === "bullets" ){
-			if (mag > 0) {
+			if (loaded) {
 				mag--;
 				const m_tempBullet = new Bullet(playerX, playerY, mouseX, mouseY);
 				m_tempBullet.draw();
