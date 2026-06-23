@@ -101,7 +101,6 @@
 
 			this.isActive = true;
 		}
-
 		draw() {
 			this.canvasBullet = new fabric.Circle({
 				radius: 2,
@@ -116,7 +115,6 @@
 			});
 			canvas.add(this.canvasBullet);
 		}
-
 		step(dt) {
 			this.vy += g * k_bulletGrav * dt * 60;
 			this.x += this.vx * dt * 60;
