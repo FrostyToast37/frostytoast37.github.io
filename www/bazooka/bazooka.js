@@ -57,18 +57,17 @@ class Laser {
 	}
 	step(dt) {
 		this.dTraveled += (k_laserSpeed  * (dt * 60));
-		if (this.dTraveled < this.magV) {
-			this.Xf = (this.dTraveled * this.ux) + this.x1;
-			this.Yf = (this.dTraveled * this.uy) + this.y1;
-			this.Xb = ((this.dTraveled - k_laserLength) * this.ux) + this.x1;
-			this.Yb = ((this.dTraveled - k_laserLength) * this.uy) + this.y1;
-			this.canvasLaser.set({
-				x1: this.Xf,
-				y1: this.Yf,
-				x2: this.Xb,
-				y2: this.Yb //here!
-			});
-		} else {
+		this.Xf = (this.dTraveled * this.ux) + this.x1;
+		this.Yf = (this.dTraveled * this.uy) + this.y1;
+		this.Xb = ((this.dTraveled - k_laserLength) * this.ux) + this.x1;
+		this.Yb = ((this.dTraveled - k_laserLength) * this.uy) + this.y1;
+		this.canvasLaser.set({
+			x1: this.Xf,
+			y1: this.Yf,
+			x2: this.Xb,
+			y2: this.Yb //here!
+		});
+		if (this.Xf < 0 || this.Xf > canvasDOM.width || this.Yf < 0 || this.Yf > canvasDOM.height) {
 			this.isActive = false;
 			canvas.remove(this.canvasLaser);
 		}
@@ -105,8 +104,8 @@ class Bullet { //fix this
 			fill: "black",
 			stroke: "black",
 			strokeWidth: 2,
-			left: this.x1,         
-			top: this.y1,		
+			left: this.x,         
+			top: this.y,		
 			originX: "center", 
 			originY: "center",
 			selectable: false
@@ -115,7 +114,7 @@ class Bullet { //fix this
 	}
 
 	step(dt) {
-		this.vy += g * dt * 60;
+		this.vy += g * 0.3 * dt * 60;
 		this.x += this.vx * dt * 60;
 		this.y += this.vy * dt * 60;
 
@@ -123,6 +122,11 @@ class Bullet { //fix this
 			left: this.x,
 			top: this.y
 		});
+
+		if (this.x < 0 || this.x > canvasDOM.width || this.y < 0 || this.y > canvasDOM.height) {
+            this.isActive = false;
+            canvas.remove(this.canvasBullet);
+        }
 	}
 }
 
