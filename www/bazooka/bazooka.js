@@ -254,17 +254,20 @@
 			activeAmmo.push(m_tempLaser);
 		}
 		if (selectedAmmo === "bullets" ){
-			if (loaded) {
+			if (mag > 0) {
 				mag--;
 				const m_tempBullet = new Bullet(playerX, playerY, mouseX, mouseY);
 				m_tempBullet.draw();
 				activeAmmo.push(m_tempBullet);
-			} else {
-				loaded = false;
-				setTimeout(() => {
-					mag = 5;
-					loaded = true;
-				}, 3000);
+			
+				//reload
+				if (mag === 0) {
+					loaded = false;
+					setTimeout(() => {
+						mag = 5;
+						loaded = true;
+					}, 3000);
+				}
 			}
 		}
 	}
