@@ -11,13 +11,13 @@ const k_speedConst = 2;
 const k_friction = 0.87;
 const k_laserSpeed = 25; //starting this slow for testing purposes
 const k_laserLength = 50;
+const k_bulletSpeed = 25;
 const g = 3;
 
 //global declerations
-let lastTime = 0;
-let activeLasers = [];
-let activeBullets = [];
-let selectedAmmo = "lasers";
+	let lastTime = 0;
+	let activeAmmo = [];
+	let selectedAmmo = "lasers";
 
 class Laser {
 	constructor(x1, y1, x2, y2) {
@@ -48,6 +48,13 @@ class Laser {
 
 		this.isActive = true;
 	}
+	draw() {
+		this.canvasLaser = new fabric.Line([this.Xf, this.Yf, this.Xb, this.Yb], {
+				stroke: "red",
+				strokeWidth: 5,
+			});
+		canvas.add(this.canvasLaser);
+	}
 	step(dt) {
 		this.dTraveled += (k_laserSpeed  * (dt * 60));
 		if (this.dTraveled < this.magV) {
@@ -55,8 +62,15 @@ class Laser {
 			this.Yf = (this.dTraveled * this.uy) + this.y1;
 			this.Xb = ((this.dTraveled - k_laserLength) * this.ux) + this.x1;
 			this.Yb = ((this.dTraveled - k_laserLength) * this.uy) + this.y1;
+			this.canvasLaser.set({
+				x1: this.Xf,
+				y1: this.Yf,
+				x2: this.Xb,
+				y2: this.Yb //here!
+			});
 		} else {
 			this.isActive = false;
+			canvas.remove(this.canvasLaser);
 		}
 
 	}
@@ -67,24 +81,48 @@ class Bullet { //fix this
 		//starting coords and destination coords
 		this.x1 = x1;
 		this.y1 = y1;
-		this.x2 = x2;
-		this.y2 = y2;
+		
+		//math
+		const mx = x2 - x1;
+		const my = y2 - y1;
+		const myx = Math.sqrt((mx * mx) + (my * my));
+		const ratio = k_bulletSpeed / myx;
 
 		//calculating vectors
-		this.vx = 0;//velocity in the x direction
-		this.vy = 0;//velocity in the y direction
+		this.vx = ratio * mx;//velocity in the x direction
+		this.vy = ratio * my;//velocity in the y direction
 
-		this.frame = 0;
 		//coords of front of laser
 		this.x = x1;
 		this.y = y1;
 
 		this.isActive = true;
 	}
+
+	draw() {
+		this.canvasBullet = new fabric.Circle({
+			radius: 2,
+			fill: "black",
+			stroke: "black",
+			strokeWidth: 2,
+			left: this.x1,         
+			top: this.y1,		
+			originX: "center", 
+			originY: "center",
+			selectable: false
+		});
+		canvas.add(this.canvasBullet);
+	}
+
 	step(dt) {
-		this.vy += g;
-		this.x += vx;
-		this.y += vy;
+		this.vy += g * dt;
+		this.x += vx * dt;
+		this.y += vy * dt;
+
+		this.canvasBullet.set({
+			left: this.x,
+			top: this.y
+		});
 	}
 }
 
@@ -119,33 +157,32 @@ class Bullet { //fix this
 
 
 //MOVEMENT
-let speedX = 0;
-let speedY = 0;
-let speedYgrav = 0;
-let playerX = 100;
-let playerY = 100;
-let mouseX = 0;
-let mouseY = 0;
-let grounded = true;
+	let speedX = 0;
+	let speedY = 0;
+	let speedYgrav = 0;
+	let playerX = 100;
+	let playerY = 100;
+	let mouseX = 0;
+	let mouseY = 0;
+	let grounded = true;
 //an array for all key states
 const keysPressed = {};
-
-window.addEventListener("keydown", (event) => {
-	keysPressed[event.code] = true;
-	event.preventDefault();
-});
-window.addEventListener("keyup", (event) => {
-	keysPressed[event.code] = false;
-	event.preventDefault();
-});
-
-window.addEventListener("mousemove", (event) => {
-	mouseY = event.clientY;
-	mouseX = event.clientX;
-});
-window.addEventListener("click", (event) => {
-	shoot();
-});
+//event listeners
+	window.addEventListener("keydown", (event) => {
+		keysPressed[event.code] = true;
+		event.preventDefault();
+	});
+	window.addEventListener("keyup", (event) => {
+		keysPressed[event.code] = false;
+		event.preventDefault();
+	});
+	window.addEventListener("mousemove", (event) => {
+		mouseY = event.clientY;
+		mouseX = event.clientX;
+	});
+	window.addEventListener("click", (event) => {
+		shoot();
+	});
 
 //function defs
 	function move(dt) {
@@ -201,33 +238,18 @@ window.addEventListener("click", (event) => {
 
 		playerCircle.set({ left: playerX, top: playerY });
 	}
+
 	function shoot() {
 		if (selectedAmmo === "lasers" ){
 			const m_tempLaser = new Laser(playerX, playerY, mouseX, mouseY);
-			const tempCanvasLaser = new fabric.Line([m_tempLaser.Xf, m_tempLaser.Yf, m_tempLaser.Xb, m_tempLaser.Yb], {
-				stroke: "red",
-				strokeWidth: 5,
-			});
-			canvas.add(tempCanvasLaser);
-			const tempEntry = [m_tempLaser, tempCanvasLaser]
-			activeLasers.push(tempEntry);
+			m_tempLaser.draw();
+			activeAmmo.push(m_tempLaser);
 		}
 		if (selectedAmmo === "bullets" ){
 			const m_tempBullet = new Bullet(playerX, playerY, mouseX, mouseY);
-			const tempCanvasBullet = new fabric.Circle({
-				radius: 2,
-				fill: "black",
-				stroke: "black",
-				strokeWidth: 2,
-				left: 100,         
-				top: 100,		
-				originX: "center", 
-				originY: "center",
-				selectable: false
-			});
-			canvas.add(tempCanvasBullet);
-			const tempEntry = [m_tempBullet, tempCanvasBullet]
-			activeBullets.push(tempEntry);
+			m_tempBullet.draw();
+			const tempEntry = m_tempBullet;
+			activeAmmo.push(tempEntry);
 		}
 	}
 //gameloop
@@ -246,24 +268,11 @@ function animate(currentTime) {
 			selectedAmmo = "bullets";
 		}
 
-	//lasers
-		activeLasers.forEach(laserEntry => {
-			const [m_laser, canvasLaser] = laserEntry;
-			m_laser.step(dt);
-			if( m_laser.isActive === false) {
-				canvas.remove(canvasLaser);
-			}
+	//ammo
+		activeAmmo.forEach(ammo => {
+			ammo.step(dt);
 		});
-		activeLasers = activeLasers.filter(laserEntry => laserEntry[0].isActive !== false);
-		activeLasers.forEach(laserEntry => {
-			const [m_laser, canvasLaser] = laserEntry;
-			canvasLaser.set({
-				x1: m_laser.Xf,
-				y1: m_laser.Yf,
-				x2: m_laser.Xb,
-				y2: m_laser.Yb //here!
-			});
-		});
+		activeAmmo = activeAmmo.filter(ammo => ammo.isActive !== false);
 	
 	move(dt);
 	aimLine.set({
