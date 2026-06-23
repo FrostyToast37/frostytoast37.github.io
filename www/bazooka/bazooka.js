@@ -11,7 +11,7 @@ const k_speedConst = 2;
 const k_friction = 0.87;
 const k_laserSpeed = 25; //starting this slow for testing purposes
 const k_laserLength = 50;
-const k_bulletSpeed = 150; //idk why this has to be so much faster
+const k_bulletSpeed = 25; //idk why this has to be so much faster
 const g = 3;
 
 //global declerations
@@ -115,9 +115,9 @@ class Bullet { //fix this
 	}
 
 	step(dt) {
-		this.vy += g * dt;
-		this.x += this.vx * dt;
-		this.y += this.vy * dt;
+		this.vy += g * dt * 60;
+		this.x += this.vx * dt * 60;
+		this.y += this.vy * dt * 60;
 
 		this.canvasBullet.set({
 			left: this.x,
