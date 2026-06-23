@@ -116,8 +116,8 @@ class Bullet { //fix this
 
 	step(dt) {
 		this.vy += g * dt;
-		this.x += vx * dt;
-		this.y += vy * dt;
+		this.x += this.vx * dt;
+		this.y += this.vy * dt;
 
 		this.canvasBullet.set({
 			left: this.x,
