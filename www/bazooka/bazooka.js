@@ -197,10 +197,14 @@
 
 //function defs	
 	function resizeCanvas() {
-		canvas.setWidth(width);
-		canvas.setHeight(height);
-		canvasDOM.width = width;
-		canvasDOM.height = height;
+		const w = window.innerWidth;
+		const h = window.innerHeight;
+		canvas.setDimensions({
+			width: w,
+			height: h
+		})
+		canvasDOM.width = w;
+		canvasDOM.height = h;
 		canvas.renderAll();
 	}
 	function move(dt) {
