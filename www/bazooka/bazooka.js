@@ -132,6 +132,15 @@
 
 //CANVAS
 	const canvas = new fabric.StaticCanvas("myCanvas");
+	function resizeCanvas() {
+		const width = window.innerWidth;
+		const height = window.innerHeight;
+		canvas.setWidth(width);
+		canvas.setHeight(height);
+		canvasDOM.width = width;
+		canvasDOM.height = height;
+		canvas.renderAll();
+	}
 	resizeCanvas();
 	//helloWorld
 		const helloWorld = new fabric.FabricText("Hello world!");
@@ -185,21 +194,11 @@
 		mouseY = event.clientY;
 		mouseX = event.clientX;
 	});
-	window.addEventListener("click", (event) => {
-		shoot();
-	});
+	window.addEventListener("click", shoot);
 
-//function defs
-	function resizeCanvas() {
-		const width = window.innerWidth;
-		const height = window.innerHeight;
-		canvas.setWidth(width);
-		canvas.setHeight(height);
-		canvasDOM.width = width;
-		canvasDOM.height = height;
-		canvas.renderAll();
-	}
-	
+	window.addEventListener("resize", resizeCanvas);
+
+//function defs	
 	function move(dt) {
 		const timeScale = dt * 60;
 
