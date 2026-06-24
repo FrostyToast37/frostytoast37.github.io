@@ -1,5 +1,9 @@
 //DOM elements
 	const canvasDOM = document.getElementById("myCanvas");
+	const width = window.innerWidth;
+	const height = window.innerHeight;
+	canvasDOM.width = width;
+	canvasDOM.height = height;
 
 //game constants (marked by k_)
 	const k_collisionEnergy = 0.5; //1=perfectly elastic
@@ -131,17 +135,10 @@
 	}
 
 //CANVAS
-	const canvas = new fabric.StaticCanvas("myCanvas");
-	function resizeCanvas() {
-		const width = window.innerWidth;
-		const height = window.innerHeight;
-		canvas.setWidth(width);
-		canvas.setHeight(height);
-		canvasDOM.width = width;
-		canvasDOM.height = height;
-		canvas.renderAll();
-	}
-	resizeCanvas();
+	const canvas = new fabric.StaticCanvas("myCanvas", {
+		width: width,
+		height: height
+	});
 	//helloWorld
 		const helloWorld = new fabric.FabricText("Hello world!");
 		canvas.add(helloWorld);
@@ -199,6 +196,13 @@
 	window.addEventListener("resize", resizeCanvas);
 
 //function defs	
+	function resizeCanvas() {
+		canvas.setWidth(width);
+		canvas.setHeight(height);
+		canvasDOM.width = width;
+		canvasDOM.height = height;
+		canvas.renderAll();
+	}
 	function move(dt) {
 		const timeScale = dt * 60;
 
