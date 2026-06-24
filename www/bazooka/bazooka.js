@@ -137,7 +137,8 @@
 //CANVAS
 	const canvas = new fabric.StaticCanvas("myCanvas", {
 		width: width,
-		height: height
+		height: height,
+		enableRetinaScaling: false
 	});
 	//helloWorld
 		const helloWorld = new fabric.FabricText("Hello world!");
