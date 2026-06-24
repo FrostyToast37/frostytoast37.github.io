@@ -5,3 +5,15 @@
 body {
     margin: 0;
 }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; 
+    width: 100%;
+    height: 100%;
+}
+
+canvas {
+    display: block; /* Removes default inline alignment spacing */
+}
