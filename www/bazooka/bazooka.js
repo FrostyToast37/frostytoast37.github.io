@@ -25,7 +25,9 @@
 	let loaded = true;
 	let selectedAmmo = "lasers";
 
-//ammo classes
+
+//objects
+ 	//ammo classes
 	class Laser {
 		constructor(x1, y1, x2, y2) {
 			//starting coords and destination coords
@@ -132,6 +134,10 @@
 				canvas.remove(this.canvasBullet);
 			}
 		}
+	}
+	//platforms
+	class Platform {
+		//stuff
 	}
 
 //CANVAS
