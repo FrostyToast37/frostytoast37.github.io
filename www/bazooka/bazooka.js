@@ -20,6 +20,7 @@
 
 //global declerations
 	let lastTime = 0;
+	let activePlatforms
 	let activeAmmo = [];
 	let mag = k_magSize;
 	let loaded = true;
@@ -137,7 +138,28 @@
 	}
 	//platforms
 	class Platform {
-		//stuff
+		constructor(x1,y1,x2,y2) {
+			this.x1 = x1;
+			this.y1 = y1;
+			this.x2 = x2;
+			this.y2 = y2;
+			this.width = x2 - x1;
+			this.height = y2 - y1;
+		}
+
+		draw() {
+			this.canvasPlatform  = new fabric.Rectangle({
+				stroke: "brown",
+				fill: "brown",
+				strokeWidth: 5,
+				left: this.x1,
+				top: this.y1,
+				width: this.width,
+				height: this.height,
+				selectable: false
+			});
+			canvas.add(this.canvasPlatform);
+		}
 	}
 
 //CANVAS
@@ -217,6 +239,7 @@
 	function move(dt) {
 		const timeScale = dt * 60;
 
+		//check keypresses
 		if (keysPressed["KeyW"] || keysPressed["ArrowUp"] || keysPressed["Space"]) {
 			if(grounded === true) {
 				speedY -= k_jumpHeight; // Instant impulse, no dt needed
