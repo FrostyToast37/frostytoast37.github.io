@@ -20,7 +20,7 @@
 
 //global declerations
 	let lastTime = 0;
-	let activePlatforms
+	let activePlatforms = [];
 	let activeAmmo = [];
 	let mag = k_magSize;
 	let loaded = true;
