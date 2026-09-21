@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FRC Java Code Reference</title>
+
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 2rem;
+      color: #222;
+      background: #f5f5f5;
+    }
+
+    main {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2, h3 {
+      color: #17365d;
+      line-height: 1.25;
+    }
+
+    h1 {
+      border-bottom: 3px solid #17365d;
+      padding-bottom: 0.5rem;
+    }
+
+    h2 {
+      margin-top: 2.5rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.3rem;
+    }
+
+    h3 {
+      margin-top: 1.5rem;
+    }
+
+    code {
+      background: #eef1f4;
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      font-family: Consolas, Monaco, monospace;
+    }
+
+    pre {
+      background: #1e1e1e;
+      color: #f0f0f0;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: inherit;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1rem 0 1.5rem;
+    }
+
+    th, td {
+      border: 1px solid #bbb;
+      padding: 0.6rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #dce6f1;
+    }
+
+    blockquote {
+      border-left: 4px solid #17365d;
+      padding-left: 1rem;
+      color: #555;
+    }
+
+    .summary {
+      background: #eef5fb;
+      border-left: 4px solid #17365d;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>FRC Java Code Reference</h1>
+
+    <p>
+      A quick reference for understanding the structure of Team 587’s FRC Java code.
+      The project uses WPILib’s <strong>command-based structure</strong>.
+    </p>
+
+    <h2>Project Structure</h2>
+
+    <pre><code>src/main/java/frc/robot/
+├── Robot.java
+├── RobotContainer.java
+├── Constants.java
+└── subsystems/
+    ├── DriveSubsystem.java
+    ├── MAXSwerveModule.java
+    ├── CoralSubsystem.java
+    └── Lights.java</code></pre>
+
+    <table>
+      <thead>
+        <tr>
+          <th>File or folder</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>Robot.java</code></td>
+          <td>Handles robot modes and the WPILib lifecycle.</td>
+        </tr>
+        <tr>
+          <td><code>RobotContainer.java</code></td>
+          <td>Creates subsystems, commands, controllers, and button bindings.</td>
+        </tr>
+        <tr>
+          <td><code>Constants.java</code></td>
+          <td>Stores configuration values and hardware IDs.</td>
+        </tr>
+        <tr>
+          <td><code>subsystems/</code></td>
+          <td>Contains classes that control robot mechanisms.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Program Flow</h2>
+
+    <pre><code>Robot starts
+    ↓
+robotInit()
+    ↓
+RobotContainer is created
+    ↓
+Subsystems and controllers are created
+    ↓
+robotPeriodic()
+    ↓
+CommandScheduler runs commands
+    ↓
+Commands call subsystem methods</code></pre>
+
+    <h2><code>Robot.java</code></h2>
+
+    <p>
+      <code>Robot</code> extends WPILib’s <code>TimedRobot</code>.
+      WPILib automatically calls special lifecycle methods.
+    </p>
+
+    <pre><code>public class Robot extends TimedRobot {
+}</code></pre>
+
+    <h3><code>robotInit()</code></h3>
+
+    <pre><code>@Override
+public void robotInit() {
+  m_robotContainer = new RobotContainer();
+}</code></pre>
+
+    <p>Runs once when the robot program starts.</p>
+
+    <h3><code>robotPeriodic()</code></h3>
+
+    <pre><code>@Override
+public void robotPeriodic() {
+  CommandScheduler.getInstance().run();
+}</code></pre>
+
+    <p>Runs repeatedly, approximately every 20 milliseconds.</p>
+
+    <p>The command scheduler:</p>
+
+    <ul>
+      <li>Checks controller buttons</li>
+      <li>Runs active commands</li>
+      <li>Ends completed commands</li>
+      <li>Interrupts conflicting commands</li>
+      <li>Runs subsystem <code>periodic()</code> methods</li>
+    </ul>
+
+    <h3><code>autonomousInit()</code></h3>
+
+    <pre><code>@Override
+public void autonomousInit() {
+  m_autonomousCommand =
+      m_robotContainer.getAutonomousCommand();
+
+  if (m_autonomousCommand != null) {
+    m_autonomousCommand.schedule();
+  }
+}</code></pre>
+
+    <p>Runs when autonomous mode begins.</p>
+
+    <h3><code>teleopInit()</code></h3>
+
+    <pre><code>@Override
+public void teleopInit() {
+  if (m_autonomousCommand != null) {
+    m_autonomousCommand.cancel();
+  }
+}</code></pre>
+
+    <p>Cancels autonomous when driver control begins.</p>
+
+    <h2><code>RobotContainer.java</code></h2>
+
+    <p>
+      <code>RobotContainer</code> connects the robot’s parts together.
+      It usually contains:
+    </p>
+
+    <ul>
+      <li>Subsystem objects</li>
+      <li>Controller objects</li>
+      <li>Default commands</li>
+      <li>Button bindings</li>
+      <li>Autonomous command setup</li>
+    </ul>
+
+    <h3>Creating a Subsystem</h3>
+
+    <pre><code>private final DriveSubsystem m_drive =
+    new DriveSubsystem();</code></pre>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Part</th>
+          <th>Meaning</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>private</code></td>
+          <td>Only this class can directly access it.</td>
+        </tr>
+        <tr>
+          <td><code>final</code></td>
+          <td>The variable cannot point to a different object later.</td>
+        </tr>
+        <tr>
+          <td><code>DriveSubsystem</code></td>
+          <td>The object type.</td>
+        </tr>
+        <tr>
+          <td><code>m_drive</code></td>
+          <td>The variable name.</td>
+        </tr>
+        <tr>
+          <td><code>new DriveSubsystem()</code></td>
+          <td>Creates the object.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Creating a Controller</h3>
+
+    <pre><code>XboxController m_driverController =
+    new XboxController(
+        OIConstants.kDriverControllerPort);</code></pre>
+
+    <p>The constructor receives the controller port number.</p>
+
+    <pre><code>new XboxController(int port)</code></pre>
+
+    <h2><code>Constants.java</code></h2>
+
+    <p>Constants store values used throughout the project.</p>
+
+    <pre><code>public static final double kDriveDeadband = 0.05;</code></pre>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Keyword</th>
+          <th>Meaning</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>public</code></td>
+          <td>Other classes can access it.</td>
+        </tr>
+        <tr>
+          <td><code>static</code></td>
+          <td>Belongs to the class, not one object.</td>
+        </tr>
+        <tr>
+          <td><code>final</code></td>
+          <td>Cannot be changed.</td>
+        </tr>
+        <tr>
+          <td><code>double</code></td>
+          <td>Decimal number type.</td>
+        </tr>
+        <tr>
+          <td><code>kDriveDeadband</code></td>
+          <td>Constant name.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Constants are grouped by purpose:</p>
+
+    <pre><code>DriveConstants.kMaxSpeedMetersPerSecond
+OIConstants.kDriverControllerPort
+CoralConstants.kWristL2Angle
+AutoConstants.kPXController</code></pre>
+
+    <p>
+      Grouping constants prevents unexplained numbers from being scattered
+      throughout the project.
+    </p>
+
+    <h2>Subsystems</h2>
+
+    <p>
+      A subsystem owns and controls one part of the robot.
+    </p>
+
+    <pre><code>public class DriveSubsystem extends SubsystemBase {
+}</code></pre>
+
+    <p>Subsystems commonly:</p>
+
+    <ul>
+      <li>Create motor and sensor objects</li>
+      <li>Control hardware</li>
+      <li>Track mechanism state</li>
+      <li>Provide methods for commands</li>
+      <li>Update sensors in <code>periodic()</code></li>
+    </ul>
+
+    <h3>Subsystem Constructor</h3>
+
+    <pre><code>public DriveSubsystem() {
+  resetEncoders();
+}</code></pre>
+
+    <p>
+      A constructor runs once when the subsystem is created. Constructors are
+      commonly used for creating hardware objects, configuring motors, resetting
+      sensors, and setting up odometry.
+    </p>
+
+    <h3><code>periodic()</code></h3>
+
+    <pre><code>@Override
+public void periodic() {
+  // Repeated sensor and state updates
+}</code></pre>
+
+    <p>
+      The command scheduler repeatedly calls this method. Team 587 uses
+      subsystem periodic methods to update odometry and publish values to
+      SmartDashboard.
+    </p>
+
+    <h2>Common Subsystem Methods</h2>
+
+    <h3><code>drive()</code></h3>
+
+    <pre><code>public void drive(
+    double xSpeed,
+    double ySpeed,
+    double rot,
+    boolean fieldRelative)</code></pre>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Type</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>xSpeed</code></td>
+          <td><code>double</code></td>
+          <td>Forward/backward speed.</td>
+        </tr>
+        <tr>
+          <td><code>ySpeed</code></td>
+          <td><code>double</code></td>
+          <td>Sideways speed.</td>
+        </tr>
+        <tr>
+          <td><code>rot</code></td>
+          <td><code>double</code></td>
+          <td>Rotation speed.</td>
+        </tr>
+        <tr>
+          <td><code>fieldRelative</code></td>
+          <td><code>boolean</code></td>
+          <td>Whether movement is field-relative.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <pre><code>m_drive.drive(0.5, 0, 0, true);</code></pre>
+
+    <h3>Getter Method</h3>
+
+    <pre><code>public Pose2d getPose() {
+  return m_odometry.getPoseMeters();
+}</code></pre>
+
+    <p>
+      A getter returns information without directly exposing the internal field.
+    </p>
+
+    <h3>State-Setting Method</h3>
+
+    <pre><code>public void setState(coralState state) {
+  // Set mechanism behavior
+}</code></pre>
+
+    <p>Example:</p>
+
+    <pre><code>m_coralSubsystem.setState(coralState.LEVEL2);</code></pre>
+
+    <h2>Commands</h2>
+
+    <p>
+      A command describes an action that the scheduler can run. Command methods
+      commonly return a <code>Command</code>.
+    </p>
+
+    <h3>Run Once</h3>
+
+    <pre><code>public Command zeroHeading() {
+  return this.runOnce(
+      () -> m_drive.zeroHeading());
+}</code></pre>
+
+    <p><code>runOnce()</code> executes the action once.</p>
+
+    <p>Use it for:</p>
+
+    <ul>
+      <li>Zeroing a gyro</li>
+      <li>Selecting a mechanism position</li>
+      <li>Resetting a sensor</li>
+    </ul>
+
+    <h3>Run Repeatedly</h3>
+
+    <pre><code>public Command setX() {
+  return this.run(
+      () -> m_drive.setX());
+}</code></pre>
+
+    <p><code>run()</code> repeatedly executes the action while active.</p>
+
+    <p>Use it for:</p>
+
+    <ul>
+      <li>Holding the drivetrain in an X configuration</li>
+      <li>Continuously controlling a mechanism</li>
+      <li>Repeatedly reading controller input</li>
+    </ul>
+
+    <h2>Lambdas</h2>
+
+    <p>A lambda is a short function that can be passed to a command.</p>
+
+    <pre><code>() -> m_drive.setX()</code></pre>
+
+    <p>This means:</p>
+
+    <blockquote>
+      When the command runs, call <code>m_drive.setX()</code>.
+    </blockquote>
+
+    <p>Compare the following:</p>
+
+    <pre><code>m_drive.setX();</code></pre>
+
+    <p>This runs immediately.</p>
+
+    <pre><code>() -> m_drive.setX()</code></pre>
+
+    <p>This describes an action to run later.</p>
+
+    <h2>Default Commands</h2>
+
+    <pre><code>m_drive.setDefaultCommand(
+    new RunCommand(
+        () -> m_drive.drive(...),
+        m_drive));</code></pre>
+
+    <p>
+      A default command runs whenever no other command is using that subsystem.
+    </p>
+
+    <pre><code>No special command active → joystick driving
+Special command active     → joystick driving is interrupted
+Special command ends        → joystick driving resumes</code></pre>
+
+    <p>
+      The final <code>m_drive</code> argument declares that the command requires
+      the drive subsystem.
+    </p>
+
+    <h2>Subsystem Requirements</h2>
+
+    <pre><code>new RunCommand(
+    () -> m_drive.drive(...),
+    m_drive);</code></pre>
+
+    <p>
+      The last argument tells WPILib which subsystem the command controls.
+      Only one command that requires a subsystem can normally run at a time.
+    </p>
+
+    <pre><code>Default drive command requires DriveSubsystem
+Auto-align command requires DriveSubsystem</code></pre>
+
+    <p>
+      Starting auto-align interrupts the default drive command.
+    </p>
+
+    <h2>Button Bindings</h2>
+
+    <h3><code>onTrue()</code></h3>
+
+    <pre><code>new JoystickButton(
+    m_driverController,
+    XboxController.Button.kStart.value)
+    .onTrue(zeroHeading());</code></pre>
+
+    <p>Runs when the button is pressed. Use for one-time actions.</p>
+
+    <h3><code>whileTrue()</code></h3>
+
+    <pre><code>new JoystickButton(
+    m_driverController,
+    XboxController.Button.kRightStick.value)
+    .whileTrue(m_autoAlignRight);</code></pre>
+
+    <p>Runs while the button is held. Use for continuous actions.</p>
+
+    <h3>Button Constructor</h3>
+
+    <pre><code>new JoystickButton(controller, buttonNumber)</code></pre>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>controller</code></td>
+          <td>Controller being checked.</td>
+        </tr>
+        <tr>
+          <td><code>buttonNumber</code></td>
+          <td>Button being checked.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Method References</h2>
+
+    <pre><code>m_drive::getPose</code></pre>
+
+    <p>
+      A method reference passes an existing method to another object.
+    </p>
+
+    <p>Equivalent lambda:</p>
+
+    <pre><code>() -> m_drive.getPose()</code></pre>
+
+    <p>Another example:</p>
+
+    <pre><code>m_drive::setModuleStates</code></pre>
+
+    <p>Equivalent lambda:</p>
+
+    <pre><code>states -> m_drive.setModuleStates(states)</code></pre>
+
+    <h2>Swerve-Specific Objects</h2>
+
+    <h3><code>SwerveModuleState</code></h3>
+
+    <pre><code>new SwerveModuleState(
+    speed,
+    angle)</code></pre>
+
+    <p>Represents the desired state of one swerve wheel.</p>
+
+    <pre><code>new SwerveModuleState(
+    0,
+    Rotation2d.fromDegrees(45))</code></pre>
+
+    <p>This means:</p>
+
+    <ul>
+      <li>Wheel speed: <code>0</code></li>
+      <li>Wheel angle: <code>45</code> degrees</li>
+    </ul>
+
+    <h3><code>Pose2d</code></h3>
+
+    <pre><code>new Pose2d(
+    xPosition,
+    yPosition,
+    rotation)</code></pre>
+
+    <p>Represents the robot’s position and heading on the field.</p>
+
+    <h3><code>Rotation2d</code></h3>
+
+    <pre><code>Rotation2d.fromDegrees(90)</code></pre>
+
+    <p>Creates a rotation from degrees.</p>
+
+    <h3><code>Translation2d</code></h3>
+
+    <pre><code>new Translation2d(x, y)</code></pre>
+
+    <p>Represents a position or waypoint on the field.</p>
+
+    <h2>Autonomous Commands</h2>
+
+    <pre><code>new SwerveControllerCommand(
+    trajectory,
+    m_drive::getPose,
+    DriveConstants.kDriveKinematics,
+    xController,
+    yController,
+    thetaController,
+    m_drive::setModuleStates,
+    m_drive);</code></pre>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Argument</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>trajectory</code></td>
+          <td>Path for the robot to follow.</td>
+        </tr>
+        <tr>
+          <td><code>m_drive::getPose</code></td>
+          <td>Supplies the current robot position.</td>
+        </tr>
+        <tr>
+          <td><code>kDriveKinematics</code></td>
+          <td>Describes the swerve drivetrain.</td>
+        </tr>
+        <tr>
+          <td><code>xController</code></td>
+          <td>Controls X movement.</td>
+        </tr>
+        <tr>
+          <td><code>yController</code></td>
+          <td>Controls Y movement.</td>
+        </tr>
+        <tr>
+          <td><code>thetaController</code></td>
+          <td>Controls rotation.</td>
+        </tr>
+        <tr>
+          <td><code>m_drive::setModuleStates</code></td>
+          <td>Sends wheel commands.</td>
+        </tr>
+        <tr>
+          <td><code>m_drive</code></td>
+          <td>Declares the drivetrain requirement.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3><code>andThen()</code></h3>
+
+    <pre><code>return command.andThen(
+    () -> m_drive.drive(0, 0, 0, false));</code></pre>
+
+    <p>
+      Runs the second action after the first command finishes. Here, the robot
+      is commanded to stop after the trajectory ends.
+    </p>
+
+    <h2>How to Read the Code</h2>
+
+    <p>When following a behavior, use this path:</p>
+
+    <pre><code>Button binding
+    ↓
+Command method
+    ↓
+Subsystem method
+    ↓
+Motor or sensor object</code></pre>
+
+    <p>For joystick driving:</p>
+
+    <pre><code>Controller axis
+    ↓
+Deadband filtering
+    ↓
+DriveSubsystem.drive(...)
+    ↓
+Swerve kinematics
+    ↓
+Swerve module states
+    ↓
+Individual wheel modules</code></pre>
+
+    <p>For autonomous:</p>
+
+    <pre><code>Robot.autonomousInit()
+    ↓
+getAutonomousCommand()
+    ↓
+Trajectory command
+    ↓
+schedule()
+    ↓
+CommandScheduler
+    ↓
+DriveSubsystem</code></pre>
+
+    <h2>Java Syntax Quick Reference</h2>
+
+    <pre><code>private final DriveSubsystem m_drive;</code></pre>
+
+    <p>Private object field.</p>
+
+    <pre><code>new DriveSubsystem();</code></pre>
+
+    <p>Creates an object.</p>
+
+    <pre><code>public void resetEncoders()</code></pre>
+
+    <p>Public method with no return value.</p>
+
+    <pre><code>public Pose2d getPose()</code></pre>
+
+    <p>Public method returning a <code>Pose2d</code>.</p>
+
+    <pre><code>public void drive(double x, double y)</code></pre>
+
+    <p>Method accepting two <code>double</code> parameters.</p>
+
+    <pre><code>() -> m_drive.setX()</code></pre>
+
+    <p>Lambda with no parameters.</p>
+
+    <pre><code>m_drive::getPose</code></pre>
+
+    <p>Method reference.</p>
+
+    <pre><code>SomeType[] states</code></pre>
+
+    <p>An array of <code>SomeType</code> objects.</p>
+
+    <pre><code>if (command != null)</code></pre>
+
+    <p>Checks whether an object exists before using it.</p>
+
+    <h2>Main Idea</h2>
+
+    <div class="summary">
+      <pre><code>Robot.java
+    Robot lifecycle
+
+RobotContainer.java
+    Wiring and controls
+
+Constants.java
+    Configuration values
+
+Subsystems
+    Hardware and mechanism behavior
+
+Commands
+    Actions performed by the robot
+
+CommandScheduler
+    Decides when commands run</code></pre>
+    </div>
+
+    <p>
+      When a file feels overwhelming, first identify which responsibility it has.
+      Then follow the methods and objects connected to that responsibility.
+    </p>
+  </main>
+</body>
+</html>
