@@ -1,0 +1,1 @@
+const farmCanvas =  document.getElementById("farm_canvas");
