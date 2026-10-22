@@ -2,5 +2,5 @@
     width: 90.0rem;
     height: 60.0rem;
     image-rendering: pixelated;
-    image-rendering: crisp-edges;
+    /* image-rendering: crisp-edges; */
 }
