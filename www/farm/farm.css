@@ -1,6 +1,6 @@
 #farm_canvas {
-    width: 900;
-    height: 600;
+    width: 900rem;
+    height: 600rem;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
 }
